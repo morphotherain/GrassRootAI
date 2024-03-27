@@ -1,6 +1,9 @@
 #include "GameApp.h"
 #include "d3dUtil.h"
 #include "DXTrace.h"
+#include <vector>
+#include <DirectXMath.h>
+
 using namespace DirectX;
 
 const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosColor::inputLayout[2] = {
@@ -50,8 +53,12 @@ void GameApp::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	// 对于8x8棋盘格
+	int n = 16;
+	int verticesPerSquare = 2 * 3; // 每个格子有两个三角形，每个三角形3个顶点
+	int totalVertices = n * n * verticesPerSquare;
 	// 绘制三角形
-	m_pd3dImmediateContext->Draw(6, 0);
+	m_pd3dImmediateContext->Draw(totalVertices, 0);
 	HR(m_pSwapChain->Present(1, 0));
 }
 
@@ -73,29 +80,56 @@ bool GameApp::InitEffect()
 	return true;
 }
 
+struct MapVertexPosColor {
+	XMFLOAT3 position;
+	XMFLOAT4 color;
+};
+
+std::vector<MapVertexPosColor> GenerateChessboardVertices(int n) {
+	float f_n = n/2.0f;
+	std::vector<MapVertexPosColor> vertices;
+	vertices.reserve(n * n * 6); // 每个格子两个三角形，每个三角形3个顶点
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < n; ++j) {
+			// 计算当前格子的颜色
+			bool isWhite = (i + j) % 2 == 0;
+			XMFLOAT4 color = isWhite ? XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) : XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+
+			// 左下角的点坐标
+			float x = j - n/2;
+			float y = n - 1 - i - n / 2; // 使得(0,0)在左上角
+
+			// 添加两个三角形来填充这个格子
+			// 第一个三角形
+			vertices.push_back({ XMFLOAT3(x / f_n, y / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f), color });
+
+			// 第二个三角形
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, (y + 1) / f_n, 0.0f), color });
+		}
+	}
+
+	return vertices;
+}
+
 bool GameApp::InitResource()
 {
-	// 设置三角形顶点
-	VertexPosColor vertices[] =
-	{
-		{ XMFLOAT3(0.0f, 0.5f, 0.9f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, 0.9f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(0.0f, -0.5f, 0.9f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.0f, 0.5f, 0.1f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, 0.5f, 0.1f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, 0.1f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) }
-	};
+	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices(16);
 	// 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof vertices;
+	vbd.ByteWidth = sizeof(VertexPosColor) * vertices.size(); // 注意这里的变化
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	// 新建顶点缓冲区
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = vertices;
+	InitData.pSysMem = vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
 
