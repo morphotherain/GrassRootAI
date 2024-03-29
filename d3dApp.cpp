@@ -21,7 +21,7 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
-	m_MainWndCaption(L"Rendering a Triangle"),
+	m_MainWndCaption(L"Grassroot AI Network"),
 	m_ClientWidth(300),
 	m_ClientHeight(300),
 	m_hMainWnd(nullptr),
@@ -103,6 +103,10 @@ int D3DApp::Run()
 
 bool D3DApp::Init()
 {
+
+	m_pMouse = std::make_unique<DirectX::Mouse>();
+	m_pKeyboard = std::make_unique<DirectX::Keyboard>();
+
 	if (!InitMainWindow())
 		return false;
 
