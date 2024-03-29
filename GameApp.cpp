@@ -6,10 +6,16 @@
 
 using namespace DirectX;
 
-const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosColor::inputLayout[2] = {
+
+const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosColor::inputLayout[3] = {
+	// 位置字段
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	// 纹理坐标字段
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	// 纹理索引字段
+	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
+
 
 GameApp::GameApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
@@ -31,6 +37,7 @@ bool GameApp::Init()
 	if (!InitResource())
 		return false;
 
+
 	return true;
 }
 
@@ -50,11 +57,14 @@ void GameApp::DrawScene()
 	assert(m_pSwapChain);
 
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
-	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
+	static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA = (255,255,255,255)
+	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	// 对于8x8棋盘格
-	int n = 16;
+
+
+	// 对于nxn棋盘格
+	int n = 4;
 	int verticesPerSquare = 2 * 3; // 每个格子有两个三角形，每个三角形3个顶点
 	int totalVertices = n * n * verticesPerSquare;
 	// 绘制三角形
@@ -82,34 +92,41 @@ bool GameApp::InitEffect()
 
 struct MapVertexPosColor {
 	XMFLOAT3 position;
-	XMFLOAT4 color;
+	XMFLOAT2 texCoord;
+	float texIndex;    // 纹理索引，作为浮点数存储
 };
 
 std::vector<MapVertexPosColor> GenerateChessboardVertices(int n) {
 	float f_n = n/2.0f;
 	std::vector<MapVertexPosColor> vertices;
+	std::vector < std::vector<float> >map = {
+		{2, 6, 6, 6},
+		{0, 3, 1, 1},
+		{0, 6, 6, 6},
+		{5, 6, 6, 6}
+	};
 	vertices.reserve(n * n * 6); // 每个格子两个三角形，每个三角形3个顶点
+
 
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-			// 计算当前格子的颜色
-			bool isWhite = (i + j) % 2 == 0;
-			XMFLOAT4 color = isWhite ? XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) : XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 
 			// 左下角的点坐标
 			float x = j - n/2;
 			float y = n - 1 - i - n / 2; // 使得(0,0)在左上角
 
+			float indexTex = map[i][j];
+
 			// 添加两个三角形来填充这个格子
 			// 第一个三角形
-			vertices.push_back({ XMFLOAT3(x / f_n, y / f_n, 0.0f), color });
-			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f), color });
-			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3(x / f_n, y / f_n, 0.0f),             XMFLOAT2(0.0f, 1.0f), indexTex });
+			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
 
 			// 第二个三角形
-			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f), color });
-			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f), color });
-			vertices.push_back({ XMFLOAT3((x + 1) / f_n, (y + 1) / f_n, 0.0f), color });
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
+			vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
+			vertices.push_back({ XMFLOAT3((x + 1) / f_n, (y + 1) / f_n, 0.0f), XMFLOAT2(1.0f, 0.0f), indexTex });
 		}
 	}
 
@@ -118,7 +135,43 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices(int n) {
 
 bool GameApp::InitResource()
 {
-	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices(16);
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;  // 使用点采样
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用U方向上的循环
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用V方向上的循环
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用W方向上的循环，对3D纹理有效
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	ComPtr<ID3D11SamplerState> pSamplerState;
+	HRESULT hr = m_pd3dDevice->CreateSamplerState(&sampDesc, pSamplerState.GetAddressOf());
+	if (FAILED(hr))
+	{
+		// 处理错误
+	}
+
+	// 绑定采样器状态到像素着色器
+	m_pd3dImmediateContext->PSSetSamplers(0, 1, pSamplerState.GetAddressOf());
+
+	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(),*m_pd3dImmediateContext.GetAddressOf());
+
+	std::vector<std::string> textureFileNames = {
+	"demoTex\\Line\\colLine.dds",
+	"demoTex\\Line\\rowLine.dds",
+	"demoTex\\Nodes\\downNode.dds",
+	"demoTex\\Nodes\\rightNode.dds",
+	"demoTex\\Nodes\\leftNode.dds",
+	"demoTex\\Nodes\\UpNode.dds",
+	"demoTex\\empty.dds",
+	};
+
+
+	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
+
+
+	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices(4);
 	// 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
@@ -149,6 +202,8 @@ bool GameApp::InitResource()
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
+
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf());
 	// ******************
 	// 设置调试对象名
 	//

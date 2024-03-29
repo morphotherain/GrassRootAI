@@ -9,8 +9,9 @@ public:
 	struct VertexPosColor
 	{
 		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT4 color;
-		static const D3D11_INPUT_ELEMENT_DESC inputLayout[2];
+		DirectX::XMFLOAT2 TexCoor;
+		float index;
+		static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
 	};
 
 public:
@@ -34,6 +35,10 @@ private:
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	// 顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器
+
+	ddsLoader m_ddsLoader;                                //材质加载
+
+	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 };
 
 

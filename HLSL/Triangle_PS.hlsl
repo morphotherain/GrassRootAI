@@ -1,8 +1,13 @@
 #include "Triangle.hlsli"
 
 // 像素着色器
-float4 PS(VertexOut pIn) : SV_Target
+Texture2DArray TexArray : register(t0);
+SamplerState samLinear : register(s0);
+
+float4 PS(PSInput input) : SV_Target
 {
-    return pIn.color;
+    uint texIndex = (uint)input.texIndex; // 将浮点数转换为整数
+    return TexArray.Sample(samLinear, float3(input.texCoord, texIndex));  
+    //return TexArray.Sample(samLinear, float3(0.5f,0.5f,0));
 }
 

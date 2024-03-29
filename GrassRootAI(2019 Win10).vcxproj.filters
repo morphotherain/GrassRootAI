@@ -19,6 +19,9 @@
     <Filter Include="通用文件">
       <UniqueIdentifier>{7acd4044-bace-4e04-bcce-c88fae244ca4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="dds">
+      <UniqueIdentifier>{712309f7-4d77-4942-9105-e622430ba4b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -39,6 +42,15 @@
     <ClCompile Include="GameTimer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ddsLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dApp.h">
@@ -55,6 +67,15 @@
     </ClInclude>
     <ClInclude Include="DXTrace.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader.h">
+      <Filter>dds</Filter>
+    </ClInclude>
+    <ClInclude Include="ddsLoader.h">
+      <Filter>dds</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>dds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

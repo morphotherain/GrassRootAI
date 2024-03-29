@@ -1,14 +1,13 @@
-
-struct VertexIn
+struct VSInput
 {
-	float3 pos : POSITION;
-	float4 color : COLOR;
+    float3 position : POSITION;
+    float2 texCoord : TEXCOORD;
+    float texIndex : TEXINDEX;
 };
 
-struct VertexOut
+struct PSInput
 {
-	float4 posH : SV_POSITION;
-	float4 color : COLOR;
+    float4 position : SV_POSITION;
+    float2 texCoord : TEXCOORD;
+    float texIndex : TEXINDEX;
 };
-
-
