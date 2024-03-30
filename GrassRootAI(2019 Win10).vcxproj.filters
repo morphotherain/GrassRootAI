@@ -31,6 +31,9 @@
     <Filter Include="摄像机">
       <UniqueIdentifier>{372de0af-23a4-40d8-a945-dddca9768c1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{abd1a52f-ee07-4ef6-973b-90851a621f80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -72,6 +75,12 @@
     <ClCompile Include="GameApp.cpp">
       <Filter>游戏架构</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>游戏架构</Filter>
+    </ClCompile>
+    <ClCompile Include="demoScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -112,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="GameApp.h">
       <Filter>游戏架构</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>游戏架构</Filter>
+    </ClInclude>
+    <ClInclude Include="demoScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

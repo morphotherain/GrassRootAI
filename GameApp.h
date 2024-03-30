@@ -3,6 +3,8 @@
 
 #include "d3dApp.h"
 #include "Camera.h"
+#include "Scene.h"
+#include "demoScene.h"
 
 class GameApp : public D3DApp
 {
@@ -27,6 +29,9 @@ public:
 	void UpdateScene(float dt);
 	void DrawScene();
 
+	// 在GameApp类中修改SwitchToScene方法为模板函数
+	void SwitchToScene(std::unique_ptr<Scene> newScene);
+
 	
 private:
 	bool InitEffect();
@@ -47,8 +52,9 @@ private:
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
 
-
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
+
+	std::unique_ptr<Scene> currentScene; //当前的界面
 };
 
 

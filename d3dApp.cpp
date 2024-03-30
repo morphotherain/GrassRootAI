@@ -22,8 +22,8 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
 	m_MainWndCaption(L"Grassroot AI Network"),
-	m_ClientWidth(900),
-	m_ClientHeight(900),
+	m_ClientWidth(1920),
+	m_ClientHeight(1080),
 	m_hMainWnd(nullptr),
 	m_AppPaused(false),
 	m_Minimized(false),

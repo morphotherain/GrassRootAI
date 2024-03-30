@@ -1,4 +1,4 @@
-#pragma once
+О╩©#pragma once
 #include "core.h"
 
 class ddsLoader
@@ -24,5 +24,5 @@ public:
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ComPtr<ID3D11Device> m_Device;
-	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11иХ╠╦иообнд
+	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11Х╝╬Е╓┤Д╦┼Д╦▀Ф√┤
 };

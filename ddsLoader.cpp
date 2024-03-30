@@ -1,12 +1,12 @@
-#include "ddsLoader.h"
+ï»¿#include "ddsLoader.h"
 
 wchar_t* multiByteToWideChar(const std::string& pKey)
 {
 	const  char* pCStrKey = pKey.c_str();
-	//µÚÒ»´Îµ÷ÓÃ·µ»Ø×ª»»ºóµÄ×Ö·û´®³¤¶È£¬ÓÃÓÚÈ·ÈÏÎªwchar_t*¿ª±Ù¶à´óµÄÄÚ´æ¿Õ¼ä
+	//ç¬¬ä¸€æ¬¡è°ƒç”¨è¿”å›è½¬æ¢åçš„å­—ç¬¦ä¸²é•¿åº¦ï¼Œç”¨äºç¡®è®¤ä¸ºwchar_t*å¼€è¾Ÿå¤šå¤§çš„å†…å­˜ç©ºé—´
 	int pSize = MultiByteToWideChar(CP_OEMCP, 0, pCStrKey, strlen(pCStrKey) + 1, NULL, 0);
 	wchar_t* pWCStrKey = new wchar_t[pSize];
-	//µÚ¶ş´Îµ÷ÓÃ½«µ¥×Ö½Ú×Ö·û´®×ª»»³ÉË«×Ö½Ú×Ö·û´®
+	//ç¬¬äºŒæ¬¡è°ƒç”¨å°†å•å­—èŠ‚å­—ç¬¦ä¸²è½¬æ¢æˆåŒå­—èŠ‚å­—ç¬¦ä¸²
 	MultiByteToWideChar(CP_OEMCP, 0, pCStrKey, strlen(pCStrKey) + 1, pWCStrKey, pSize);
 	return pWCStrKey;
 }
@@ -81,12 +81,12 @@ void ddsLoader::InitTex32ArrayFromFiles(
 {
     std::vector<ComPtr<ID3D11Texture2D>> loadedTextures(textureFileNames.size());
 
-    // ¼ÙÉèËùÓĞÎÆÀíµÄ´óĞ¡ºÍ¸ñÊ½¶¼ÊÇÏàÍ¬µÄ
+    // å‡è®¾æ‰€æœ‰çº¹ç†çš„å¤§å°å’Œæ ¼å¼éƒ½æ˜¯ç›¸åŒçš„
     DXGI_FORMAT textureFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     UINT textureWidth = 0;
     UINT textureHeight = 0;
 
-    // Ê×ÏÈ¼ÓÔØËùÓĞµÄÎÆÀí
+    // é¦–å…ˆåŠ è½½æ‰€æœ‰çš„çº¹ç†
     for (size_t i = 0; i < textureFileNames.size(); ++i)
     {
         std::wstring wTexName = L".\\Texture\\" + std::wstring(textureFileNames[i].begin(), textureFileNames[i].end());
@@ -99,11 +99,11 @@ void ddsLoader::InitTex32ArrayFromFiles(
 
         if (SUCCEEDED(hr))
         {
-            // ½«¼ÓÔØµÄÎÆÀí×ÊÔ´×ª»»ÎªID3D11Texture2D
+            // å°†åŠ è½½çš„çº¹ç†èµ„æºè½¬æ¢ä¸ºID3D11Texture2D
             texResource.As(&loadedTextures[i]);
 
             if (i == 0) {
-                // »ñÈ¡µÚÒ»¸öÎÆÀíµÄ³ß´çºÍ¸ñÊ½ÓÃ×÷ÎÆÀíÊı×éµÄ²ÎÊı
+                // è·å–ç¬¬ä¸€ä¸ªçº¹ç†çš„å°ºå¯¸å’Œæ ¼å¼ç”¨ä½œçº¹ç†æ•°ç»„çš„å‚æ•°
                 D3D11_TEXTURE2D_DESC desc;
                 loadedTextures[i]->GetDesc(&desc);
                 textureWidth = desc.Width;
@@ -113,18 +113,18 @@ void ddsLoader::InitTex32ArrayFromFiles(
         }
         else
         {
-            // ´¦Àí¼ÓÔØÎÆÀíÊ§°ÜµÄÇé¿ö
-            // ×¢Òâ£ºÕâÀïÖ»ÊÇ¼òµ¥Ê¾Àı£¬Êµ¼ÊÊ¹ÓÃÊ±Ó¦¸Ã¸üÏêÏ¸µØ´¦Àí´íÎó
+            // å¤„ç†åŠ è½½çº¹ç†å¤±è´¥çš„æƒ…å†µ
+            // æ³¨æ„ï¼šè¿™é‡Œåªæ˜¯ç®€å•ç¤ºä¾‹ï¼Œå®é™…ä½¿ç”¨æ—¶åº”è¯¥æ›´è¯¦ç»†åœ°å¤„ç†é”™è¯¯
             return;
         }
     }
 
-    // ´´½¨¿ÕµÄÎÆÀíÊı×é
+    // åˆ›å»ºç©ºçš„çº¹ç†æ•°ç»„
     D3D11_TEXTURE2D_DESC texArrayDesc;
     ZeroMemory(&texArrayDesc, sizeof(texArrayDesc));
     texArrayDesc.Width = textureWidth;
     texArrayDesc.Height = textureHeight;
-    texArrayDesc.MipLevels = 1;  // ¼ÙÉèÖ»ÓĞÒ»¸öMip¼¶±ğ
+    texArrayDesc.MipLevels = 1;  // å‡è®¾åªæœ‰ä¸€ä¸ªMipçº§åˆ«
     texArrayDesc.ArraySize = static_cast<UINT>(textureFileNames.size());
     texArrayDesc.Format = textureFormat;
     texArrayDesc.SampleDesc.Count = 1;
@@ -137,11 +137,11 @@ void ddsLoader::InitTex32ArrayFromFiles(
     HRESULT hr = m_Device->CreateTexture2D(&texArrayDesc, nullptr, textureArray.GetAddressOf());
     if (FAILED(hr))
     {
-        // ´¦Àí´´½¨ÎÆÀíÊı×éÊ§°ÜµÄÇé¿ö
+        // å¤„ç†åˆ›å»ºçº¹ç†æ•°ç»„å¤±è´¥çš„æƒ…å†µ
         return;
     }
 
-    // ½«Ã¿¸ö¼ÓÔØµÄÎÆÀí¸´ÖÆµ½ÎÆÀíÊı×éÖĞ
+    // å°†æ¯ä¸ªåŠ è½½çš„çº¹ç†å¤åˆ¶åˆ°çº¹ç†æ•°ç»„ä¸­
     for (UINT i = 0; i < textureFileNames.size(); ++i)
     {
         if (loadedTextures[i] != nullptr)
@@ -165,7 +165,7 @@ void ddsLoader::InitTex32ArrayFromFiles(
         }
     }
 
-    // ´´½¨ÎÆÀíÊı×éµÄ×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼
+    // åˆ›å»ºçº¹ç†æ•°ç»„çš„ç€è‰²å™¨èµ„æºè§†å›¾
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
     srvDesc.Format = textureFormat;
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
@@ -177,7 +177,7 @@ void ddsLoader::InitTex32ArrayFromFiles(
     hr = m_Device->CreateShaderResourceView(textureArray.Get(), &srvDesc, shaderResourceView.GetAddressOf());
     if (FAILED(hr))
     {
-        // ´¦Àí´´½¨×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼Ê§°ÜµÄÇé¿ö
+        // å¤„ç†åˆ›å»ºç€è‰²å™¨èµ„æºè§†å›¾å¤±è´¥çš„æƒ…å†µ
         return;
     }
 }

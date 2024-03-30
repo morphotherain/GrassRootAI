@@ -1,4 +1,4 @@
-#include "Camera.h"
+ï»¿#include "Camera.h"
 #include "Camera.h"
 using namespace DirectX;
 
@@ -102,7 +102,7 @@ void Camera::SetViewPort(float topLeftX, float topLeftY, float width, float heig
 
 
 // ******************
-// µÚÒ»ÈË³Æ/×ÔÓÉÊÓ½ÇÉãÏñ»ú
+// ç¬¬ä¸€äººç§°/è‡ªç”±è§†è§’æ‘„åƒæœº
 //
 
 FirstPersonCamera::~FirstPersonCamera()
@@ -156,7 +156,7 @@ void FirstPersonCamera::MoveForward(float d)
 void FirstPersonCamera::Pitch(float rad)
 {
 	XMFLOAT3 rotation = m_Transform.GetRotation();
-	// ½«ÈÆxÖáĞı×ª»¡¶ÈÏŞÖÆÔÚ[-7pi/18, 7pi/18]Ö®¼ä
+	// å°†ç»•xè½´æ—‹è½¬å¼§åº¦é™åˆ¶åœ¨[-7pi/18, 7pi/18]ä¹‹é—´
 	rotation.x += rad;
 	if (rotation.x > XM_PI * 7 / 18)
 		rotation.x = XM_PI * 7 / 18;
@@ -178,7 +178,7 @@ void FirstPersonCamera::RotateY(float rad)
 
 
 // ******************
-// µÚÈıÈË³ÆÉãÏñ»ú
+// ç¬¬ä¸‰äººç§°æ‘„åƒæœº
 //
 
 ThirdPersonCamera::~ThirdPersonCamera()
@@ -198,7 +198,7 @@ float ThirdPersonCamera::GetDistance() const
 void ThirdPersonCamera::RotateX(float rad)
 {
 	XMFLOAT3 rotation = m_Transform.GetRotation();
-	// ½«ÈÆxÖáĞı×ª»¡¶ÈÏŞÖÆÔÚ[0, pi/3]Ö®¼ä
+	// å°†ç»•xè½´æ—‹è½¬å¼§åº¦é™åˆ¶åœ¨[0, pi/3]ä¹‹é—´
 	rotation.x += rad;
 	if (rotation.x < 0.0f)
 		rotation.x = 0.0f;
@@ -223,7 +223,7 @@ void ThirdPersonCamera::RotateY(float rad)
 void ThirdPersonCamera::Approach(float dist)
 {
 	m_Distance += dist;
-	// ÏŞÖÆ¾àÀëÔÚ[m_MinDist, m_MaxDist]Ö®¼ä
+	// é™åˆ¶è·ç¦»åœ¨[m_MinDist, m_MaxDist]ä¹‹é—´
 	if (m_Distance < m_MinDist)
 		m_Distance = m_MinDist;
 	else if (m_Distance > m_MaxDist)
@@ -236,7 +236,7 @@ void ThirdPersonCamera::Approach(float dist)
 void ThirdPersonCamera::SetRotationX(float rad)
 {
 	XMFLOAT3 rotation = m_Transform.GetRotation();
-	// ½«ÈÆxÖáĞı×ª»¡¶ÈÏŞÖÆÔÚ[0, pi/3]Ö®¼ä
+	// å°†ç»•xè½´æ—‹è½¬å¼§åº¦é™åˆ¶åœ¨[0, pi/3]ä¹‹é—´
 	rotation.x = rad;
 	if (rotation.x < 0.0f)
 		rotation.x = 0.0f;
