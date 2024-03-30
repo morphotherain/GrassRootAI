@@ -95,7 +95,7 @@ void ddsLoader::InitTex32ArrayFromFiles(
             m_Device.Get(),
             wTexName.c_str(),
             texResource.GetAddressOf(),
-            nullptr, (size_t)32, nullptr);
+            nullptr, (size_t)512);//, (size_t)32, nullptr
 
         if (SUCCEEDED(hr))
         {
