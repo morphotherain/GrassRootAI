@@ -2,10 +2,14 @@
 #define GAMEAPP_H
 
 #include "d3dApp.h"
+#include "Camera.h"
 
 class GameApp : public D3DApp
 {
 public:
+	// 摄像机模式
+	enum class CameraMode { FirstPerson, ThirdPerson, Free };
+
 	struct VertexPosColor
 	{
 		DirectX::XMFLOAT3 pos;
@@ -37,6 +41,12 @@ private:
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器
 
 	ddsLoader m_ddsLoader;                                //材质加载
+
+	CameraMode m_CameraMode;									// 摄像机模式
+	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
+	// 创建常量缓冲区
+	ComPtr<ID3D11Buffer> matrixBuffer;
+
 
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 };

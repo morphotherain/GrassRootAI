@@ -22,8 +22,8 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
 	m_MainWndCaption(L"Grassroot AI Network"),
-	m_ClientWidth(300),
-	m_ClientHeight(300),
+	m_ClientWidth(900),
+	m_ClientHeight(900),
 	m_hMainWnd(nullptr),
 	m_AppPaused(false),
 	m_Minimized(false),
@@ -308,15 +308,35 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
 
+		// 监测这些键盘/鼠标事件
+	case WM_INPUT:
+
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		return 0;
+	case WM_XBUTTONDOWN:
+
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-		return 0;
+	case WM_XBUTTONUP:
+
+	case WM_MOUSEWHEEL:
+	case WM_MOUSEHOVER:
 	case WM_MOUSEMOVE:
+		m_pMouse->ProcessMessage(msg, wParam, lParam);
+		return 0;
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
+		return 0;
+
+	case WM_ACTIVATEAPP:
+		m_pMouse->ProcessMessage(msg, wParam, lParam);
+		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
 	}
 

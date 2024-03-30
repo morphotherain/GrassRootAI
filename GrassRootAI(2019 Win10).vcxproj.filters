@@ -28,12 +28,12 @@
     <Filter Include="UI">
       <UniqueIdentifier>{55da9f5b-04fd-4c5d-94b8-e11e633648bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="摄像机">
+      <UniqueIdentifier>{372de0af-23a4-40d8-a945-dddca9768c1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="GameApp.cpp">
       <Filter>d3d架构</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
@@ -63,6 +63,15 @@
     <ClCompile Include="Mouse.cpp">
       <Filter>输入</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>摄像机</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>摄像机</Filter>
+    </ClCompile>
+    <ClCompile Include="GameApp.cpp">
+      <Filter>游戏架构</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -83,9 +92,6 @@
     <ClInclude Include="DXTrace.h">
       <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="GameApp.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>d3d架构</Filter>
     </ClInclude>
@@ -94,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>d3d架构</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>摄像机</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>摄像机</Filter>
+    </ClInclude>
+    <ClInclude Include="GameApp.h">
+      <Filter>游戏架构</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

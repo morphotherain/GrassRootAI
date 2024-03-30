@@ -18,7 +18,8 @@ const D3D11_INPUT_ELEMENT_DESC GameApp::VertexPosColor::inputLayout[3] = {
 
 
 GameApp::GameApp(HINSTANCE hInstance)
-	: D3DApp(hInstance)
+	: D3DApp(hInstance),
+	m_CameraMode(CameraMode::Free)
 {
 }
 
@@ -41,6 +42,7 @@ bool GameApp::Init()
 	m_pMouse->SetWindow(m_hMainWnd);
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
+
 	return true;
 }
 
@@ -52,7 +54,82 @@ void GameApp::OnResize()
 void GameApp::UpdateScene(float dt)
 {
 
+
+
+	// 更新鼠标事件，获取相对偏移量
+	Mouse::State mouseState = m_pMouse->GetState();
+	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
+	m_MouseTracker.Update(mouseState);
+
+	Keyboard::State keyState = m_pKeyboard->GetState();
+	m_KeyboardTracker.Update(keyState);
+
+	// 获取子类
+	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
+
+	if (m_CameraMode == CameraMode::Free)
+	{
+		// ******************
+		// 自由摄像机的操作
+		//
+
+		// 方向移动
+		if (keyState.IsKeyDown(Keyboard::W))
+		{
+			cam1st->MoveY(dt * 6.0f);
+		}
+		if (keyState.IsKeyDown(Keyboard::S))
+		{
+			cam1st->MoveY(dt * -6.0f);
+		}
+		if (keyState.IsKeyDown(Keyboard::A))
+		{
+			cam1st->MoveX(dt * -6.0f);
+		}
+		if (keyState.IsKeyDown(Keyboard::D))
+		{
+			cam1st->MoveX(dt * 6.0f);
+		}
+		// 在鼠标没进入窗口前仍为ABSOLUTE模式
+		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+		{
+			auto pos = cam1st->GetPosition();
+			auto delta_Y = lastMouseState.y - mouseState.y;
+			auto delta_X = lastMouseState.x - mouseState.x;
+
+			cam1st->MoveY(-delta_Y * dt * 1.0f);
+			cam1st->MoveX(delta_X * dt * 1.0f);
+		}
+		auto delta_scroll = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
+		if(delta_scroll > 1.0f)
+			cam1st->MoveZ(1.0f);
+		if (delta_scroll < -1.0f)
+			cam1st->MoveZ(-1.0f);
+
+	}
+
+	// ******************
+	// 更新摄像机
+	//
+
+	XMFLOAT3 adjustedPos;
+	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
+		XMVectorSet(-499.0f, -499.0f, -499.0f, 0.0f), XMVectorSet(499.0f, 999.0f, 499.0f, 0.0f)));
+	cam1st->SetPosition(adjustedPos);
+
+
+
+	// 退出程序，这里应向窗口发送销毁信息
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
+		SendMessage(MainWnd(), WM_DESTROY, 0, 0);
 }
+
+// 定义常量缓冲区的结构
+struct MatrixBufferType
+{
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+};
 
 void GameApp::DrawScene()
 {
@@ -64,6 +141,25 @@ void GameApp::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	// 假设 camera 是当前场景中的摄影机对象
+	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
+
+	// 映射常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (SUCCEEDED(hr))
+	{
+		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+		dataPtr->projection = XMMatrixTranspose(projMatrix);
+
+		// 取消映射常量缓冲区
+		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
+
+		// 将常量缓冲区绑定到顶点着色器
+		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
+	}
 
 
 	// 对于nxn棋盘格
@@ -136,8 +232,23 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices(int n) {
 	return vertices;
 }
 
+
+
+
+
 bool GameApp::InitResource()
 {
+
+
+	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
+	m_pCamera = camera;
+	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f ));
+	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
+	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
+
+
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;  // 使用点采样
@@ -172,6 +283,41 @@ bool GameApp::InitResource()
 
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
+
+	
+
+	D3D11_BUFFER_DESC matrixBufferDesc;
+	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+	// 使用设备创建缓冲区
+	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
+	
+	// 更新常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	MatrixBufferType* dataPtr;
+	hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	// 确保检查hr的值...
+
+	// 获取子类
+	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
+
+	// 映射常量缓冲区，确保成功后...
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
+	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
+
+
+	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
+
+	// 设置顶点着色器中的常量缓冲区
+	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
+
+
 
 
 	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices(4);
