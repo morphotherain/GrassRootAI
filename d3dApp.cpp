@@ -22,8 +22,8 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 D3DApp::D3DApp(HINSTANCE hInstance)
 	: m_hAppInst(hInstance),
 	m_MainWndCaption(L"Grassroot AI Network"),
-	m_ClientWidth(1920),
-	m_ClientHeight(1080),
+	m_ClientWidth(1760),
+	m_ClientHeight(990),
 	m_hMainWnd(nullptr),
 	m_AppPaused(false),
 	m_Minimized(false),
@@ -179,7 +179,7 @@ void D3DApp::OnResize()
 
 
 	// 将渲染目标视图和深度/模板缓冲区结合到管线
-	m_pd3dImmediateContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), m_pDepthStencilView.Get());
+	m_pd3dImmediateContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);// m_pDepthStencilView.Get()
 
 	// 设置视口变换
 	m_ScreenViewport.TopLeftX = 0;
@@ -236,7 +236,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				m_AppPaused = false;
 				m_Minimized = false;
 				m_Maximized = true;
-				OnResize();
+				//OnResize();
 			}
 			else if (wParam == SIZE_RESTORED)
 			{
@@ -246,7 +246,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					m_AppPaused = false;
 					m_Minimized = false;
-					OnResize();
+					//OnResize();
 				}
 
 				// Restoring from maximized state?
@@ -254,7 +254,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				{
 					m_AppPaused = false;
 					m_Maximized = false;
-					OnResize();
+					//OnResize();
 				}
 				else if (m_Resizing)
 				{
@@ -269,7 +269,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else // API call such as SetWindowPos or m_pSwapChain->SetFullscreenState.
 				{
-					OnResize();
+					//OnResize();
 				}
 			}
 		}
@@ -288,7 +288,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		m_AppPaused = false;
 		m_Resizing = false;
 		m_Timer.Start();
-		OnResize();
+		//OnResize();
 		return 0;
 
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -371,7 +371,7 @@ bool D3DApp::InitMainWindow()
 	int height = R.bottom - R.top;
 
 	m_hMainWnd = CreateWindow(L"D3DWndClassName", m_MainWndCaption.c_str(),
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hAppInst, 0);
+		WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hAppInst, 0);
 	if (!m_hMainWnd)
 	{
 		MessageBox(0, L"CreateWindow Failed.", 0, 0);

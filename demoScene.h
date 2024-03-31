@@ -26,6 +26,7 @@ public :
 
 private:
 
+	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 };
 

@@ -29,19 +29,43 @@ std::vector<MapVertexPosColor> GenerateVertices(int n) {
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
 
-	float x = -1.0f;
-	float y = -108.0f/192.0f;
-	float deltaY = 216.0f / 192.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	float deltaX = 192.0f;
+	float deltaY = 108.0f;
 
 	// 第一个三角形
 	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
 	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + 2), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
 
 	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + 2), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
 	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + 2), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
+
+	return vertices;
+}
+
+std::vector<MapVertexPosColor> GenerateButtonVertices(int n) {
+	std::vector<MapVertexPosColor> vertices;
+
+	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
+
+	float x = 10.0f;
+	float y = 30.0f;
+	float deltaX = 20.0f;
+	float deltaY = 4.0f;
+
+	// 第一个三角形
+	vertices.push_back({ XMFLOAT3(x, y, -0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+
+	// 第二个三角形
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), -0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
 
 
 	return vertices;
@@ -126,7 +150,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 	XMFLOAT3 adjustedPos;
 	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
-		XMVectorSet(-0.0f, -0.0f, -1.0f, 0.0f), XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f)));
+		XMVectorSet(96.0f, 54.0f, -93.0f, 0.0f), XMVectorSet(96.0f, 54.0f, -93.0f, 0.0f)));
 	cam1st->SetPosition(adjustedPos);
 
 
@@ -140,6 +164,7 @@ void MainScene::DrawScene()
 {
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
+
 
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA = (255,255,255,255)
@@ -166,13 +191,24 @@ void MainScene::DrawScene()
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
+	// 输入装配阶段的顶点缓冲区设置
+	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
+	UINT offset = 0;						// 起始偏移量
 
-	// 对于nxn棋盘格
-	int n = 4;
-	int verticesPerSquare = 2 * 3; // 每个格子有两个三角形，每个三角形3个顶点
-	int totalVertices = n * n * verticesPerSquare;
-	// 绘制三角形
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+
 	m_pd3dImmediateContext->Draw(6, 0);
+
+	//按钮绘制
+
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //绑定纹理
+
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, button_m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+
+	m_pd3dImmediateContext->Draw(6, 0);
+
+
 	HR(m_pSwapChain->Present(1, 0));
 }
 
@@ -190,7 +226,7 @@ bool MainScene::InitResource()
 	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -1.0f));
+	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
 
 
 	D3D11_SAMPLER_DESC sampDesc;
@@ -219,8 +255,12 @@ bool MainScene::InitResource()
 		"demoTex\\MainScene\\background.dds"
 	};
 
+	std::vector<std::string> textureButtonFileNames = {
+		"demoTex\\MainScene\\button1.dds"
+	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
+	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, button_textureArraySRV);
 
 
 
@@ -273,15 +313,16 @@ bool MainScene::InitResource()
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
 
+	std::vector<MapVertexPosColor> button_vertices = GenerateButtonVertices(4);
+	ZeroMemory(&InitData, sizeof(InitData));
+	InitData.pSysMem = button_vertices.data();
+	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, button_m_pVertexBuffer.GetAddressOf()));
+
 	// ******************
 	// 给渲染管线各个阶段绑定好所需资源
 	//
 
-	// 输入装配阶段的顶点缓冲区设置
-	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
-	UINT offset = 0;						// 起始偏移量
 
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 	// 设置图元类型，设定输入布局
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
@@ -290,7 +331,6 @@ bool MainScene::InitResource()
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 
-	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf());
 	// ******************
 	// 设置调试对象名
 	//

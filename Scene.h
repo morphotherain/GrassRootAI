@@ -57,7 +57,6 @@ protected:
 
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
-	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
