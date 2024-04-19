@@ -64,7 +64,6 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 
 bool demoScene::Init()
 {
-
 	if (!InitEffect())
 		return false;
 
@@ -78,7 +77,7 @@ void demoScene::OnResize()
 {
 }
 
-void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard)
+void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
 {
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
@@ -106,6 +105,7 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		}
 		if (keyState.IsKeyDown(Keyboard::S))
 		{
+			switchScene = 1;
 			cam1st->MoveY(dt * -6.0f);
 		}
 		if (keyState.IsKeyDown(Keyboard::A))

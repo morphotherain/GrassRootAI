@@ -66,7 +66,22 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {
-	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard);
+	int switchScene = 0;
+	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, switchScene);
+	switch (switchScene)
+	{
+	case 1:
+	{
+		SwitchToScene(std::make_unique<MainScene>(AppInst()));
+		break;
+	}
+	case 2:
+	{
+		SwitchToScene(std::make_unique<demoScene>(AppInst()));
+		break;
+	}
+	default:;
+	}
 	return;
 	
 }

@@ -74,6 +74,7 @@ std::vector<MapVertexPosColor> GenerateButtonVertices(int n) {
 
 bool MainScene::Init()
 {
+	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
 	if (!InitEffect())
 		return false;
@@ -88,7 +89,7 @@ void MainScene::OnResize()
 {
 }
 
-void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard)
+void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
 {
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
@@ -129,6 +130,8 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		// 在鼠标没进入窗口前仍为ABSOLUTE模式
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
+			if(80<mouseState.x && 220 > mouseState.x && 680 < mouseState.y && 715 > mouseState.y)
+				switchScene = 2;
 			auto pos = cam1st->GetPosition();
 			auto delta_Y = lastMouseState.y - mouseState.y;
 			auto delta_X = lastMouseState.x - mouseState.x;
@@ -214,6 +217,7 @@ void MainScene::DrawScene()
 
 void MainScene::cleanup()
 {
+	fs.close();
 }
 
 

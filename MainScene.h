@@ -1,4 +1,5 @@
 #pragma once
+#include <fstream>
 #include "Scene.h"
 class MainScene : public Scene
 {
@@ -18,7 +19,7 @@ public:
 
 	virtual bool Init();
 	virtual void OnResize();
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard);
+	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
 	virtual void DrawScene();
 	virtual void cleanup();
 
@@ -29,5 +30,6 @@ private:
 	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
 	ComPtr<ID3D11InputLayout> button_m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
+	std::fstream fs;
 };
 

@@ -84,6 +84,9 @@
     <ClCompile Include="MainScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="UIBase.cpp">
+      <Filter>游戏架构</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="MainScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
+      <Filter>游戏架构</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
