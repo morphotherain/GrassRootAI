@@ -370,8 +370,18 @@ bool D3DApp::InitMainWindow()
 	int width = R.right - R.left;
 	int height = R.bottom - R.top;
 
-	m_hMainWnd = CreateWindow(L"D3DWndClassName", m_MainWndCaption.c_str(),
-		WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hAppInst, 0);
+	bool bordered = false;
+	if(bordered)
+	{
+		m_hMainWnd = CreateWindow(L"D3DWndClassName", m_MainWndCaption.c_str(),
+			WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hAppInst, 0); //正常窗口
+	}
+	else
+	{
+		m_hMainWnd = CreateWindow(L"D3DWndClassName", m_MainWndCaption.c_str(),
+			WS_POPUP, 0, 0, width, height, 0, 0, m_hAppInst, 0); //无边框窗口
+	}
+
 	if (!m_hMainWnd)
 	{
 		MessageBox(0, L"CreateWindow Failed.", 0, 0);
@@ -535,7 +545,8 @@ bool D3DApp::InitDirect3D()
 
 
 	// 可以禁止alt+enter全屏
-	dxgiFactory1->MakeWindowAssociation(m_hMainWnd, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
+	//  
+	//dxgiFactory1->MakeWindowAssociation(m_hMainWnd, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
 
 	// 设置调试对象名
 	D3D11SetDebugObjectName(m_pd3dImmediateContext.Get(), "ImmediateContext");
