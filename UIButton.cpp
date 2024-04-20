@@ -73,36 +73,15 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	m_KeyboardTracker.Update(keyState);
 
 
-	if (m_CameraMode == CameraMode::Free)
-	{
-		// ******************
-		// 自由摄像机的操作
-		//
 
-		// 方向移动
-		if (keyState.IsKeyDown(Keyboard::W))
-		{
-			
-		}
-		if (keyState.IsKeyDown(Keyboard::S))
-		{
-			
-		}
-		if (keyState.IsKeyDown(Keyboard::A))
-		{
-			
-		}
-		if (keyState.IsKeyDown(Keyboard::D))
-		{
-			
-		}
-		// 在鼠标没进入窗口前仍为ABSOLUTE模式
-		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
-		{
-			if (80 < mouseState.x && 220 > mouseState.x && 680 < mouseState.y && 715 > mouseState.y)
-				switchScene = 2;
-		}
+		
+	// 在鼠标没进入窗口前仍为ABSOLUTE模式
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+	{
+		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
+			switchScene = 2;
 	}
+	
 
 }
 

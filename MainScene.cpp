@@ -59,6 +59,7 @@ MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
 	button = std::make_shared<UIButton>();
 	button->setSize(10.0f, 20.0f, 20.0f, 4.0f);
 	AddUIComponent(button);
+
 }
 
 bool MainScene::Init()
@@ -134,8 +135,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		// 在鼠标没进入窗口前仍为ABSOLUTE模式
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
-			if(80<mouseState.x && 220 > mouseState.x && 680 < mouseState.y && 715 > mouseState.y)
-				switchScene = 2;
+
 			auto pos = cam1st->GetPosition();
 			auto delta_Y = lastMouseState.y - mouseState.y;
 			auto delta_X = lastMouseState.x - mouseState.x;
@@ -161,7 +161,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 	XMFLOAT3 adjustedPos;
 	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
-		XMVectorSet(96.0f, 54.0f, -93.0f, 0.0f), XMVectorSet(96.0f, 54.0f, -93.0f, 0.0f)));
+		XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f), XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f)));
 	cam1st->SetPosition(adjustedPos);
 
 
