@@ -105,7 +105,6 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		}
 		if (keyState.IsKeyDown(Keyboard::S))
 		{
-			switchScene = 1;
 			cam1st->MoveY(dt * -6.0f);
 		}
 		if (keyState.IsKeyDown(Keyboard::A))
@@ -115,6 +114,10 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		if (keyState.IsKeyDown(Keyboard::D))
 		{
 			cam1st->MoveX(dt * 6.0f);
+		}
+		if (keyState.IsKeyDown(Keyboard::R))
+		{
+			switchScene = 1;
 		}
 		// 在鼠标没进入窗口前仍为ABSOLUTE模式
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)

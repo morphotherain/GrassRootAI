@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Scene.h"
 class UIBase
 {
@@ -21,38 +21,38 @@ public:
 
 protected:
 
-	HWND      m_hMainWnd;        // Ö÷´°¿Ú¾ä±ú
+	HWND      m_hMainWnd;        // ä¸»çª—å£å¥æŸ„
 	HINSTANCE hInstance;
 
-	ddsLoader m_ddsLoader;                                //²ÄÖÊ¼ÓÔØ
+	ddsLoader m_ddsLoader;                                //æè´¨åŠ è½½
 
-	CameraMode m_CameraMode;									// ÉãÏñ»úÄ£Ê½
-	std::shared_ptr<Camera> m_pCamera;						    // ÉãÏñ»ú
+	CameraMode m_CameraMode;									// æ‘„åƒæœºæ¨¡å¼
+	std::shared_ptr<Camera> m_pCamera;						    // æ‘„åƒæœº
 
 	ComPtr<ID3D11Device> m_pd3dDevice;
-	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11Éè±¸ÉÏÏÂÎÄ
-	ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11½»»»Á´
+	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11è®¾å¤‡ä¸Šä¸‹æ–‡
+	ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11äº¤æ¢é“¾
 
-	// ³£ÓÃ×ÊÔ´
-	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // Éî¶ÈÄ£°å»º³åÇø
-	ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;   // äÖÈ¾Ä¿±êÊÓÍ¼
-	ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;   // Éî¶ÈÄ£°åÊÓÍ¼
-	D3D11_VIEWPORT m_ScreenViewport;                      // ÊÓ¿Ú
+	// å¸¸ç”¨èµ„æº
+	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // æ·±åº¦æ¨¡æ¿ç¼“å†²åŒº
+	ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;   // æ¸²æŸ“ç›®æ ‡è§†å›¾
+	ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;   // æ·±åº¦æ¨¡æ¿è§†å›¾
+	D3D11_VIEWPORT m_ScreenViewport;                      // è§†å£
 
-	int m_ClientWidth;                                    // ÊÓ¿Ú¿í¶È
-	int m_ClientHeight;                                   // ÊÓ¿Ú¸ß¶È
+	int m_ClientWidth;                                    // è§†å£å®½åº¦
+	int m_ClientHeight;                                   // è§†å£é«˜åº¦
 
-	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// ¶¥µãÊäÈë²¼¾Ö
-	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// ¶¥µã»º³åÇø
-	ComPtr<ID3D11VertexShader> m_pVertexShader;	// ¶¥µã×ÅÉ«Æ÷
-	ComPtr<ID3D11PixelShader> m_pPixelShader;	// ÏñËØ×ÅÉ«Æ÷
+	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// é¡¶ç‚¹è¾“å…¥å¸ƒå±€
+	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// é¡¶ç‚¹ç¼“å†²åŒº
+	ComPtr<ID3D11VertexShader> m_pVertexShader;	// é¡¶ç‚¹ç€è‰²å™¨
+	ComPtr<ID3D11PixelShader> m_pPixelShader;	// åƒç´ ç€è‰²å™¨
 
 
-	// ´´½¨³£Á¿»º³åÇø
+	// åˆ›å»ºå¸¸é‡ç¼“å†²åŒº
 	ComPtr<ID3D11Buffer> matrixBuffer;
 
-	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// Êó±ê×´Ì¬×·×ÙÆ÷
-	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// ¼üÅÌ×´Ì¬×·×ÙÆ÷
+	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// é¼ æ ‡çŠ¶æ€è¿½è¸ªå™¨
+	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// é”®ç›˜çŠ¶æ€è¿½è¸ªå™¨
 
 
 };

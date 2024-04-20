@@ -1,17 +1,18 @@
-#include "MainScene.h"
+ï»¿#include "MainScene.h"
+#include "UIButton.h"
 
 using namespace DirectX;
 
 const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
-	// Î»ÖÃ×Ö¶Î
+	// ä½ç½®å­—æ®µ
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// ÎÆÀí×ø±ê×Ö¶Î
+	// çº¹ç†åæ ‡å­—æ®µ
 	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// ÎÆÀíË÷Òı×Ö¶Î
+	// çº¹ç†ç´¢å¼•å­—æ®µ
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-// ¶¨Òå³£Á¿»º³åÇøµÄ½á¹¹
+// å®šä¹‰å¸¸é‡ç¼“å†²åŒºçš„ç»“æ„
 struct MatrixBufferType
 {
 	DirectX::XMMATRIX view;
@@ -21,25 +22,25 @@ struct MatrixBufferType
 struct MapVertexPosColor {
 	XMFLOAT3 position;
 	XMFLOAT2 texCoord;
-	float texIndex;    // ÎÆÀíË÷Òı£¬×÷Îª¸¡µãÊı´æ´¢
+	float texIndex;    // çº¹ç†ç´¢å¼•ï¼Œä½œä¸ºæµ®ç‚¹æ•°å­˜å‚¨
 };
 
 std::vector<MapVertexPosColor> GenerateVertices(int n) {
 	std::vector<MapVertexPosColor> vertices;
 
-	vertices.reserve(6); // Ã¿¸ö¸ñ×ÓÁ½¸öÈı½ÇĞÎ£¬Ã¿¸öÈı½ÇĞÎ3¸ö¶¥µã
+	vertices.reserve(6); // æ¯ä¸ªæ ¼å­ä¸¤ä¸ªä¸‰è§’å½¢ï¼Œæ¯ä¸ªä¸‰è§’å½¢3ä¸ªé¡¶ç‚¹
 
 	float x = 0.0f;
 	float y = 0.0f;
 	float deltaX = 192.0f;
 	float deltaY = 108.0f;
 
-	// µÚÒ»¸öÈı½ÇĞÎ
+	// ç¬¬ä¸€ä¸ªä¸‰è§’å½¢
 	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
 	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
 	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
 
-	// µÚ¶ş¸öÈı½ÇĞÎ
+	// ç¬¬äºŒä¸ªä¸‰è§’å½¢
 	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
 	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
 	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
@@ -47,33 +48,23 @@ std::vector<MapVertexPosColor> GenerateVertices(int n) {
 	return vertices;
 }
 
-std::vector<MapVertexPosColor> GenerateButtonVertices(int n) {
-	std::vector<MapVertexPosColor> vertices;
-
-	vertices.reserve(6); // Ã¿¸ö¸ñ×ÓÁ½¸öÈı½ÇĞÎ£¬Ã¿¸öÈı½ÇĞÎ3¸ö¶¥µã
-
-	float x = 10.0f;
-	float y = 30.0f;
-	float deltaX = 20.0f;
-	float deltaY = 4.0f;
-
-	// µÚÒ»¸öÈı½ÇĞÎ
-	vertices.push_back({ XMFLOAT3(x, y, -0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-
-	// µÚ¶ş¸öÈı½ÇĞÎ
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), -0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
 
 
-	return vertices;
+MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
+{
+	auto button = std::make_shared<UIButton>();
+	button->setSize(10.0f, 30.0f, 20.0f, 4.0f);
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(10.0f, 20.0f, 20.0f, 4.0f);
+	AddUIComponent(button);
 }
-
 
 bool MainScene::Init()
 {
+
+
 	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
 	if (!InitEffect())
@@ -82,7 +73,20 @@ bool MainScene::Init()
 	if (!InitResource())
 		return false;
 
-	return false;
+	for (auto& component : uiComponents) {
+		component->setd3dResource(
+			*m_pd3dDevice.GetAddressOf(),
+			*m_pd3dImmediateContext.GetAddressOf(),
+			*m_pSwapChain.GetAddressOf(),
+			m_hMainWnd,
+			*m_pRenderTargetView.GetAddressOf(),
+			*m_pDepthStencilView.GetAddressOf()
+		);
+		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+		component->Init();
+	}
+
+	return true;
 }
 
 void MainScene::OnResize()
@@ -91,7 +95,7 @@ void MainScene::OnResize()
 
 void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
 {
-	// ¸üĞÂÊó±êÊÂ¼ş£¬»ñÈ¡Ïà¶ÔÆ«ÒÆÁ¿
+	// æ›´æ–°é¼ æ ‡äº‹ä»¶ï¼Œè·å–ç›¸å¯¹åç§»é‡
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
 	m_MouseTracker.Update(mouseState);
@@ -99,18 +103,18 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
-	// »ñÈ¡×ÓÀà
+	// è·å–å­ç±»
 	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 	auto camPos = cam1st->GetPosition();
-	float factor = 1.0f / sqrt(abs(camPos.z) + 2.0f); //¿ØÖÆÊó±êÍÏÒ·ËÙ¶È
+	float factor = 1.0f / sqrt(abs(camPos.z) + 2.0f); //æ§åˆ¶é¼ æ ‡æ‹–æ›³é€Ÿåº¦
 
 	if (m_CameraMode == CameraMode::Free)
 	{
 		// ******************
-		// ×ÔÓÉÉãÏñ»úµÄ²Ù×÷
+		// è‡ªç”±æ‘„åƒæœºçš„æ“ä½œ
 		//
 
-		// ·½ÏòÒÆ¶¯
+		// æ–¹å‘ç§»åŠ¨
 		if (keyState.IsKeyDown(Keyboard::W))
 		{
 			cam1st->MoveY(dt * 6.0f);
@@ -127,7 +131,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		{
 			cam1st->MoveX(dt * 6.0f);
 		}
-		// ÔÚÊó±êÃ»½øÈë´°¿ÚÇ°ÈÔÎªABSOLUTEÄ£Ê½
+		// åœ¨é¼ æ ‡æ²¡è¿›å…¥çª—å£å‰ä»ä¸ºABSOLUTEæ¨¡å¼
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
 			if(80<mouseState.x && 220 > mouseState.x && 680 < mouseState.y && 715 > mouseState.y)
@@ -147,8 +151,12 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 	}
 
+	for (auto& component : uiComponents) {
+		component->UpdateUI(dt,mouse, keyboard,switchScene);
+	}
+
 	// ******************
-	// ¸üĞÂÉãÏñ»ú
+	// æ›´æ–°æ‘„åƒæœº
 	//
 
 	XMFLOAT3 adjustedPos;
@@ -158,7 +166,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 
 
-	// ÍË³ö³ÌĞò£¬ÕâÀïÓ¦Ïò´°¿Ú·¢ËÍÏú»ÙĞÅÏ¢
+	// é€€å‡ºç¨‹åºï¼Œè¿™é‡Œåº”å‘çª—å£å‘é€é”€æ¯ä¿¡æ¯
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
 		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
 }
@@ -174,42 +182,40 @@ void MainScene::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	// ¼ÙÉè camera ÊÇµ±Ç°³¡¾°ÖĞµÄÉãÓ°»ú¶ÔÏó
+	// å‡è®¾ camera æ˜¯å½“å‰åœºæ™¯ä¸­çš„æ‘„å½±æœºå¯¹è±¡
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
 
-	// Ó³Éä³£Á¿»º³åÇø
+	// æ˜ å°„å¸¸é‡ç¼“å†²åŒº
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (SUCCEEDED(hr))
 	{
 		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
-		dataPtr->view = XMMatrixTranspose(viewMatrix); // ×ªÖÃ¾ØÕóÒÔÆ¥ÅäHLSLµÄÆÚÍû
+		dataPtr->view = XMMatrixTranspose(viewMatrix); // è½¬ç½®çŸ©é˜µä»¥åŒ¹é…HLSLçš„æœŸæœ›
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
 
-		// È¡ÏûÓ³Éä³£Á¿»º³åÇø
+		// å–æ¶ˆæ˜ å°„å¸¸é‡ç¼“å†²åŒº
 		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
-		// ½«³£Á¿»º³åÇø°ó¶¨µ½¶¥µã×ÅÉ«Æ÷
+		// å°†å¸¸é‡ç¼“å†²åŒºç»‘å®šåˆ°é¡¶ç‚¹ç€è‰²å™¨
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
-	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //°ó¶¨ÎÆÀí
-	// ÊäÈë×°Åä½×¶ÎµÄ¶¥µã»º³åÇøÉèÖÃ
-	UINT stride = sizeof(VertexPosColor);	// ¿çÔ½×Ö½ÚÊı
-	UINT offset = 0;						// ÆğÊ¼Æ«ÒÆÁ¿
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //ç»‘å®šçº¹ç†
+	// è¾“å…¥è£…é…é˜¶æ®µçš„é¡¶ç‚¹ç¼“å†²åŒºè®¾ç½®
+	UINT stride = sizeof(VertexPosColor);	// è·¨è¶Šå­—èŠ‚æ•°
+	UINT offset = 0;						// èµ·å§‹åç§»é‡
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 	m_pd3dImmediateContext->Draw(6, 0);
 
-	//°´Å¥»æÖÆ
 
-	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //°ó¶¨ÎÆÀí
 
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, button_m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-
-	m_pd3dImmediateContext->Draw(6, 0);
+	for (auto& component : uiComponents) {
+		component->DrawUI();
+	}
 
 
 	HR(m_pSwapChain->Present(1, 0));
@@ -235,10 +241,10 @@ bool MainScene::InitResource()
 
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;  // Ê¹ÓÃµã²ÉÑù
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;   // ½ûÓÃU·½ÏòÉÏµÄÑ­»·
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;   // ½ûÓÃV·½ÏòÉÏµÄÑ­»·
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;   // ½ûÓÃW·½ÏòÉÏµÄÑ­»·£¬¶Ô3DÎÆÀíÓĞĞ§
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;  // ä½¿ç”¨ç‚¹é‡‡æ ·
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;   // ç¦ç”¨Uæ–¹å‘ä¸Šçš„å¾ªç¯
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;   // ç¦ç”¨Væ–¹å‘ä¸Šçš„å¾ªç¯
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;   // ç¦ç”¨Wæ–¹å‘ä¸Šçš„å¾ªç¯ï¼Œå¯¹3Dçº¹ç†æœ‰æ•ˆ
 	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
@@ -247,10 +253,10 @@ bool MainScene::InitResource()
 	HRESULT hr = m_pd3dDevice->CreateSamplerState(&sampDesc, pSamplerState.GetAddressOf());
 	if (FAILED(hr))
 	{
-		// ´¦Àí´íÎó
+		// å¤„ç†é”™è¯¯
 	}
 
-	// °ó¶¨²ÉÑùÆ÷×´Ì¬µ½ÏñËØ×ÅÉ«Æ÷
+	// ç»‘å®šé‡‡æ ·å™¨çŠ¶æ€åˆ°åƒç´ ç€è‰²å™¨
 	m_pd3dImmediateContext->PSSetSamplers(0, 1, pSamplerState.GetAddressOf());
 
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
@@ -259,13 +265,9 @@ bool MainScene::InitResource()
 		"demoTex\\MainScene\\background.dds"
 	};
 
-	std::vector<std::string> textureButtonFileNames = {
-		"demoTex\\MainScene\\button1.dds"
-	};
+
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
-	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, button_textureArraySRV);
-
 
 
 	D3D11_BUFFER_DESC matrixBufferDesc;
@@ -276,67 +278,63 @@ bool MainScene::InitResource()
 	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
-	// Ê¹ÓÃÉè±¸´´½¨»º³åÇø
+	// ä½¿ç”¨è®¾å¤‡åˆ›å»ºç¼“å†²åŒº
 	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
 
-	// ¸üĞÂ³£Á¿»º³åÇø
+	// æ›´æ–°å¸¸é‡ç¼“å†²åŒº
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
 	hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	// È·±£¼ì²éhrµÄÖµ...
+	// ç¡®ä¿æ£€æŸ¥hrçš„å€¼...
 
-	// »ñÈ¡×ÓÀà
+	// è·å–å­ç±»
 	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 
-	// Ó³Éä³£Á¿»º³åÇø£¬È·±£³É¹¦ºó...
+	// æ˜ å°„å¸¸é‡ç¼“å†²åŒºï¼Œç¡®ä¿æˆåŠŸå...
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // È·±£¾ØÕóÊÇÁĞÖ÷ĞòÒÔÊÊÅäHLSLÄ¬ÈÏ
+	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // ç¡®ä¿çŸ©é˜µæ˜¯åˆ—ä¸»åºä»¥é€‚é…HLSLé»˜è®¤
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 
 
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
-	// ÉèÖÃ¶¥µã×ÅÉ«Æ÷ÖĞµÄ³£Á¿»º³åÇø
+	// è®¾ç½®é¡¶ç‚¹ç€è‰²å™¨ä¸­çš„å¸¸é‡ç¼“å†²åŒº
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
 
 
 
 	std::vector<MapVertexPosColor> vertices = GenerateVertices(4);
-	// ÉèÖÃ¶¥µã»º³åÇøÃèÊö
+	// è®¾ç½®é¡¶ç‚¹ç¼“å†²åŒºæè¿°
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(VertexPosColor) * vertices.size(); // ×¢ÒâÕâÀïµÄ±ä»¯
+	vbd.ByteWidth = sizeof(VertexPosColor) * vertices.size(); // æ³¨æ„è¿™é‡Œçš„å˜åŒ–
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
-	// ĞÂ½¨¶¥µã»º³åÇø
+	// æ–°å»ºé¡¶ç‚¹ç¼“å†²åŒº
 	D3D11_SUBRESOURCE_DATA InitData;
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
 
-	std::vector<MapVertexPosColor> button_vertices = GenerateButtonVertices(4);
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = button_vertices.data();
-	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, button_m_pVertexBuffer.GetAddressOf()));
 
 	// ******************
-	// ¸øäÖÈ¾¹ÜÏß¸÷¸ö½×¶Î°ó¶¨ºÃËùĞè×ÊÔ´
+	// ç»™æ¸²æŸ“ç®¡çº¿å„ä¸ªé˜¶æ®µç»‘å®šå¥½æ‰€éœ€èµ„æº
 	//
 
 
-	// ÉèÖÃÍ¼ÔªÀàĞÍ£¬Éè¶¨ÊäÈë²¼¾Ö
+	// è®¾ç½®å›¾å…ƒç±»å‹ï¼Œè®¾å®šè¾“å…¥å¸ƒå±€
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
-	// ½«×ÅÉ«Æ÷°ó¶¨µ½äÖÈ¾¹ÜÏß
+	// å°†ç€è‰²å™¨ç»‘å®šåˆ°æ¸²æŸ“ç®¡çº¿
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 
 	// ******************
-	// ÉèÖÃµ÷ÊÔ¶ÔÏóÃû
+	// è®¾ç½®è°ƒè¯•å¯¹è±¡å
 	//
 	D3D11SetDebugObjectName(m_pVertexLayout.Get(), "VertexPosColorLayout");
 	D3D11SetDebugObjectName(m_pVertexBuffer.Get(), "VertexBuffer");
@@ -349,14 +347,14 @@ bool MainScene::InitEffect()
 {
 	ComPtr<ID3DBlob> blob;
 
-	// ´´½¨¶¥µã×ÅÉ«Æ÷
+	// åˆ›å»ºé¡¶ç‚¹ç€è‰²å™¨
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
-	// ´´½¨²¢°ó¶¨¶¥µã²¼¾Ö
+	// åˆ›å»ºå¹¶ç»‘å®šé¡¶ç‚¹å¸ƒå±€
 	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
 		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
 
-	// ´´½¨ÏñËØ×ÅÉ«Æ÷
+	// åˆ›å»ºåƒç´ ç€è‰²å™¨
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 

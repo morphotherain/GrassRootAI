@@ -26,9 +26,9 @@ void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
 	currentScene = std::move(newScene);
 	if (currentScene) {
 		currentScene->setd3dResource(
-			*m_pd3dDevice.GetAddressOf(), 
-			*m_pd3dImmediateContext.GetAddressOf(), 
-			*m_pSwapChain.GetAddressOf(), 
+			*m_pd3dDevice1.GetAddressOf(), 
+			*m_pd3dImmediateContext1.GetAddressOf(), 
+			*m_pSwapChain1.GetAddressOf(), 
 			MainWnd(),
 			*m_pRenderTargetView.GetAddressOf(),
 			*m_pDepthStencilView.GetAddressOf()

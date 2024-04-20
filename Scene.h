@@ -7,6 +7,8 @@
 #include "core.h"
 #include "ddsLoader.h"
 
+class UIBase;
+
 class Scene
 {
 public:
@@ -19,6 +21,12 @@ public:
 	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard ,int& switchScene) = 0;
 	virtual void DrawScene() = 0;
 	virtual void cleanup() = 0;
+	virtual void AddUIComponent(std::shared_ptr<UIBase> component) {
+		uiComponents.push_back(component);
+	}
+	virtual void RemoveUIComponent(std::shared_ptr<UIBase> component) {
+		// 从uiComponents中移除指定的UI组件
+	}
 
 	void setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, IDXGISwapChain* pSwapChain, HWND hMainWnd, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* m_pDepthStencilView);
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
@@ -60,6 +68,9 @@ protected:
 
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
+
+
+	std::vector<std::shared_ptr<UIBase>> uiComponents; // UI组件列表
 
 };
 

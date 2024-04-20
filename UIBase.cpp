@@ -1,4 +1,4 @@
-#include "UIBase.h"
+﻿#include "UIBase.h"
 
 UIBase::UIBase(HINSTANCE _hInstance) :
     hInstance(_hInstance),
