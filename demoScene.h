@@ -4,7 +4,7 @@ class demoScene : public Scene
 {
 public :
 	demoScene() = default;
-	demoScene(HINSTANCE _hInstance) :Scene(_hInstance) {}
+	demoScene(HINSTANCE _hInstance);
 	~demoScene() = default;
 
 	struct VertexPosColor

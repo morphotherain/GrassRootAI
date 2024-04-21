@@ -53,11 +53,23 @@ std::vector<MapVertexPosColor> GenerateVertices(int n) {
 MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
 {
 	auto button = std::make_shared<UIButton>();
+	button->setSize(10.0f, 40.0f, 20.0f, 4.0f);
+	button->setTex("demoTex\\MainScene\\button1.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
 	button->setSize(10.0f, 30.0f, 20.0f, 4.0f);
+	button->setTex("demoTex\\MainScene\\button2.dds");
 	AddUIComponent(button);
 
 	button = std::make_shared<UIButton>();
 	button->setSize(10.0f, 20.0f, 20.0f, 4.0f);
+	button->setTex("demoTex\\MainScene\\button3.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(10.0f, 10.0f, 20.0f, 4.0f);
+	button->setTex("demoTex\\MainScene\\button4.dds");
 	AddUIComponent(button);
 
 }

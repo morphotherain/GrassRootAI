@@ -27,6 +27,7 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
+	void setTex(std::string _Tex) { TexPath = _Tex; };
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
@@ -38,5 +39,6 @@ private:
 	float y = 30.0f;
 	float deltaX = 20.0f;
 	float deltaY = 4.0f;
+	std::string TexPath;
 };
 

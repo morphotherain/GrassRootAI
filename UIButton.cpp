@@ -11,12 +11,7 @@ const D3D11_INPUT_ELEMENT_DESC UIButton::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-// 定义常量缓冲区的结构
-struct MatrixBufferType
-{
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;
-};
+
 
 struct MapVertexPosColor {
 	XMFLOAT3 position;
@@ -116,42 +111,10 @@ bool UIButton::InitResource()
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
 
 	std::vector<std::string> textureButtonFileNames = {
-		"demoTex\\MainScene\\button1.dds"
+		TexPath
 	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, button_textureArraySRV);
-
-
-	D3D11_BUFFER_DESC matrixBufferDesc;
-	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
-	// 使用设备创建缓冲区
-	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
-
-	// 更新常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
-	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	// 确保检查hr的值...
-
-	// 获取子类
-	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
-
-	// 映射常量缓冲区，确保成功后...
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
-	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
-
-
-	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
-
-	// 设置顶点着色器中的常量缓冲区
-	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
 	std::vector<MapVertexPosColor> button_vertices = GenerateButtonVertices(x, y, deltaX, deltaY);
 	// 设置顶点缓冲区描述

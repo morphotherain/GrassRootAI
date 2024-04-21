@@ -6,41 +6,40 @@
 #include "Camera.h"
 #include "core.h"
 #include "ddsLoader.h"
+#include "Component.h"
 
-class UIBase;
-class GameObject;
+enum RenderType {Player, Map, Entity};
 
-class Scene
-{
+class RenderComponent : public Component {
 public:
-	Scene() = default;
-	Scene(HINSTANCE hInstance);
-	~Scene() = default;
+	struct VertexPosColor
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 TexCoor;
+		float index;
+		static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
+	};
+public:
+	RenderComponent() = default;
+	RenderComponent(HINSTANCE hInstance);
+	~RenderComponent() = default;
 
-	virtual bool Init() = 0;
-	virtual void OnResize() = 0;
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard ,int& switchScene) = 0;
-	virtual void DrawScene() = 0;
-	virtual void cleanup() = 0;
-	virtual void AddUIComponent(std::shared_ptr<UIBase> component) {
-		uiComponents.push_back(component);
-	}
-	virtual void RemoveUIComponent(std::shared_ptr<UIBase> component) {
-		// 从uiComponents中移除指定的UI组件
-	}
-
-	virtual void AddGameObject(std::shared_ptr<GameObject> object) {
-		GameObjects.push_back(object);
-	}
-	virtual void RemoveGameObject(std::shared_ptr<GameObject> object) {
-		// 从GameObjects中移除指定的object
-	}
+	bool Init();
+	void OnResize();
+	void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard);
+	void Draw();
+	void cleanup();
 
 	void setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, IDXGISwapChain* pSwapChain, HWND hMainWnd, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* m_pDepthStencilView);
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
 
-	enum class CameraMode { FirstPerson, ThirdPerson, Free }; 
-	float AspectRatio()const{	return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
+	
+	enum class CameraMode { FirstPerson, ThirdPerson, Free };
+	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
+	void setpos(const float _x, const float _y, const float _z) { posX = _x, posY = _y, posZ = _z; }
+
+	bool InitResource();
+	bool InitEffect();
 
 protected:
 
@@ -73,14 +72,17 @@ protected:
 
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
+	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 
+	float posX;
+	float posY;
+	float posZ;
 
-	std::vector<std::shared_ptr<UIBase>> uiComponents; // UI组件列表
+public:
+	RenderType layer = RenderType::Player;
 
-	std::vector<std::shared_ptr<GameObject>> GameObjects; // UI组件列表
-
+    
 };
-

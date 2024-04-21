@@ -1,4 +1,7 @@
 ﻿#include "demoScene.h"
+#include "GamePlayer.h"
+#include "RenderComponent.h"
+#include "TransformComponent.h"
 
 using namespace DirectX;
 
@@ -25,7 +28,7 @@ struct MapVertexPosColor {
 };
 
 std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
-	float f_n = n / 2.0f;
+	float f_n = 2.0f;
 	std::vector<MapVertexPosColor> vertices;
 	std::vector < std::vector<float> >map = {
 		{2, 6, 6, 6},
@@ -62,6 +65,16 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 }
 
 
+demoScene::demoScene(HINSTANCE _hInstance) :Scene(_hInstance) 
+{
+	auto player = std::make_shared<GamePlayer>();
+	AddGameObject(player);
+
+	player->AddComponent(std::make_shared<RenderComponent>());
+	player->AddComponent(std::make_shared<TransformComponent>(0 ,0 ,0 ));
+
+}
+
 bool demoScene::Init()
 {
 	if (!InitEffect())
@@ -69,6 +82,24 @@ bool demoScene::Init()
 
 	if (!InitResource())
 		return false;
+
+	for (auto object : GameObjects)
+	{
+		auto transform = object->GetComponent<TransformComponent>();
+		auto render = object->GetComponent<RenderComponent>();
+		if (transform && render) {
+			render->setd3dResource(
+				*m_pd3dDevice.GetAddressOf(),
+				*m_pd3dImmediateContext.GetAddressOf(),
+				*m_pSwapChain.GetAddressOf(),
+				m_hMainWnd,
+				*m_pRenderTargetView.GetAddressOf(),
+				*m_pDepthStencilView.GetAddressOf()
+			);
+			render->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+			render->Init();
+		}
+	}
 
 	return false;
 }
@@ -153,6 +184,13 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
 }
 
+void drawObj(std::shared_ptr<GameObject> obj) {
+	auto transform = obj->GetComponent<TransformComponent>();
+	auto render = obj->GetComponent<RenderComponent>();
+	render->setpos(transform->position.x, transform->position.y, transform->position.z);
+	render->Draw();
+};
+
 void demoScene::DrawScene()
 {
 	assert(m_pd3dImmediateContext);
@@ -184,12 +222,54 @@ void demoScene::DrawScene()
 	}
 
 
+	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
+	UINT offset = 0;						// 起始偏移量
+
+
+	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
+
+	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+
 	// 对于nxn棋盘格
 	int n = 4;
 	int verticesPerSquare = 2 * 3; // 每个格子有两个三角形，每个三角形3个顶点
 	int totalVertices = n * n * verticesPerSquare;
 	// 绘制三角形
 	m_pd3dImmediateContext->Draw(totalVertices, 0);
+
+	std::vector<std::shared_ptr<GameObject>> backgroundObjects; // 用于存储背景对象
+	std::vector<std::shared_ptr<GameObject>> entityObjects;     // 用于存储实体对象
+	std::vector<std::shared_ptr<GameObject>> characterObjects;  // 用于存储角色对象
+
+	for (auto& object : GameObjects) {
+
+		auto render = object->GetComponent<RenderComponent>(); 
+		
+		if (render->layer == RenderType::Map) {
+			backgroundObjects.push_back(object);
+		}
+		else if (render->layer == RenderType::Entity) {
+			entityObjects.push_back(object);
+		}
+		else if (render->layer == RenderType::Player) {
+			characterObjects.push_back(object);
+		}
+	}
+	
+	// 先绘制背景
+	for (auto object : backgroundObjects) {
+		drawObj(object);
+	}
+	// 再绘制实体
+	for (auto object : entityObjects) {
+		drawObj(object);
+	}
+	// 最后绘制角色
+	for (auto object : characterObjects) {
+		drawObj(object);
+
+	}
+
 	HR(m_pSwapChain->Present(1, 0));
 }
 
