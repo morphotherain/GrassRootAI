@@ -70,6 +70,8 @@ protected:
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	// 顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器
 
+	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
+
 
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;

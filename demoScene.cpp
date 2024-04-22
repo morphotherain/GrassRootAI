@@ -31,10 +31,22 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 	float f_n = 2.0f;
 	std::vector<MapVertexPosColor> vertices;
 	std::vector < std::vector<float> >map = {
-		{2, 6, 6, 6},
-		{0, 3, 1, 1},
-		{0, 6, 6, 6},
-		{5, 6, 6, 6}
+		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
+		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
+		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
+		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
+		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
+		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
+		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
+		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
+		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
+		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
+		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
+		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
+		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
+		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
+		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
+		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
 	};
 	vertices.reserve(n * n * 6); // 每个格子两个三角形，每个三角形3个顶点
 
@@ -196,6 +208,10 @@ void demoScene::DrawScene()
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
 
+	//应用混合状态
+	float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	m_pd3dImmediateContext->OMSetBlendState(m_pBlendState.Get(), blendFactor, 0xffffffff);
+
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA = (255,255,255,255)
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
@@ -231,7 +247,7 @@ void demoScene::DrawScene()
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 	// 对于nxn棋盘格
-	int n = 4;
+	int n = 16;
 	int verticesPerSquare = 2 * 3; // 每个格子有两个三角形，每个三角形3个顶点
 	int totalVertices = n * n * verticesPerSquare;
 	// 绘制三角形
@@ -361,7 +377,7 @@ bool demoScene::InitResource()
 
 
 
-	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices1(4);
+	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices1(16);
 	// 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
@@ -374,6 +390,28 @@ bool demoScene::InitResource()
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
+
+
+	D3D11_BLEND_DESC blendDesc = { 0 };
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	// 创建混合状态对象
+	hr = m_pd3dDevice->CreateBlendState(&blendDesc, m_pBlendState.GetAddressOf());
+	if (SUCCEEDED(hr)) {
+		
+	}
+	else {
+		// 错误处理
+	}
 
 
 	// ******************

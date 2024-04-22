@@ -19,7 +19,7 @@ struct MapVertexPosColor {
 
 
 std::vector<MapVertexPosColor> GenerateRegion(int i,int j) {
-	float f_n = 4.0f;
+	float f_n = 2.0f;
 	std::vector<MapVertexPosColor> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
