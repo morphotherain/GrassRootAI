@@ -82,7 +82,7 @@ protected:
 
 	std::vector<std::shared_ptr<UIBase>> uiComponents; // UI组件列表
 
-	std::vector<std::shared_ptr<GameObject>> GameObjects; // UI组件列表
+	std::vector<std::shared_ptr<GameObject>> GameObjects; // obj列表
 
 };
 

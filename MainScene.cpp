@@ -15,6 +15,7 @@ const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
 // 定义常量缓冲区的结构
 struct MatrixBufferType
 {
+	DirectX::XMMATRIX model;
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX projection;
 };
@@ -204,6 +205,7 @@ void MainScene::DrawScene()
 	if (SUCCEEDED(hr))
 	{
 		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
 
@@ -304,6 +306,7 @@ bool MainScene::InitResource()
 
 	// 映射常量缓冲区，确保成功后...
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 

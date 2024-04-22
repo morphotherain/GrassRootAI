@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "GamePlayer.h"
 class demoScene : public Scene
 {
 public :
@@ -26,6 +27,8 @@ public :
 
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
+
+	std::shared_ptr<GamePlayer> playerObj; // obj¡–±Ì
 
 };
 

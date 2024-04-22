@@ -14,12 +14,6 @@ const D3D11_INPUT_ELEMENT_DESC demoScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-// 定义常量缓冲区的结构
-struct MatrixBufferType
-{
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;
-};
 
 struct MapVertexPosColor {
 	XMFLOAT3 position;
@@ -80,6 +74,7 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 demoScene::demoScene(HINSTANCE _hInstance) :Scene(_hInstance) 
 {
 	auto player = std::make_shared<GamePlayer>();
+	playerObj = player;
 	AddGameObject(player);
 
 	player->AddComponent(std::make_shared<RenderComponent>());
@@ -135,7 +130,7 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	auto camPos = cam1st->GetPosition();
 	float factor = 1.0f / sqrt(abs(camPos.z) + 2.0f); //控制鼠标拖曳速度
 
-	if (m_CameraMode == CameraMode::Free)
+	if (m_CameraMode == CameraMode::Free && false)
 	{
 		// ******************
 		// 自由摄像机的操作
@@ -179,6 +174,24 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 			cam1st->MoveZ(-1.0f);
 
 	}
+	auto tran = playerObj->GetComponent<TransformComponent>();
+	if (keyState.IsKeyDown(Keyboard::W))
+	{
+		tran->MoveY(0.02f);
+	}
+	if (keyState.IsKeyDown(Keyboard::S))
+	{
+		tran->MoveY(-0.02f);
+	}
+	if (keyState.IsKeyDown(Keyboard::A))
+	{
+		tran->MoveX(-0.02f);
+	}
+	if (keyState.IsKeyDown(Keyboard::D))
+	{
+		tran->MoveX(0.02f);
+	}
+
 
 	// ******************
 	// 更新摄像机
@@ -199,7 +212,7 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 void drawObj(std::shared_ptr<GameObject> obj) {
 	auto transform = obj->GetComponent<TransformComponent>();
 	auto render = obj->GetComponent<RenderComponent>();
-	render->setpos(transform->position.x, transform->position.y, transform->position.z);
+	render->setModelMartix(transform->m_Tran.GetLocalToWorldMatrixXM());
 	render->Draw();
 };
 
@@ -222,13 +235,16 @@ void demoScene::DrawScene()
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
 
 	// 映射常量缓冲区
+
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (SUCCEEDED(hr))
 	{
 		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
+
 
 		// 取消映射常量缓冲区
 		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
@@ -303,7 +319,7 @@ bool demoScene::InitResource()
 	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
+	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -5.0f));
 
 
 	D3D11_SAMPLER_DESC sampDesc;
@@ -365,6 +381,7 @@ bool demoScene::InitResource()
 
 	// 映射常量缓冲区，确保成功后...
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 

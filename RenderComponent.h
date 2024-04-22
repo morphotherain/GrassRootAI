@@ -6,9 +6,18 @@
 #include "Camera.h"
 #include "core.h"
 #include "ddsLoader.h"
+#include "Transform.h"
 #include "Component.h"
 
 enum RenderType {Player, Map, Entity};
+
+// 定义常量缓冲区的结构
+struct MatrixBufferType
+{
+	DirectX::XMMATRIX model;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+};
 
 class RenderComponent : public Component {
 public:
@@ -37,6 +46,7 @@ public:
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 	void setpos(const float _x, const float _y, const float _z) { posX = _x, posY = _y, posZ = _z; }
+	void setModelMartix(DirectX::XMMATRIX _m) { modelMartix = _m; }
 
 	bool InitResource();
 	bool InitEffect();
@@ -80,6 +90,8 @@ protected:
 	float posX;
 	float posY;
 	float posZ;
+
+	DirectX::XMMATRIX modelMartix;
 
 public:
 	RenderType layer = RenderType::Player;

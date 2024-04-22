@@ -113,6 +113,30 @@ void RenderComponent::Draw()
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
 
+	// 假设 camera 是当前场景中的摄影机对象
+	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
+
+	// 映射常量缓冲区
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (SUCCEEDED(hr))
+	{
+		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+		dataPtr->model = XMMatrixTranspose(modelMartix);
+		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+		dataPtr->projection = XMMatrixTranspose(projMatrix);
+
+
+		// 取消映射常量缓冲区
+		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
+
+		// 将常量缓冲区绑定到顶点着色器
+		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
+	}
+
+
 	// 输入装配阶段的顶点缓冲区设置
 	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
 	UINT offset = 0;						// 起始偏移量
@@ -143,6 +167,40 @@ bool RenderComponent::InitResource()
 	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, textureArraySRV);
+
+
+	D3D11_BUFFER_DESC matrixBufferDesc;
+	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+	// 使用设备创建缓冲区
+	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
+
+	// 更新常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	MatrixBufferType* dataPtr;
+	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	// 确保检查hr的值...
+
+	// 获取子类
+	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
+
+	// 映射常量缓冲区，确保成功后...
+	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
+	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
+
+
+	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
+
+	// 设置顶点着色器中的常量缓冲区
+	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
+
 
 	std::vector<MapVertexPosColor> button_vertices = GenerateRegion(posX,posY);
 	// 设置顶点缓冲区描述
