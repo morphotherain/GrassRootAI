@@ -7,7 +7,7 @@
 
 GameTimer::GameTimer()
 : m_SecondsPerCount(0.0), m_DeltaTime(-1.0), m_BaseTime(0), m_StopTime(0),
-  m_PausedTime(0), m_PrevTime(0), m_CurrTime(0), m_Stopped(false)
+  m_PausedTime(0), m_PrevTime(0), m_CurrTime(0), m_CurrTick(0), m_Stopped(false)
 {
 	__int64 countsPerSec;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
@@ -51,6 +51,11 @@ float GameTimer::TotalTime()const
 float GameTimer::DeltaTime()const
 {
 	return (float)m_DeltaTime;
+}
+
+int GameTimer::TotalTick() const
+{
+	return m_CurrTick;
 }
 
 void GameTimer::Reset()
@@ -121,5 +126,7 @@ void GameTimer::Tick()
 	{
 		m_DeltaTime = 0.0;
 	}
+
+	m_CurrTick++;
 }
 

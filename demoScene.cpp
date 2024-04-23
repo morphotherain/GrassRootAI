@@ -22,25 +22,25 @@ struct MapVertexPosColor {
 };
 
 std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
-	float f_n = 2.0f;
+	float f_n = 1.0f;
 	std::vector<MapVertexPosColor> vertices;
 	std::vector < std::vector<float> >map = {
-		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
-		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
-		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
-		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
-		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
-		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
-		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
-		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
-		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
-		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
-		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
-		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
-		{2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, 2, 6, 6, 6, },
-		{0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, 0, 3, 1, 1, },
-		{0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, 0, 6, 6, 6, },
-		{5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, 5, 6, 6, 6, },
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, },
+		{2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, },
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{2, 0, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, },
+		{2, 2, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{1, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, },
+		{5, 6, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
+		{3, 4, 0, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, },
 	};
 	vertices.reserve(n * n * 6); // 每个格子两个三角形，每个三角形3个顶点
 
@@ -106,7 +106,7 @@ bool demoScene::Init()
 			render->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 			render->Init();
 		}
-	}
+	} 
 
 	return false;
 }
@@ -128,9 +128,11 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	// 获取子类
 	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 	auto camPos = cam1st->GetPosition();
+	auto tran = playerObj->GetComponent<TransformComponent>();
+
 	float factor = 1.0f / sqrt(abs(camPos.z) + 2.0f); //控制鼠标拖曳速度
 
-	if (m_CameraMode == CameraMode::Free && false)
+	if (m_CameraMode == CameraMode::Free)
 	{
 		// ******************
 		// 自由摄像机的操作
@@ -139,19 +141,19 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		// 方向移动
 		if (keyState.IsKeyDown(Keyboard::W))
 		{
-			cam1st->MoveY(dt * 6.0f);
+			tran->MoveY(0.02f);
 		}
 		if (keyState.IsKeyDown(Keyboard::S))
 		{
-			cam1st->MoveY(dt * -6.0f);
+			tran->MoveY(-0.02f);
 		}
 		if (keyState.IsKeyDown(Keyboard::A))
 		{
-			cam1st->MoveX(dt * -6.0f);
+			tran->MoveX(-0.02f);
 		}
 		if (keyState.IsKeyDown(Keyboard::D))
 		{
-			cam1st->MoveX(dt * 6.0f);
+			tran->MoveX(0.02f);
 		}
 		if (keyState.IsKeyDown(Keyboard::R))
 		{
@@ -174,35 +176,23 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 			cam1st->MoveZ(-1.0f);
 
 	}
-	auto tran = playerObj->GetComponent<TransformComponent>();
-	if (keyState.IsKeyDown(Keyboard::W))
-	{
-		tran->MoveY(0.02f);
-	}
-	if (keyState.IsKeyDown(Keyboard::S))
-	{
-		tran->MoveY(-0.02f);
-	}
-	if (keyState.IsKeyDown(Keyboard::A))
-	{
-		tran->MoveX(-0.02f);
-	}
-	if (keyState.IsKeyDown(Keyboard::D))
-	{
-		tran->MoveX(0.02f);
-	}
+
 
 
 	// ******************
 	// 更新摄像机
 	//
-
+	cam1st->SetPosition(DirectX::XMFLOAT3(tran->m_Tran.GetPosition().x, tran->m_Tran.GetPosition().y, cam1st->GetPosition().z));
 	XMFLOAT3 adjustedPos;
 	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
 		XMVectorSet(-499.0f, -499.0f, -10.0f, 0.0f), XMVectorSet(499.0f, 999.0f, -3.0f, 0.0f)));
 	cam1st->SetPosition(adjustedPos);
 
+	for (auto& object : GameObjects) {
 
+		auto render = object->GetComponent<RenderComponent>();
+		render->Update(dt,mouse,keyboard);
+	}
 
 	// 退出程序，这里应向窗口发送销毁信息
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
@@ -244,6 +234,7 @@ void demoScene::DrawScene()
 		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
+		dataPtr->TexIndex = 0;
 
 
 		// 取消映射常量缓冲区
@@ -319,7 +310,7 @@ bool demoScene::InitResource()
 	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -5.0f));
+	camera->SetPosition(XMFLOAT3(0.0f, 0.0f, -5.0f));
 
 
 	D3D11_SAMPLER_DESC sampDesc;
@@ -345,13 +336,13 @@ bool demoScene::InitResource()
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
 
 	std::vector<std::string> textureFileNames = {
-		"demoTex\\Line\\colLine.dds",
-		"demoTex\\Line\\rowLine.dds",
-		"demoTex\\Nodes\\downNode.dds",
-		"demoTex\\Nodes\\rightNode.dds",
-		"demoTex\\Nodes\\leftNode.dds",
-		"demoTex\\Nodes\\UpNode.dds",
-		"demoTex\\empty.dds",
+		"demoTex\\Map\\grass.dds",
+		"demoTex\\Map\\grass1.dds",
+		"demoTex\\Map\\grass2.dds",
+		"demoTex\\Map\\water.dds",
+		"demoTex\\Map\\water-grass.dds",
+		"demoTex\\Map\\water-grass1.dds",
+		"demoTex\\Map\\water-grass2.dds",
 	};
 
 
@@ -384,6 +375,7 @@ bool demoScene::InitResource()
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
+	dataPtr->TexIndex = 0;
 
 
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);

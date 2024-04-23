@@ -13,6 +13,8 @@ public:
 	float TotalTime()const;		// 总游戏时间
 	float DeltaTime()const;		// 帧间隔时间
 
+	int TotalTick()const;
+
 	void Reset();               // 在消息循环之前调用
 	void Start();               // 在取消暂停的时候调用
 	void Stop();                // 在暂停的时候调用
@@ -27,6 +29,8 @@ private:
 	__int64 m_StopTime;
 	__int64 m_PrevTime;
 	__int64 m_CurrTime;
+
+	int m_CurrTick;
 
 	bool m_Stopped;
 };

@@ -1,5 +1,6 @@
 ﻿#include "MainScene.h"
 #include "UIButton.h"
+#include "RenderComponent.h"
 
 using namespace DirectX;
 
@@ -12,13 +13,7 @@ const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-// 定义常量缓冲区的结构
-struct MatrixBufferType
-{
-	DirectX::XMMATRIX model;
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;
-};
+
 
 struct MapVertexPosColor {
 	XMFLOAT3 position;
@@ -177,7 +172,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f), XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f)));
 	cam1st->SetPosition(adjustedPos);
 
-
+	tick++;
 
 	// 退出程序，这里应向窗口发送销毁信息
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
@@ -208,6 +203,7 @@ void MainScene::DrawScene()
 		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
+		dataPtr->TexIndex = 0;
 
 		// 取消映射常量缓冲区
 		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
@@ -223,12 +219,12 @@ void MainScene::DrawScene()
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
-	m_pd3dImmediateContext->Draw(6, 0);
+	//m_pd3dImmediateContext->Draw(6, 0);
 
 
 
 	for (auto& component : uiComponents) {
-		component->DrawUI();
+		//component->DrawUI();
 	}
 
 
@@ -244,6 +240,8 @@ void MainScene::cleanup()
 
 bool MainScene::InitResource()
 {
+	tick = 0;
+
 	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
 	m_pCamera = camera;
 	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
@@ -309,6 +307,7 @@ bool MainScene::InitResource()
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
+	dataPtr->TexIndex = 0;
 
 
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);

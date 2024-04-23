@@ -8,6 +8,7 @@
 class GameObject {
 private:
     std::vector<std::shared_ptr<Component>> components;
+    unsigned int tick = 0;
 
 public:
     template<typename T>
@@ -40,6 +41,7 @@ public:
     }
 
     void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) {
+        tick++;
         for (auto& comp : components) {
             comp->Update(dt, mouse, keyboard);
         }

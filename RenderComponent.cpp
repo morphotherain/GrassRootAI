@@ -18,7 +18,7 @@ struct MapVertexPosColor {
 };
 
 
-std::vector<MapVertexPosColor> GenerateRegion(int i,int j) {
+std::vector<MapVertexPosColor> GenerateRegion() {
 	float f_n = 2.0f;
 	std::vector<MapVertexPosColor> vertices;
 
@@ -26,21 +26,21 @@ std::vector<MapVertexPosColor> GenerateRegion(int i,int j) {
 
 
 	// 左下角的点坐标
-	float x = j - 2;
-	float y = 1 - i; // 使得(0,0)在左上角
+	float x = -0.5f;
+	float y = -0.5f; // 使得(0,0)在左上角
 
 	float indexTex = 0;
 
 	// 添加两个三角形来填充这个格子
 	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(x / f_n, y / f_n, 0.0f),             XMFLOAT2(0.0f, 1.0f), indexTex });
-	vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
-	vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x, y + 1.0f, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x + 1.0f, y, 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
 
 	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + 1) / f_n, y / f_n, 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
-	vertices.push_back({ XMFLOAT3(x / f_n, (y + 1) / f_n, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
-	vertices.push_back({ XMFLOAT3((x + 1) / f_n, (y + 1) / f_n, 0.0f), XMFLOAT2(1.0f, 0.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x + 1.0f, y , 0.0f),       XMFLOAT2(1.0f, 1.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x, y + 1.0f, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
+	vertices.push_back({ XMFLOAT3(x + 1.0f, y + 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f), indexTex });
 
 
 	return vertices;
@@ -98,14 +98,17 @@ void RenderComponent::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
-
-	// 在鼠标没进入窗口前仍为ABSOLUTE模式
-	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+	if (keyState.IsKeyDown(Keyboard::A))
 	{
-
+		left = true;
 	}
+	if (keyState.IsKeyDown(Keyboard::D))
+	{
+		left = false;
+	}
+	
 
-
+	tick++;
 }
 
 void RenderComponent::Draw()
@@ -127,6 +130,7 @@ void RenderComponent::Draw()
 		dataPtr->model = XMMatrixTranspose(modelMartix);
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
+		dataPtr->TexIndex = left ? (((tick / 60) % 2)) : (((tick / 60) % 2) + 2);
 
 
 		// 取消映射常量缓冲区
@@ -163,7 +167,10 @@ bool RenderComponent::InitResource()
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
 
 	std::vector<std::string> textureButtonFileNames = {
-		"demoTex\\player.dds"
+		"demoTex\\player\\playerLeft1.dds",
+		"demoTex\\player\\playerLeft2.dds",
+		"demoTex\\player\\playerRight1.dds",
+		"demoTex\\player\\playerRight2.dds",
 	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, textureArraySRV);
@@ -194,6 +201,7 @@ bool RenderComponent::InitResource()
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(cam1st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
+	dataPtr->TexIndex = 0;
 
 
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
@@ -202,7 +210,7 @@ bool RenderComponent::InitResource()
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
 
-	std::vector<MapVertexPosColor> button_vertices = GenerateRegion(posX,posY);
+	std::vector<MapVertexPosColor> button_vertices = GenerateRegion();
 	// 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));

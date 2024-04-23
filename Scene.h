@@ -84,5 +84,6 @@ protected:
 
 	std::vector<std::shared_ptr<GameObject>> GameObjects; // obj列表
 
+	int tick;
 };
 
