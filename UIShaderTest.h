@@ -1,13 +1,12 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
-class UIButton : public UIBase
+class UIShaderTest : public UIBase
 {
 public:
-	UIButton() = default;
-	UIButton(HINSTANCE _hInstance) :UIBase(_hInstance) {}
-	~UIButton() = default;
+	UIShaderTest() = default;
+	UIShaderTest(HINSTANCE _hInstance) :UIBase(_hInstance) {}
+	~UIShaderTest() = default;
 
 	struct VertexPosColor
 	{
@@ -35,6 +34,11 @@ private:
 	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
 
+
+	// 创建常量缓冲区
+	ComPtr<ID3D11Buffer> m_pTimeConstantBuffer;
+
+
 	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
 	float x = 10.0f;
@@ -42,5 +46,7 @@ private:
 	float deltaX = 20.0f;
 	float deltaY = 4.0f;
 	std::string TexPath;
+
+	float currentTime = 0.0f;
 };
 

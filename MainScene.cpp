@@ -1,5 +1,6 @@
 ﻿#include "MainScene.h"
 #include "UIButton.h"
+#include "UIShaderTest.h"
 #include "RenderComponent.h"
 
 using namespace DirectX;
@@ -48,7 +49,7 @@ std::vector<MapVertexPosColor> GenerateVertices(int n) {
 
 MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
 {
-	auto button = std::make_shared<UIButton>();
+	/*auto button = std::make_shared<UIButton>();
 	button->setSize(10.0f, 40.0f, 20.0f, 4.0f);
 	button->setTex("demoTex\\MainScene\\button1.dds");
 	AddUIComponent(button);
@@ -66,6 +67,11 @@ MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
 	button = std::make_shared<UIButton>();
 	button->setSize(10.0f, 10.0f, 20.0f, 4.0f);
 	button->setTex("demoTex\\MainScene\\button4.dds");
+	AddUIComponent(button);*/
+
+	auto button = std::make_shared<UIShaderTest>();
+	button->setSize(50.0f, 4.0f, 100.0f, 100.0f);
+	button->setTex("demoTex\\MainScene\\button1.dds");
 	AddUIComponent(button);
 
 }
@@ -212,6 +218,9 @@ void MainScene::DrawScene()
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
+
+	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
+
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
 	// 输入装配阶段的顶点缓冲区设置
 	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
@@ -219,12 +228,11 @@ void MainScene::DrawScene()
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
-	//m_pd3dImmediateContext->Draw(6, 0);
-
+	m_pd3dImmediateContext->Draw(6, 0);
 
 
 	for (auto& component : uiComponents) {
-		//component->DrawUI();
+		component->DrawUI();
 	}
 
 
@@ -364,13 +372,19 @@ bool MainScene::InitEffect()
 	// 创建顶点着色器
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
+
+
 	// 创建并绑定顶点布局
 	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
 		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
 
+
+
 	// 创建像素着色器
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
+
+
 
 	return true;
 }

@@ -111,6 +111,9 @@
     <ClCompile Include="GamePlayer.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="UIShaderTest.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -182,12 +185,18 @@
     <ClInclude Include="GamePlayer.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="UIShaderTest.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\Triangle_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\test_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
   </ItemGroup>

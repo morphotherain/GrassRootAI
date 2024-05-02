@@ -7,6 +7,9 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\Lab\GrassRootAI\HLSL\test_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\Lab\GrassRootAI\HLSL\Triangle_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
