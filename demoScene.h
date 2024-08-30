@@ -3,7 +3,7 @@
 #include "GamePlayer.h"
 class demoScene : public Scene
 {
-public :
+public:
 	demoScene() = default;
 	demoScene(HINSTANCE _hInstance);
 	~demoScene() = default;
@@ -29,6 +29,4 @@ private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	std::shared_ptr<GamePlayer> playerObj; // obj¡–±Ì
-
 };
-

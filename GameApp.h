@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "demoScene.h"
+#include "DockScene.h"
 #include "MainScene.h"
 
 class GameApp : public D3DApp

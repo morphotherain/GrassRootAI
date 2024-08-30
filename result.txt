@@ -1,0 +1,35 @@
+typeID: 18
+typeName: Plagioclase
+typeName_fr: Plagioclase
+typeName_ja: プラジオクレイス
+typeName_ko: 플레지오클레이스
+typeName_ru: Plagioclase
+typeName_zh: 斜长岩
+typeDescription: Plagioclase is not amongst the most valuable ore types around, but it contains a large amount of <a href=showinfo:34>Tritanium</a> and is thus always in constant demand. It also yields some <a href=showinfo:36>Mexallon</a>.
+
+Available primarily in high security status star systems.
+typeDescription_fr: Le plagioclase n'est certainement pas le minerai brut le plus précieux, mais il contient une grande quantité de <a href=showinfo:34>tritanium</a>, et c'est pourquoi sa demande ne faiblit jamais. Il produit également du <a href=showinfo:36>mexallon</a>. Ce minerai est essentiellement disponible dans les systèmes stellaires de haute sécurité.
+typeDescription_ja: プラジオクレイスは、それほど高値で取り引きされる類の鉱石ではないが、<a href=showinfo:34>トリタニウム</a>の含有率が高いため、常に需要が絶えない。少量ながら<a href=showinfo:36>メクサロン</a>も採れる。
+
+主にハイセキュリティ星系で発見可能。
+typeDescription_ko: 플레지오클레이스는 다른 광석에 비해 가치가 상대적으로 낮지만 다량의 <a href=showinfo:34>트리타늄</a>을 함유하고 있어 수요가 많은 편에 속합니다. 트리타늄 외에도 평균적인 수준의 <a href=showinfo:36>멕살론</a>을 함유하고 있습니다. <br><br>하이 시큐리티 항성계에서 주로 채굴됩니다.
+typeDescription_ru: Плагиоклаз не отличается особой ценностью, однако он содержит большое количество <a href=showinfo:34>тритания</a> и потому пользуется постоянным спросом. Из этой руды также извлекают <a href=showinfo:36>мексаллон</a>. Встречается в основном в звёздных системах с высоким уровнем безопасности.
+typeDescription_zh: 斜长岩并不是最值钱的矿石，但它含有大量的<a href=showinfo:34>三钛合金</a>，因此总是有稳定的需求。它也含有一定量的<a href=showinfo:36>类银超金属</a>。
+
+
+
+主要分布于高安全等级星系。
+raceID: 0
+factionID: 0
+published: true
+marketGroupID: 516
+iconID: 230
+graphicID: 0
+groupID: 458
+metaLevel: 0
+metaGroupID: 0
+variationParentTypeID: 0
+replacements: NULL
+reqskills: {"3386": 1}
+requiredfor: NULL
+

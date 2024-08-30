@@ -13,28 +13,28 @@ const D3D11_INPUT_ELEMENT_DESC UIButton::VertexPosColor::inputLayout[3] = {
 
 
 
-struct MapVertexPosColor {
-	XMFLOAT3 position;
-	XMFLOAT2 texCoord;
-	float texIndex;    // 纹理索引，作为浮点数存储
-};
 
+std::vector<UIButton::MapVertexPosColor> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
+	_x = _x / 10.0f;
+	_y = 1080.0f - _y;
+	_y = _y / 10.0f;
+	_deltaX = _deltaX / 10.0f;
+	_deltaY = -_deltaY / 10.0f;
 
-std::vector<MapVertexPosColor> GenerateButtonVertices(float x, float y, float deltaX, float deltaY) {
 	std::vector<MapVertexPosColor> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
 
 
 	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(x, y, -0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
 
 	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), -0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
 
 
 	return vertices;
@@ -49,6 +49,8 @@ bool UIButton::Init()
 
 	if (!InitResource())
 		return false;
+
+	clickFlag = std::make_shared<bool>(false);
 
 	return false;
 }
@@ -73,8 +75,9 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
-		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
+		if (x < mouseState.x && (x + deltaX) > mouseState.x && (y + deltaY) > mouseState.y && y < mouseState.y)
 			switchScene = 2;
+			*clickFlag = true;
 	}
 	
 
@@ -93,7 +96,7 @@ void UIButton::DrawUI()
 
 
 
-	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
+	//m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //绑定纹理
@@ -141,8 +144,6 @@ bool UIButton::InitResource()
 
 bool UIButton::InitEffect()
 {	
-
-
 
 	return true;
 }

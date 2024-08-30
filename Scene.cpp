@@ -16,6 +16,14 @@ void Scene::setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dIm
     m_pDepthStencilView = pDepthStencilView;
 }
 
+void Scene::setd2dResource(ID2D1RenderTarget* pd2dRenderTarget, ID2D1SolidColorBrush* pColorBrush, IDWriteTextFormat* pTextFormat)
+{
+    m_pd2dRenderTarget = pd2dRenderTarget;
+    m_pColorBrush = pColorBrush;
+    m_pTextFormat = pTextFormat;
+
+}
+
 void Scene::setcameraResource(int ClientWidth, int ClientHeight, std::shared_ptr<Camera> pCamera)
 {
     m_ClientWidth = ClientWidth;

@@ -2,18 +2,18 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Lab\GrassRootAI\GrassRootAI.exe</FullPath>
+      <FullPath>D:\EVELab\GrassRootAI\GrassRootAI.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\Lab\GrassRootAI\HLSL\test_PS.cso</FullPath>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\test_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\Lab\GrassRootAI\HLSL\Triangle_PS.cso</FullPath>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\Lab\GrassRootAI\HLSL\Triangle_VS.cso</FullPath>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_VS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

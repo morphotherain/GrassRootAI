@@ -4,6 +4,8 @@
 #include <wrl/client.h>
 #include <string>
 #include <d3d11_1.h>
+#include <d2d1.h>
+#include <dwrite.h>
 #include <DirectXMath.h>
 #include "Mouse.h"
 #include "Keyboard.h"
@@ -12,6 +14,8 @@
 
 // 添加所有要引用的库
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -39,6 +43,8 @@ public:
 protected:
 	bool InitMainWindow();       // 窗口初始化
 	bool InitDirect3D();         // Direct3D初始化
+	bool InitDirect2D();         // Direct2D初始化
+	bool InitDWrite();         // Direct2D初始化
 
 	void CalculateFrameStats();  // 计算每秒帧数并在窗口显示
 
@@ -67,6 +73,16 @@ protected:
 	ComPtr<ID3D11Device1> m_pd3dDevice1;                  // D3D11.1设备
 	ComPtr<ID3D11DeviceContext1> m_pd3dImmediateContext1; // D3D11.1设备上下文
 	ComPtr<IDXGISwapChain1> m_pSwapChain1;                // D3D11.1交换链
+
+	// Direct2D 
+	ComPtr<ID2D1Factory> m_pd2dFactory;
+	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
+
+	// DWrite
+	ComPtr<IDWriteFactory> m_pdwriteFactory;
+	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
+	ComPtr<IDWriteTextFormat> m_pTextFormat;
+
 	// 常用资源
 	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // 深度模板缓冲区
 	ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;   // 渲染目标视图

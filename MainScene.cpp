@@ -1,7 +1,11 @@
 ﻿#include "MainScene.h"
 #include "UIButton.h"
+#include "UIWindow.h"
+#include "UIWindowInfo.h"
 #include "UIShaderTest.h"
+#include "UIText.h"
 #include "RenderComponent.h"
+
 
 using namespace DirectX;
 
@@ -16,13 +20,7 @@ const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
 
 
 
-struct MapVertexPosColor {
-	XMFLOAT3 position;
-	XMFLOAT2 texCoord;
-	float texIndex;    // 纹理索引，作为浮点数存储
-};
-
-std::vector<MapVertexPosColor> GenerateVertices(int n) {
+std::vector<MainScene::MapVertexPosColor>  MainScene::GenerateVertices(int n) {
 	std::vector<MapVertexPosColor> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
@@ -45,42 +43,59 @@ std::vector<MapVertexPosColor> GenerateVertices(int n) {
 	return vertices;
 }
 
-
-
-MainScene::MainScene(HINSTANCE _hInstance):  Scene(_hInstance)
+MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
+	
+
+
 	/*auto button = std::make_shared<UIButton>();
-	button->setSize(10.0f, 40.0f, 20.0f, 4.0f);
+	button->setSize(1500.0f, 700.0f, 200.0f, 40.0f);
 	button->setTex("demoTex\\MainScene\\button1.dds");
 	AddUIComponent(button);
 
 	button = std::make_shared<UIButton>();
-	button->setSize(10.0f, 30.0f, 20.0f, 4.0f);
+	button->setSize(1500.0f, 800.0f, 200.0f, 40.0f);
 	button->setTex("demoTex\\MainScene\\button2.dds");
 	AddUIComponent(button);
 
 	button = std::make_shared<UIButton>();
-	button->setSize(10.0f, 20.0f, 20.0f, 4.0f);
+	button->setSize(1500.0f, 900.0f, 200.0f, 40.0f);
 	button->setTex("demoTex\\MainScene\\button3.dds");
 	AddUIComponent(button);
 
 	button = std::make_shared<UIButton>();
-	button->setSize(10.0f, 10.0f, 20.0f, 4.0f);
+	button->setSize(1500.0f, 1000.0f, 200.0f, 40.0f);
 	button->setTex("demoTex\\MainScene\\button4.dds");
 	AddUIComponent(button);*/
 
-	auto button = std::make_shared<UIShaderTest>();
+	auto window = std::make_shared<UIWindowInfo>();
+	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
+	window->setTypeID(18);
+	AddUIComponent(window);
+
+	window = std::make_shared<UIWindowInfo>();
+	window->setSize(510.0f, 400.0f, 200.0f, 40.0f);
+	window->setTypeID(2605);
+	AddUIComponent(window);
+
+
+
+	window = std::make_shared<UIWindowInfo>();
+	window->setSize(920.0f, 400.0f, 200.0f, 40.0f);
+	window->setTypeID(33399);
+	AddUIComponent(window);
+
+	/*auto button = std::make_shared<UIShaderTest>();
 	button->setSize(50.0f, 4.0f, 100.0f, 100.0f);
 	button->setTex("demoTex\\MainScene\\button1.dds");
-	AddUIComponent(button);
-
+	AddUIComponent(button);*/
 }
 
 bool MainScene::Init()
 {
+	
 
 
-	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
 	if (!InitEffect())
 		return false;
@@ -97,6 +112,7 @@ bool MainScene::Init()
 			*m_pRenderTargetView.GetAddressOf(),
 			*m_pDepthStencilView.GetAddressOf()
 		);
+		component->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
@@ -149,7 +165,6 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		// 在鼠标没进入窗口前仍为ABSOLUTE模式
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
-
 			auto pos = cam1st->GetPosition();
 			auto delta_Y = lastMouseState.y - mouseState.y;
 			auto delta_X = lastMouseState.x - mouseState.x;
@@ -162,11 +177,10 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 			cam1st->MoveZ(1.0f);
 		if (delta_scroll < -1.0f)
 			cam1st->MoveZ(-1.0f);
-
 	}
 
 	for (auto& component : uiComponents) {
-		component->UpdateUI(dt,mouse, keyboard,switchScene);
+		component->UpdateUI(dt, mouse, keyboard, switchScene);
 	}
 
 	// ******************
@@ -190,11 +204,15 @@ void MainScene::DrawScene()
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
 
+	float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	m_pd3dImmediateContext->OMSetBlendState(m_pBlendState.Get(), blendFactor, 0xffffffff);
 
 	static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
 	static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA = (255,255,255,255)
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+
 
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
@@ -218,7 +236,6 @@ void MainScene::DrawScene()
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
-
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
@@ -230,11 +247,18 @@ void MainScene::DrawScene()
 
 	m_pd3dImmediateContext->Draw(6, 0);
 
-
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
 
+	/*if (m_pd2dRenderTarget != nullptr)
+	{
+		m_pd2dRenderTarget->BeginDraw();
+		std::wstring textStr = L"$~:你好呀_";
+		m_pd2dRenderTarget->DrawTextW(textStr.c_str(), textStr.size(), m_pTextFormat.Get(),
+			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
+		HR(m_pd2dRenderTarget->EndDraw());
+	}*/
 
 	HR(m_pSwapChain->Present(1, 0));
 }
@@ -243,8 +267,6 @@ void MainScene::cleanup()
 {
 	fs.close();
 }
-
-
 
 bool MainScene::InitResource()
 {
@@ -257,7 +279,6 @@ bool MainScene::InitResource()
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
-
 
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -285,10 +306,7 @@ bool MainScene::InitResource()
 		"demoTex\\MainScene\\background.dds"
 	};
 
-
-
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
-
 
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -317,14 +335,10 @@ bool MainScene::InitResource()
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 	dataPtr->TexIndex = 0;
 
-
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
 	// 设置顶点着色器中的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
-
-
-
 
 	std::vector<MapVertexPosColor> vertices = GenerateVertices(4);
 	// 设置顶点缓冲区描述
@@ -340,12 +354,24 @@ bool MainScene::InitResource()
 	InitData.pSysMem = vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
+	D3D11_BLEND_DESC blendDesc = { 0 };
+	blendDesc.AlphaToCoverageEnable = FALSE;
+	blendDesc.IndependentBlendEnable = FALSE;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
+	// 创建混合状态对象
+	hr = m_pd3dDevice->CreateBlendState(&blendDesc, m_pBlendState.GetAddressOf());
 
 	// ******************
 	// 给渲染管线各个阶段绑定好所需资源
 	//
-
 
 	// 设置图元类型，设定输入布局
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -353,7 +379,6 @@ bool MainScene::InitResource()
 	// 将着色器绑定到渲染管线
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
 
 	// ******************
 	// 设置调试对象名
@@ -373,18 +398,13 @@ bool MainScene::InitEffect()
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
 
-
 	// 创建并绑定顶点布局
 	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
 		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
 
-
-
 	// 创建像素着色器
 	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
-
-
 
 	return true;
 }

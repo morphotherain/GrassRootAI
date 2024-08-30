@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <fstream>
 #include "Scene.h"
+
+
 class MainScene : public Scene
 {
 public:
@@ -17,6 +19,12 @@ public:
 	};
 
 
+	struct MapVertexPosColor {
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT2 texCoord;
+		float texIndex;    // 纹理索引，作为浮点数存储
+	};
+
 	virtual bool Init();
 	virtual void OnResize();
 	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
@@ -31,5 +39,8 @@ private:
 	ComPtr<ID3D11InputLayout> button_m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
-};
 
+	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
+
+	std::vector<MapVertexPosColor> GenerateVertices(int n);
+};

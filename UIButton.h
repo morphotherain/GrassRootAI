@@ -17,6 +17,11 @@ public:
 		static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
 	};
 
+	struct MapVertexPosColor {
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT2 texCoord;
+		float texIndex;    // 纹理索引，作为浮点数存储
+	};
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -28,6 +33,8 @@ public:
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setTex(std::string _Tex) { TexPath = _Tex; };
+	std::shared_ptr<bool> getClickFlag() { return clickFlag; }
+
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
@@ -37,10 +44,14 @@ private:
 
 	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
+	std::shared_ptr<bool> clickFlag;
+
 	float x = 10.0f;
 	float y = 30.0f;
 	float deltaX = 20.0f;
 	float deltaY = 4.0f;
 	std::string TexPath;
+
+	std::vector<UIButton::MapVertexPosColor> GenerateButtonVertices(float x, float y, float deltaX, float deltaY);
 };
 

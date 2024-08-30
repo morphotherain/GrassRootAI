@@ -7,6 +7,10 @@ public:
 	UIBase(HINSTANCE hInstance);
 	~UIBase() = default;
 
+	virtual void AddUIComponent(std::shared_ptr<UIBase> component) {
+		childComponents.push_back(component);
+	}
+
 	virtual bool Init() = 0;
 	virtual void OnResize() = 0;
 	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene) = 0;
@@ -14,6 +18,7 @@ public:
 	virtual void cleanup() = 0;
 
 	void setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, IDXGISwapChain* pSwapChain, HWND hMainWnd, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* m_pDepthStencilView);
+	void setd2dResource(ID2D1RenderTarget* pd2dRenderTarget, ID2D1SolidColorBrush* pColorBrush, IDWriteTextFormat* pTextFormat);
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
 
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
@@ -32,6 +37,10 @@ protected:
 	ComPtr<ID3D11Device> m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
 	ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11交换链
+
+	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
+	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
+	ComPtr<IDWriteTextFormat> m_pTextFormat;
 
 	// 常用资源
 	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // 深度模板缓冲区
@@ -55,5 +64,7 @@ protected:
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 
 
+	// 添加 UI 组件列表成员
+	std::vector<std::shared_ptr<UIBase>> childComponents;
 };
 

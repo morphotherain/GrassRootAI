@@ -14,7 +14,6 @@ const D3D11_INPUT_ELEMENT_DESC demoScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-
 struct MapVertexPosColor {
 	XMFLOAT3 position;
 	XMFLOAT2 texCoord;
@@ -44,10 +43,8 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 	};
 	vertices.reserve(n * n * 6); // 每个格子两个三角形，每个三角形3个顶点
 
-
 	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-
 			// 左下角的点坐标
 			float x = j - n / 2;
 			float y = n - 1 - i - n / 2; // 使得(0,0)在左上角
@@ -70,16 +67,14 @@ std::vector<MapVertexPosColor> GenerateChessboardVertices1(int n) {
 	return vertices;
 }
 
-
-demoScene::demoScene(HINSTANCE _hInstance) :Scene(_hInstance) 
+demoScene::demoScene(HINSTANCE _hInstance) :Scene(_hInstance)
 {
 	auto player = std::make_shared<GamePlayer>();
 	playerObj = player;
 	AddGameObject(player);
 
 	player->AddComponent(std::make_shared<RenderComponent>());
-	player->AddComponent(std::make_shared<TransformComponent>(0 ,0 ,0 ));
-
+	player->AddComponent(std::make_shared<TransformComponent>(0, 0, 0));
 }
 
 bool demoScene::Init()
@@ -106,7 +101,7 @@ bool demoScene::Init()
 			render->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 			render->Init();
 		}
-	} 
+	}
 
 	return false;
 }
@@ -174,10 +169,7 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 			cam1st->MoveZ(1.0f);
 		if (delta_scroll < -1.0f)
 			cam1st->MoveZ(-1.0f);
-
 	}
-
-
 
 	// ******************
 	// 更新摄像机
@@ -189,9 +181,8 @@ void demoScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	cam1st->SetPosition(adjustedPos);
 
 	for (auto& object : GameObjects) {
-
 		auto render = object->GetComponent<RenderComponent>();
-		render->Update(dt,mouse,keyboard);
+		render->Update(dt, mouse, keyboard);
 	}
 
 	// 退出程序，这里应向窗口发送销毁信息
@@ -236,7 +227,6 @@ void demoScene::DrawScene()
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
 		dataPtr->TexIndex = 0;
 
-
 		// 取消映射常量缓冲区
 		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
@@ -244,10 +234,8 @@ void demoScene::DrawScene()
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
-
 	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
 	UINT offset = 0;						// 起始偏移量
-
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
 
@@ -265,9 +253,8 @@ void demoScene::DrawScene()
 	std::vector<std::shared_ptr<GameObject>> characterObjects;  // 用于存储角色对象
 
 	for (auto& object : GameObjects) {
+		auto render = object->GetComponent<RenderComponent>();
 
-		auto render = object->GetComponent<RenderComponent>(); 
-		
 		if (render->layer == RenderType::Map) {
 			backgroundObjects.push_back(object);
 		}
@@ -278,7 +265,7 @@ void demoScene::DrawScene()
 			characterObjects.push_back(object);
 		}
 	}
-	
+
 	// 先绘制背景
 	for (auto object : backgroundObjects) {
 		drawObj(object);
@@ -290,7 +277,6 @@ void demoScene::DrawScene()
 	// 最后绘制角色
 	for (auto object : characterObjects) {
 		drawObj(object);
-
 	}
 
 	HR(m_pSwapChain->Present(1, 0));
@@ -299,8 +285,6 @@ void demoScene::DrawScene()
 void demoScene::cleanup()
 {
 }
-
-
 
 bool demoScene::InitResource()
 {
@@ -311,7 +295,6 @@ bool demoScene::InitResource()
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	camera->SetPosition(XMFLOAT3(0.0f, 0.0f, -5.0f));
-
 
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
@@ -345,10 +328,7 @@ bool demoScene::InitResource()
 		"demoTex\\Map\\water-grass2.dds",
 	};
 
-
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
-
-
 
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -377,14 +357,10 @@ bool demoScene::InitResource()
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 	dataPtr->TexIndex = 0;
 
-
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
 	// 设置顶点着色器中的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
-
-
-
 
 	std::vector<MapVertexPosColor> vertices = GenerateChessboardVertices1(16);
 	// 设置顶点缓冲区描述
@@ -399,7 +375,6 @@ bool demoScene::InitResource()
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
-
 
 	D3D11_BLEND_DESC blendDesc = { 0 };
 	blendDesc.AlphaToCoverageEnable = FALSE;
@@ -416,12 +391,10 @@ bool demoScene::InitResource()
 	// 创建混合状态对象
 	hr = m_pd3dDevice->CreateBlendState(&blendDesc, m_pBlendState.GetAddressOf());
 	if (SUCCEEDED(hr)) {
-		
 	}
 	else {
 		// 错误处理
 	}
-
 
 	// ******************
 	// 给渲染管线各个阶段绑定好所需资源
@@ -438,7 +411,6 @@ bool demoScene::InitResource()
 	// 将着色器绑定到渲染管线
 	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf());
 	// ******************
