@@ -1,4 +1,4 @@
-#include "sqlite3.h"
+ï»¿#include "sqlite3.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -14,7 +14,7 @@ public:
     static DatabaseManager* getInstance();
     sqlite3* getDatabase();
 
-    // ÆäËûÊı¾İ¿â²Ù×÷·½·¨£¬Èç²éÑ¯¡¢²åÈëµÈ
+    // å…¶ä»–æ•°æ®åº“æ“ä½œæ–¹æ³•ï¼Œå¦‚æŸ¥è¯¢ã€æ’å…¥ç­‰
 };
 
 

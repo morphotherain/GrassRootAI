@@ -7,6 +7,21 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapLine_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapLine_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapPoint_GS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapPoint_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapPoint_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\test_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>

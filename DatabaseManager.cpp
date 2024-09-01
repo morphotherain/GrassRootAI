@@ -1,4 +1,4 @@
-#include "DatabaseManager.h"
+ï»¿#include "DatabaseManager.h"
 #include <locale>
 #include <codecvt>
 
@@ -10,9 +10,9 @@ DatabaseManager* DatabaseManager::instance = nullptr;
 DatabaseManager::DatabaseManager() {
     int rc = sqlite3_open("EVEdata.sqlite", &db);
     if (rc) {
-        // ¿ÉÒÔÑ¡ÔñÅ×³öÒì³£»ò²ÉÈ¡ÆäËû´íÎó´¦Àí·½Ê½
+        // å¯ä»¥é€‰æ‹©æŠ›å‡ºå¼‚å¸¸æˆ–é‡‡å–å…¶ä»–é”™è¯¯å¤„ç†æ–¹å¼
     }
-    // ½øĞĞÊı¾İ¿â³õÊ¼»¯²Ù×÷£¬Èç´´½¨±íµÈ
+    // è¿›è¡Œæ•°æ®åº“åˆå§‹åŒ–æ“ä½œï¼Œå¦‚åˆ›å»ºè¡¨ç­‰
 }
 
 DatabaseManager* DatabaseManager::getInstance() {

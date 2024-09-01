@@ -39,13 +39,6 @@ private:
 
 	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaX = 30.0f;
-	float deltaY = 20.0f;
-
-	float TitleHeight = 5.0f;
-
 	std::wstring windowTitle;
 
 	int typeID;

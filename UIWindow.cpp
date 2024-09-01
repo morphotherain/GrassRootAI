@@ -11,30 +11,10 @@ UIWindow::UIWindow() : UIBase()
 
 bool UIWindow::Init()
 {
-	auto button = std::make_shared<UIButton>();
-	button->setSize(x, y, 400.0f, 600.0f);
-	button->setTex("demoTex\\UI\\Window\\window_body.dds");
-	AddUIComponent(button);
+	windowTitle = L"窗口";
 
-	button = std::make_shared<UIButton>();
-	button->setSize(x, y, 400.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_title.dds");
-	AddUIComponent(button);
+	InitWindowComponent();
 
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 304.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_min.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 336.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_max.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 368.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_close.dds");
-	AddUIComponent(button);
 
 
 	if (!InitEffect())
@@ -113,4 +93,39 @@ bool UIWindow::InitEffect()
 {
 
 	return true;
+}
+
+void UIWindow::InitWindowComponent()
+{
+	auto button = std::make_shared<UIButton>();
+	button->setSize(x, y, width, height);
+	button->setTex("demoTex\\UI\\Window\\window_body.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(x, y, width, TitleHeight);
+	button->setTex("demoTex\\UI\\Window\\window_title.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(x + width - 3 * TitleHeight, y, TitleHeight, TitleHeight);
+	button->setTex("demoTex\\UI\\Window\\window_min.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(x + width - 2 * TitleHeight, y, TitleHeight, TitleHeight);
+	button->setTex("demoTex\\UI\\Window\\window_max.dds");
+	AddUIComponent(button);
+
+	button = std::make_shared<UIButton>();
+	button->setSize(x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight);
+	button->setTex("demoTex\\UI\\Window\\window_close.dds");
+	AddUIComponent(button);
+
+	if (windowTitle != L"") {
+		auto text = std::make_shared<UIText>();
+		text->setSize(x + 3.0f, y + 5.0f, 350.0f, 350.0f);
+		text->setText(windowTitle);
+		AddUIComponent(text);
+	}
 }

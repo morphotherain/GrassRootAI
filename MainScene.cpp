@@ -2,6 +2,7 @@
 #include "UIButton.h"
 #include "UIWindow.h"
 #include "UIWindowInfo.h"
+#include "UIWindowMap.h"
 #include "UIShaderTest.h"
 #include "UIText.h"
 #include "RenderComponent.h"
@@ -68,7 +69,7 @@ MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 	button->setTex("demoTex\\MainScene\\button4.dds");
 	AddUIComponent(button);*/
 
-	auto window = std::make_shared<UIWindowInfo>();
+	/*auto window = std::make_shared<UIWindowInfo>();
 	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
 	window->setTypeID(18);
 	AddUIComponent(window);
@@ -76,13 +77,12 @@ MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 	window = std::make_shared<UIWindowInfo>();
 	window->setSize(510.0f, 400.0f, 200.0f, 40.0f);
 	window->setTypeID(2605);
-	AddUIComponent(window);
+	AddUIComponent(window);*/
 
 
 
-	window = std::make_shared<UIWindowInfo>();
-	window->setSize(920.0f, 400.0f, 200.0f, 40.0f);
-	window->setTypeID(33399);
+	auto window = std::make_shared<UIWindowMap>();
+	window->setSize(40.0f, 0.0f, 0.0f, 0.0f);
 	AddUIComponent(window);
 
 	/*auto button = std::make_shared<UIShaderTest>();
@@ -236,6 +236,7 @@ void MainScene::DrawScene()
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
 
+	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, textureArraySRV.GetAddressOf()); //绑定纹理
@@ -244,6 +245,7 @@ void MainScene::DrawScene()
 	UINT offset = 0;						// 起始偏移量
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
 
 	m_pd3dImmediateContext->Draw(6, 0);
 
@@ -251,14 +253,7 @@ void MainScene::DrawScene()
 		component->DrawUI();
 	}
 
-	/*if (m_pd2dRenderTarget != nullptr)
-	{
-		m_pd2dRenderTarget->BeginDraw();
-		std::wstring textStr = L"$~:你好呀_";
-		m_pd2dRenderTarget->DrawTextW(textStr.c_str(), textStr.size(), m_pTextFormat.Get(),
-			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
-		HR(m_pd2dRenderTarget->EndDraw());
-	}*/
+
 
 	HR(m_pSwapChain->Present(1, 0));
 }

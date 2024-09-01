@@ -20,6 +20,22 @@ public:
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setTex(std::string _Tex) { TexPath = _Tex; };
+
+
+protected:
+	void InitWindowComponent();
+
+	float x = 0.0f;
+	float y = 0.0f;
+	float width = 400.0f;
+	float height = 600.0f;
+	float deltaX = 30.0f;
+	float deltaY = 20.0f;
+
+	float TitleHeight = 27.0f;
+	std::wstring windowTitle = L"";
+
+
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> window_textureArraySRV;
@@ -29,14 +45,7 @@ private:
 
 	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaX = 30.0f;
-	float deltaY = 20.0f;
 
-	float TitleHeight = 5.0f;
-
-	std::wstring windowTitle;
 
 	std::string TexPath;
 	std::string TitleTexPath;

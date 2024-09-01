@@ -138,6 +138,9 @@
     <ClCompile Include="UIWindowInfo.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UIWindowMap.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -233,6 +236,9 @@
     <ClInclude Include="UIWindowInfo.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="UIWindowMap.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_PS.hlsl">
@@ -244,10 +250,17 @@
     <FxCompile Include="HLSL\test_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_PS.hlsl" />
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_VS.hlsl" />
+    <FxCompile Include="HLSL\StarMap\StarMapLine_VS.hlsl" />
+    <FxCompile Include="HLSL\StarMap\StarMapLine_PS.hlsl" />
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_GS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
       <Filter>着色器</Filter>
     </None>
+    <None Include="HLSL\StarMap\StarMapPoint.hlsli" />
+    <None Include="HLSL\StarMap\StarMapLine.hlsli" />
   </ItemGroup>
 </Project>

@@ -65,7 +65,6 @@ UIWindowInfo::UIWindowInfo() : UIWindow()
 
 bool UIWindowInfo::Init()
 {
-	//testQueryAndWriteToFile(18);
 	DatabaseManager* dbManager = DatabaseManager::getInstance();
 	sqlite3* db = dbManager->getDatabase();
 
@@ -95,35 +94,9 @@ bool UIWindowInfo::Init()
 	}
 	sqlite3_finalize(stmt2);
 
-
+	InitWindowComponent();
 
 	auto button = std::make_shared<UIButton>();
-	button->setSize(x, y, 400.0f, 600.0f);
-	button->setTex("demoTex\\UI\\Window\\window_body.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x, y, 400.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_title.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 304.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_min.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 336.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_max.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 368.0f, y, 32.0f, 32.0f);
-	button->setTex("demoTex\\UI\\Window\\window_close.dds");
-	AddUIComponent(button);
-
-
-	button = std::make_shared<UIButton>();
 	button->setSize(x+20.0f, y+160.f, 379.0f, 1.0f);
 	button->setTex("demoTex\\UI\\Window\\window_line.dds");
 	AddUIComponent(button);
@@ -172,10 +145,6 @@ bool UIWindowInfo::Init()
 	button->setSize(x + 20.0f, y + 30.0f, 128.0f, 128.0f);
 	button->setTex(IconPath);
 	AddUIComponent(button);
-
-
-
-
 
 	if (!InitEffect())
 		return false;
