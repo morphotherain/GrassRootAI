@@ -29,7 +29,7 @@ brightness = max(brightness, 1.2f); // 保持最小亮度
 
 
 // 最终颜色：调节亮度并应用透明度
-float4 finalColor = input.color * brightness;
+float4 finalColor = input.color;// *brightness;
 finalColor.a = alpha; // 设置透明度
 
 // 丢弃几乎不可见的像素

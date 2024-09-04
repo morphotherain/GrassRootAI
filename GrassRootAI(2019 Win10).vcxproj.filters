@@ -141,6 +141,12 @@
     <ClCompile Include="UIWindowMap.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="SolarSystem.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -239,6 +245,12 @@
     <ClInclude Include="UIWindowMap.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="SolarSystem.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_PS.hlsl">
@@ -250,17 +262,35 @@
     <FxCompile Include="HLSL\test_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\StarMap\StarMapPoint_PS.hlsl" />
-    <FxCompile Include="HLSL\StarMap\StarMapPoint_VS.hlsl" />
-    <FxCompile Include="HLSL\StarMap\StarMapLine_VS.hlsl" />
-    <FxCompile Include="HLSL\StarMap\StarMapLine_PS.hlsl" />
-    <FxCompile Include="HLSL\StarMap\StarMapPoint_GS.hlsl" />
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\StarMap\StarMapLine_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\StarMap\StarMapLine_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_GS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\StarMap\StarMapPoint_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Space\Billboard_VS.hlsl" />
+    <FxCompile Include="HLSL\Space\Billboard_PS.hlsl" />
+    <FxCompile Include="HLSL\Space\Billboard_GS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
       <Filter>着色器</Filter>
     </None>
-    <None Include="HLSL\StarMap\StarMapPoint.hlsli" />
-    <None Include="HLSL\StarMap\StarMapLine.hlsli" />
+    <None Include="HLSL\StarMap\StarMapPoint.hlsli">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="HLSL\StarMap\StarMapLine.hlsli">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="HLSL\Space\Billboard.hlsli" />
   </ItemGroup>
 </Project>

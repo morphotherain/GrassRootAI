@@ -7,6 +7,7 @@
 #include "demoScene.h"
 #include "DockScene.h"
 #include "MainScene.h"
+#include "SpaceScene.h"
 
 class GameApp : public D3DApp
 {

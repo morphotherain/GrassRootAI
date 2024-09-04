@@ -97,7 +97,7 @@ void UIButton::DrawUI()
 	//m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); //新增
 	//m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); //新增
 
-	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);//D3D11_PRIMITIVE_TOPOLOGY_LINELIST
+	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//D3D11_PRIMITIVE_TOPOLOGY_LINELIST
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //绑定纹理
 

@@ -2,6 +2,10 @@
 #pragma once
 #include <fstream>
 #include "UIWindow.h"
+#include "UIButton.h"
+#include "UIText.h"
+#include "SolarSystem.h"
+
 class UIWindowMap : public UIWindow
 {
 public:
@@ -50,6 +54,7 @@ public:
 
 	bool InitResource();
 	bool InitEffect();
+	bool InitMap();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
@@ -94,7 +99,12 @@ private:
 	UINT numPoint;
 	UINT numLinePoint;
 
+	std::vector<SolarSystemData> m_solarSystem;
+	std::vector<SolarSystemJump> m_solarSystemJump;
 
+
+	std::vector<std::shared_ptr<UIText>> regionTexts; // 用于存储星域名称文本对象
+	std::vector<RegionData> m_regions; // 存储星域数据
 
 };
 

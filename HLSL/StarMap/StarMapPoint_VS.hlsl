@@ -23,7 +23,7 @@ PointGSInput VS_Point(PointVSInput input)
 
     // 传递光度和颜色
     output.luminosity = input.luminosity * 1.0f;
-    output.color = input.color * input.luminosity; // 光度应用于颜色
+    output.color = input.color;//* input.luminosity; // 光度应用于颜色
 
     return output;
 }

@@ -26,6 +26,19 @@ sqlite3* DatabaseManager::getDatabase() {
     return db;
 }
 
+std::wstring DatabaseManager::sqlite3_column_wstring(sqlite3_stmt* stmt, int column_index)
+{
+    const char* text = (const char*)(sqlite3_column_text(stmt, column_index));
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    return converter.from_bytes(text);
+}
+
+std::string DatabaseManager::sqlite3_column_string(sqlite3_stmt* stmt, int column_index)
+{
+    const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, column_index));
+    return std::string(text);
+}
+
 void testQueryAndWriteToFile(int typeID) {
     DatabaseManager* dbManager = DatabaseManager::getInstance();
     sqlite3* db = dbManager->getDatabase();

@@ -57,5 +57,6 @@ private:
 	bool isMinimized = false;
 
 
+
 };
 
