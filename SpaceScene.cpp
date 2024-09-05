@@ -27,11 +27,42 @@ bool SpaceScene::Init()
 
 	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
+	m_pSolarSystem = std::make_shared<SolarSystem>(30000001);
+	m_pSolarSystem->getDenormalizesBySolarSystemID();
+
 	if (!InitEffect())
 		return false;
 
 	if (!InitResource())
 		return false;
+
+	for (auto& vertex : vertices3D) {
+		auto text = std::make_shared<UIText>();
+		text->setSize(0.0f, 0.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+		text->setText(vertex.name); // 设置星域名称文本
+		AddUIComponent(text); //添加 UI 组件
+
+		// 存储文本对象以便后续更新
+		vertex.text = (text);
+	}
+
+	auto text = std::make_shared<UIText>();
+	text->setSize(100.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(m_pSolarSystem->m_solarSystem.regionName+L" > "); // 设置星域名称文本
+	AddUIComponent(text); // 添加 UI 组件
+
+
+	text = std::make_shared<UIText>();
+	text->setSize(200.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(m_pSolarSystem->m_solarSystem.constellationName + L" > "); // 设置星域名称文本
+	AddUIComponent(text); // 添加 UI 组件
+
+
+	text = std::make_shared<UIText>();
+	text->setSize(300.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(m_pSolarSystem->m_solarSystem.solarSystemName ); // 设置星域名称文本
+	AddUIComponent(text); // 添加 UI 组件
+
 
 	for (auto& component : uiComponents) {
 		component->setd3dResource(
@@ -42,9 +73,24 @@ bool SpaceScene::Init()
 			*m_pRenderTargetView.GetAddressOf(),
 			*m_pDepthStencilView.GetAddressOf()
 		);
+		component->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
+
+	m_skybox = std::make_shared<UISkyBox>();
+	m_skybox->setTex("demoTex\\SpaceScene\\skybox.dds");
+	m_skybox->setd3dResource(
+		*m_pd3dDevice.GetAddressOf(),
+		*m_pd3dImmediateContext.GetAddressOf(),
+		*m_pSwapChain.GetAddressOf(),
+		m_hMainWnd,
+		*m_pRenderTargetView.GetAddressOf(),
+		*m_pDepthStencilView.GetAddressOf()
+	);
+	m_skybox->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
+	m_skybox->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+	m_skybox->Init();
 
 	return true;
 }
@@ -174,6 +220,9 @@ void SpaceScene::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+
+	m_skybox->DrawUI();
+
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
@@ -198,7 +247,7 @@ void SpaceScene::DrawScene()
 
 	vertices.clear();
 
-	for (const auto& vertex3D : vertices3D)
+	for (auto& vertex3D : vertices3D)
 	{
 		// 将每个三维坐标转换为 NDC 坐标
 		XMFLOAT2 ndcCoord = Convert3DToNDC(vertex3D.pos, viewMatrix, projMatrix);
@@ -206,7 +255,9 @@ void SpaceScene::DrawScene()
 		// 创建新的顶点，设置其位置为 NDC 坐标，并保持纹理索引
 		MapVertexPosColor vertex;
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
-		vertex.texIndex = 0.0f;//6 -vertex3D.texIndex;   // 保留原始的纹理索引
+		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
+
+		vertex3D.text->setSize((ndcCoord.x + 1.0f)/2.0f * 1920.0f+20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f+5.0f, 350.0f, 350.0f);
 
 		// 将转换后的顶点加入目标顶点数组
 		vertices.push_back(vertex);
@@ -242,7 +293,7 @@ void SpaceScene::DrawScene()
 
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-	m_pd3dImmediateContext->Draw(2, 0);
+	m_pd3dImmediateContext->Draw(vertices.size(), 0);
 
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pd3dImmediateContext->GSSetShader(nullptr, nullptr, 0); // 绑定几何着色器
@@ -312,8 +363,12 @@ bool SpaceScene::InitResource()
 
 	std::string dir = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Icons\\Icons\\items\\Brackets\\dds\\";
 	std::vector<std::string> textureFileNames = {
-		dir+"station.dds",
-		dir+"moon.dds",
+		dir + "sun.dds",
+		dir + "planet.dds",
+		dir + "moon.dds",
+		dir + "asteroidBelt.dds",
+		dir + "stargate.dds",
+		dir + "station.dds",
 	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
@@ -350,21 +405,36 @@ bool SpaceScene::InitResource()
 	// 设置顶点着色器中的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
+	/*for (auto p_denormalize : m_pSolarSystem->m_denormalizes) {
+		double factor = 40000000000;
+		float x = p_denormalize->x / factor;
+		float y = p_denormalize->y / factor;
+		float z = p_denormalize->z / factor;
+		Vertex3DPosIndex temp = { {x,y,z},m_pSolarSystem->typeIDtoTextureID(p_denormalize->typeID),p_denormalize->name };
+		if(abs(temp.texIndex - 1.0 ) > 0.5f && abs(temp.texIndex - 2.0) > 0.5f && abs(temp.texIndex - 4.0) > 0.5f)
+			vertices3D.push_back(temp);
+	}*/
 	vertices3D = {
-		{{1.0f,1.0f,1.0f},0.0f},
-		{{2.0f,2.0f,2.0f},1.0f},
+		{{0.0f,0.0f,0.0f},0.0f, L"恒星"},
+		{{0.0f,1.0f,0.0f},1.0f, L"行星"},
+		{{1.0f,0.0f,0.0f},2.0f, L"卫星"},
+		{{0.0f,0.0f,1.0f},3.0f, L"小行星带"},
+		{{0.0f,0.0f,-1.0f},4.0f, L"星门"},
+		{{0.0f,-1.0f,0.0f},5.0f, L"空间站"},
+		{{-1.0f,0.0f,0.0f},5.0f, L"空间站"},
 	};
 
+
+
 	vertices = {
-		{{0.0f,0.0f},1.0f},
-		{{0.2f,0.2f},0.0f}
+		{{0.0f,0.0f},0.0f }
 	};
 
 	// 设置顶点缓冲区描述
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = D3D11_USAGE_DYNAMIC;
-	vbd.ByteWidth = sizeof(VertexPosColor) * vertices.size(); // 注意这里的变化
+	vbd.ByteWidth = sizeof(VertexPosColor) * vertices3D.size(); // 注意这里的变化
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	// 新建顶点缓冲区

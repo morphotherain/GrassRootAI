@@ -1,48 +1,108 @@
-#include <string>
+ï»¿#include <string>
 #include <vector>
+#include <unordered_map>
 #include "DatabaseManager.h"
 
-// ¶¨ÒåÓÃÓÚ´æ´¢ºãĞÇÏµÊı¾İµÄ½á¹¹
-struct SolarSystemData
-{
-    double x;                       // ºãĞÇÏµµÄ x ×ø±ê
-    double y;                       // ºãĞÇÏµµÄ y ×ø±ê
-    double z;                       // ºãĞÇÏµµÄ z ×ø±ê
-    std::wstring solarSystemName;   // ºãĞÇÏµÃû³Æ
-    float luminosity;              // ¹â¶È
-    int solarSystemID;
-    int constellationID;
-    int regionalID;
-};
-
-// ¶¨ÒåÓÃÓÚ´æ´¢ºãĞÇÏµÊı¾İµÄ½á¹¹
+// å®šä¹‰ç”¨äºå­˜å‚¨æ’æ˜Ÿç³»æ•°æ®çš„ç»“æ„
 struct RegionData
 {
-    double x;                       // ºãĞÇÏµµÄ x ×ø±ê
-    double y;                       // ºãĞÇÏµµÄ y ×ø±ê
-    double z;                       // ºãĞÇÏµµÄ z ×ø±ê
-    std::wstring regionName;   // ºãĞÇÏµÃû³Æ
+    double x;                       //  x åæ ‡
+    double y;                       //  y åæ ‡
+    double z;                       //  z åæ ‡
+    std::wstring regionName;   // åç§°
     int regionID;
 };
 
 
 
-// ¶¨ÒåÓÃÓÚ´æ´¢ĞÇÃÅÌøÔ¾Êı¾İµÄ½á¹¹
+// å®šä¹‰ç”¨äºå­˜å‚¨æ˜Ÿé—¨è·³è·ƒæ•°æ®çš„ç»“æ„
 struct SolarSystemJump
 {
-    int fromRegionID;          // ÆğµãĞÇÓò ID
-    int fromConstellationID;   // ÆğµãĞÇ×ù ID
-    int fromSolarSystemID;     // ÆğµãĞÇÏµ ID
-    int toSolarSystemID;       // ÖÕµãĞÇÏµ ID
-    int toConstellationID;     // ÖÕµãĞÇ×ù ID
-    int toRegionID;            // ÖÕµãĞÇÓò ID
+    int fromRegionID;          // èµ·ç‚¹æ˜ŸåŸŸ ID
+    int fromConstellationID;   // èµ·ç‚¹æ˜Ÿåº§ ID
+    int fromSolarSystemID;     // èµ·ç‚¹æ˜Ÿç³» ID
+    int toSolarSystemID;       // ç»ˆç‚¹æ˜Ÿç³» ID
+    int toConstellationID;     // ç»ˆç‚¹æ˜Ÿåº§ ID
+    int toRegionID;            // ç»ˆç‚¹æ˜ŸåŸŸ ID
 };
 
-// ´ÓÊı¾İ¿âÖĞ»ñÈ¡ËùÓĞºãĞÇÏµÊı¾İµÄº¯Êı
+// å®šä¹‰ç”¨äºå­˜å‚¨æ’æ˜Ÿç³»æ•°æ®çš„ç»“æ„
+struct SolarSystemData
+{
+public:
+    SolarSystemData() = default;
+    SolarSystemData(int id);
+
+    double x;                       // æ’æ˜Ÿç³»çš„ x åæ ‡
+    double y;                       // æ’æ˜Ÿç³»çš„ y åæ ‡
+    double z;                       // æ’æ˜Ÿç³»çš„ z åæ ‡
+    std::wstring solarSystemName;   // æ’æ˜Ÿç³»åç§°
+    std::wstring constellationName;   // åç§°
+    std::wstring regionName;   // åç§°
+    float luminosity;              // å…‰åº¦
+    int solarSystemID;
+    int constellationID;
+    int regionalID;
+
+    void getConstellationName();
+    void getRegionaName();
+
+};
+
+struct DenormalizeData {
+
+public:
+    DenormalizeData() = default;
+    DenormalizeData(int id);
+
+    std::wstring name;
+    double x;                       //  x åæ ‡
+    double y;                       //  y åæ ‡
+    double z;                       //  z åæ ‡
+    int nameID;   // åç§°
+    int regionID;
+    int constellationID;
+    int solarSystemID;
+    double radius;
+    int itemID;
+    int typeID;
+    int celestialIndex;
+    int orbitIndex;
+
+};
+
+
+
+struct SolarSystem {
+
+    SolarSystem() = default;
+    SolarSystem(int id) :m_solarSystem(id) { };
+
+    SolarSystemData m_solarSystem;
+
+    std::vector<std::shared_ptr<DenormalizeData>> m_denormalizes;
+
+    void getDenormalizesBySolarSystemID();
+
+    int typeIDtoTextureID(int id);
+
+    std::unordered_map<int, int> idToId;
+    void InitIdToIdMap();
+
+};
+
+
+
+
+
+// ä»æ•°æ®åº“ä¸­è·å–æ‰€æœ‰æ’æ˜Ÿç³»æ•°æ®çš„å‡½æ•°
+
 std::vector<SolarSystemData> getSolarSystems();
 
-// »ñÈ¡ĞÇÃÅÌøÔ¾Êı¾İµÄº¯ÊıÉùÃ÷
+SolarSystemData getSolarsystem(int id);
+
+// è·å–æ˜Ÿé—¨è·³è·ƒæ•°æ®çš„å‡½æ•°å£°æ˜
 std::vector<SolarSystemJump> getSolarSystemJumps();
 
-// »ñÈ¡ĞÇÃÅÌøÔ¾Êı¾İµÄº¯ÊıÉùÃ÷
+// è·å–æ˜Ÿé—¨è·³è·ƒæ•°æ®çš„å‡½æ•°å£°æ˜
 std::vector<RegionData> getRegions();

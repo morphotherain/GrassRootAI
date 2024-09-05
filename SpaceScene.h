@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include <fstream>
 #include "Scene.h"
+#include "SolarSystem.h"
+#include "UIText.h"
+#include "UISkyBox.h"
 
 
 class SpaceScene : public Scene
@@ -21,6 +24,8 @@ public:
 	{
 		DirectX::XMFLOAT3 pos;       // 2D 屏幕坐标
 		float texIndex;              // 纹理索引
+		std::wstring name;
+		std::shared_ptr<UIText> text;
 	};
 
 
@@ -57,4 +62,11 @@ private:
 	ComPtr<ID3D11PixelShader> m_pPixelShaderBillboard;	// 像素着色器
 	ComPtr<ID3D11VertexShader> m_pVertexShaderBillboard;	// 顶点着色器
 	ComPtr<ID3D11GeometryShader> m_pGeometryShader;	// 几何着色器
+
+	std::shared_ptr<SolarSystem> m_pSolarSystem;
+	std::shared_ptr<UISkyBox> m_skybox;
+
+	std::vector<std::shared_ptr<UIText>> m_denormalizeTexts; // 用于存储星域名称文本对象
+
+
 };

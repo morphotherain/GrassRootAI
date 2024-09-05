@@ -147,6 +147,9 @@
     <ClCompile Include="SpaceScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="UISkyBox.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -251,6 +254,9 @@
     <ClInclude Include="SpaceScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="UISkyBox.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_PS.hlsl">
@@ -277,9 +283,17 @@
     <FxCompile Include="HLSL\StarMap\StarMapPoint_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\Space\Billboard_VS.hlsl" />
-    <FxCompile Include="HLSL\Space\Billboard_PS.hlsl" />
-    <FxCompile Include="HLSL\Space\Billboard_GS.hlsl" />
+    <FxCompile Include="HLSL\Space\Billboard_GS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Space\Billboard_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Space\Billboard_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky\Sky_VS.hlsl" />
+    <FxCompile Include="HLSL\Sky\Sky_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
@@ -291,6 +305,9 @@
     <None Include="HLSL\StarMap\StarMapLine.hlsli">
       <Filter>着色器</Filter>
     </None>
-    <None Include="HLSL\Space\Billboard.hlsli" />
+    <None Include="HLSL\Space\Billboard.hlsli">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="HLSL\Sky\Sky.hlsli" />
   </ItemGroup>
 </Project>

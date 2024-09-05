@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Scene.h"
 #include "GamePlayer.h"
 class demoScene : public Scene
@@ -20,8 +20,8 @@ public:
 		DirectX::XMMATRIX model;
 		DirectX::XMMATRIX view;
 		DirectX::XMMATRIX projection;
-		float TexIndex; // Ê¹ÓÃfloatÀ´´«µİË÷Òı
-		float padding[3]; // Ìí¼ÓpaddingÒÔÈ·±£½á¹¹ÌåµÄ´óĞ¡Îª16µÄ±¶Êı
+		float TexIndex; // ä½¿ç”¨floatæ¥ä¼ é€’ç´¢å¼•
+		float padding[3]; // æ·»åŠ paddingä»¥ç¡®ä¿ç»“æ„ä½“çš„å¤§å°ä¸º16çš„å€æ•°
 	};
 
 	virtual bool Init();
@@ -36,5 +36,5 @@ public:
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
-	std::shared_ptr<GamePlayer> playerObj; // objÁĞ±í
+	std::shared_ptr<GamePlayer> playerObj; // objåˆ—è¡¨
 };

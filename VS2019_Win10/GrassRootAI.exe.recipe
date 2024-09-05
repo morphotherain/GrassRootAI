@@ -7,6 +7,12 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Sky\Sky_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Sky\Sky_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\Space\Billboard_GS.cso</FullPath>
     </ContentFile>
     <ContentFile>

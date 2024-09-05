@@ -1,57 +1,63 @@
-#include "SolarSystem.h"
+ï»¿#include "SolarSystem.h"
 
 std::vector<SolarSystemData> getSolarSystems()
 {
     std::vector<SolarSystemData> solarSystems;
 
-    // »ñÈ¡Êı¾İ¿âÊµÀı
+    // è·å–æ•°æ®åº“å®ä¾‹
     DatabaseManager* dbManager = DatabaseManager::getInstance();
     sqlite3* db = dbManager->getDatabase();
 
-    // SQL ²éÑ¯Óï¾ä£¬»ñÈ¡ËùÓĞºãĞÇÏµµÄ x, y, z, solarSystemName ºÍ luminosity
-    std::string sql = "SELECT x, y, z, solarSystemName, luminosity ,solarSystemID ,constellationID,regional FROM mapSolarSystems;";
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ‰€æœ‰æ’æ˜Ÿç³»çš„ x, y, z, solarSystemName å’Œ luminosity
+    std::string sql = "SELECT x, y, z, solarSystemName, luminosity ,solarSystemID ,constellationID,regionID FROM mapSolarSystems;";
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
+        auto temp = sqlite3_errmsg(db);
         std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
         return solarSystems;
     }
 
-    // µü´ú²éÑ¯½á¹û²¢½«Êı¾İ´æ´¢µ½ solarSystems ½á¹¹ÖĞ
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystems ç»“æ„ä¸­
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         SolarSystemData system;
 
-        // »ñÈ¡¸÷ÁĞÊı¾İ£¬È·±£ÁĞË÷ÒıÓë SELECT Óï¾äµÄË³ĞòÆ¥Åä
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
         system.x = sqlite3_column_double(stmt, 0);
         system.y = sqlite3_column_double(stmt, 1);
         system.z = sqlite3_column_double(stmt, 2);
-        system.solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // »ñÈ¡ wstring ÀàĞÍµÄÃû³Æ
+        system.solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // è·å– wstring ç±»å‹çš„åç§°
         system.luminosity = sqlite3_column_double(stmt, 4);
         system.solarSystemID = sqlite3_column_int(stmt, 5);
         system.constellationID = sqlite3_column_int(stmt, 6);
         system.regionalID = sqlite3_column_int(stmt, 7);
 
-        // ½«Êı¾İÌí¼Óµ½ÏòÁ¿ÖĞ
+        // å°†æ•°æ®æ·»åŠ åˆ°å‘é‡ä¸­
         solarSystems.push_back(system);
     }
 
-    // ÊÍ·ÅÓï¾ä×ÊÔ´
+    // é‡Šæ”¾è¯­å¥èµ„æº
     sqlite3_finalize(stmt);
 
     return solarSystems;
 }
 
-// ´ÓÊı¾İ¿âÖĞ»ñÈ¡ËùÓĞĞÇÃÅÌøÔ¾Êı¾İµÄº¯Êı
+SolarSystemData getSolarsystem(int id)
+{
+    return SolarSystemData(id);
+}
+
+// ä»æ•°æ®åº“ä¸­è·å–æ‰€æœ‰æ˜Ÿé—¨è·³è·ƒæ•°æ®çš„å‡½æ•°
 std::vector<SolarSystemJump> getSolarSystemJumps()
 {
     std::vector<SolarSystemJump> solarSystemJumps;
 
-    // »ñÈ¡Êı¾İ¿âÊµÀı
+    // è·å–æ•°æ®åº“å®ä¾‹
     DatabaseManager* dbManager = DatabaseManager::getInstance();
     sqlite3* db = dbManager->getDatabase();
 
-    // SQL ²éÑ¯Óï¾ä£¬»ñÈ¡ĞÇÃÅÌøÔ¾Êı¾İ
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ˜Ÿé—¨è·³è·ƒæ•°æ®
     std::string sql = "SELECT fromRegionID, fromConstellationID, fromSolarSystemID, toSolarSystemID, toConstellationID, toRegionID FROM mapSolarSystemJumps;";
 
     sqlite3_stmt* stmt;
@@ -61,11 +67,11 @@ std::vector<SolarSystemJump> getSolarSystemJumps()
         return solarSystemJumps;
     }
 
-    // µü´ú²éÑ¯½á¹û²¢½«Êı¾İ´æ´¢µ½ solarSystemJumps ½á¹¹ÖĞ
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystemJumps ç»“æ„ä¸­
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         SolarSystemJump jump;
 
-        // »ñÈ¡¸÷ÁĞÊı¾İ£¬È·±£ÁĞË÷ÒıÓë SELECT Óï¾äµÄË³ĞòÆ¥Åä
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
         jump.fromRegionID = sqlite3_column_int(stmt, 0);
         jump.fromConstellationID = sqlite3_column_int(stmt, 1);
         jump.fromSolarSystemID = sqlite3_column_int(stmt, 2);
@@ -73,11 +79,11 @@ std::vector<SolarSystemJump> getSolarSystemJumps()
         jump.toConstellationID = sqlite3_column_int(stmt, 4);
         jump.toRegionID = sqlite3_column_int(stmt, 5);
 
-        // ½«Êı¾İÌí¼Óµ½ÏòÁ¿ÖĞ
+        // å°†æ•°æ®æ·»åŠ åˆ°å‘é‡ä¸­
         solarSystemJumps.push_back(jump);
     }
 
-    // ÊÍ·ÅÓï¾ä×ÊÔ´
+    // é‡Šæ”¾è¯­å¥èµ„æº
     sqlite3_finalize(stmt);
 
     return solarSystemJumps;
@@ -87,11 +93,11 @@ std::vector<RegionData> getRegions()
 {
     std::vector<RegionData> regions;
 
-    // »ñÈ¡Êı¾İ¿âÊµÀı
+    // è·å–æ•°æ®åº“å®ä¾‹
     DatabaseManager* dbManager = DatabaseManager::getInstance();
     sqlite3* db = dbManager->getDatabase();
 
-    // SQL ²éÑ¯Óï¾ä£¬»ñÈ¡ĞÇÃÅÌøÔ¾Êı¾İ
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ˜Ÿé—¨è·³è·ƒæ•°æ®
     std::string sql = "SELECT x, y, z,regionName,regionID FROM mapRegions;";
 
     sqlite3_stmt* stmt;
@@ -101,23 +107,245 @@ std::vector<RegionData> getRegions()
         return regions;
     }
 
-    // µü´ú²éÑ¯½á¹û²¢½«Êı¾İ´æ´¢µ½ solarSystemJumps ½á¹¹ÖĞ
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystemJumps ç»“æ„ä¸­
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
         RegionData region;
 
-        // »ñÈ¡¸÷ÁĞÊı¾İ£¬È·±£ÁĞË÷ÒıÓë SELECT Óï¾äµÄË³ĞòÆ¥Åä
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
         region.x = sqlite3_column_double(stmt, 0);
         region.y = sqlite3_column_double(stmt, 1);
         region.z = sqlite3_column_double(stmt, 2);
-        region.regionName = dbManager->sqlite3_column_wstring(stmt, 3); // »ñÈ¡ wstring ÀàĞÍµÄÃû³Æ
+        region.regionName = dbManager->sqlite3_column_wstring(stmt, 3); // è·å– wstring ç±»å‹çš„åç§°
         region.regionID = sqlite3_column_int(stmt, 4);
 
-        // ½«Êı¾İÌí¼Óµ½ÏòÁ¿ÖĞ
+        // å°†æ•°æ®æ·»åŠ åˆ°å‘é‡ä¸­
         regions.push_back(region);
     }
 
-    // ÊÍ·ÅÓï¾ä×ÊÔ´
+    // é‡Šæ”¾è¯­å¥èµ„æº
     sqlite3_finalize(stmt);
 
     return regions;
+}
+
+std::vector<std::shared_ptr<DenormalizeData>> getDenormalizesBySolarSystemID(int id)
+{
+    return std::vector<std::shared_ptr<DenormalizeData>>();
+}
+
+SolarSystemData::SolarSystemData(int id)
+{
+
+    // è·å–æ•°æ®åº“å®ä¾‹
+    DatabaseManager* dbManager = DatabaseManager::getInstance();
+    sqlite3* db = dbManager->getDatabase();
+
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ‰€æœ‰æ’æ˜Ÿç³»çš„ x, y, z, solarSystemName å’Œ luminosity
+    std::string sql = "SELECT x, y, z, solarSystemName, luminosity  ,constellationID,regionID FROM mapSolarSystems WHERE solarSystemID = " + std::to_string(id) + ";"; 
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        auto temp = sqlite3_errmsg(db);
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystems ç»“æ„ä¸­
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
+        x = sqlite3_column_double(stmt, 0);
+        y = sqlite3_column_double(stmt, 1);
+        z = sqlite3_column_double(stmt, 2);
+        solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // è·å– wstring ç±»å‹çš„åç§°
+        luminosity = sqlite3_column_double(stmt, 4);
+        constellationID = sqlite3_column_int(stmt, 5);
+        regionalID = sqlite3_column_int(stmt, 6);
+        solarSystemID = id;
+
+    }
+
+    // é‡Šæ”¾è¯­å¥èµ„æº
+    sqlite3_finalize(stmt);
+
+    getConstellationName();
+    getRegionaName();
+
+}
+
+void SolarSystemData::getConstellationName()
+{
+    // è·å–æ•°æ®åº“å®ä¾‹
+    DatabaseManager* dbManager = DatabaseManager::getInstance();
+    sqlite3* db = dbManager->getDatabase();
+
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ‰€æœ‰æ’æ˜Ÿç³»çš„ x, y, z, solarSystemName å’Œ luminosity
+    std::string sql = "SELECT constellationName FROM mapConstellations WHERE constellationID = " + std::to_string(constellationID) + ";";
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        auto temp = sqlite3_errmsg(db);
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystems ç»“æ„ä¸­
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
+        constellationName = dbManager->sqlite3_column_wstring(stmt, 0); // è·å– wstring ç±»å‹çš„åç§°
+
+    }
+
+    // é‡Šæ”¾è¯­å¥èµ„æº
+    sqlite3_finalize(stmt);
+}
+
+void SolarSystemData::getRegionaName()
+{
+    // è·å–æ•°æ®åº“å®ä¾‹
+    DatabaseManager* dbManager = DatabaseManager::getInstance();
+    sqlite3* db = dbManager->getDatabase();
+
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ‰€æœ‰æ’æ˜Ÿç³»çš„ x, y, z, solarSystemName å’Œ luminosity
+    std::string sql = "SELECT regionName FROM mapRegions WHERE regionID = " + std::to_string(regionalID) + ";";
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        auto temp = sqlite3_errmsg(db);
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystems ç»“æ„ä¸­
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
+        regionName = dbManager->sqlite3_column_wstring(stmt, 0); // è·å– wstring ç±»å‹çš„åç§°
+
+    }
+
+    // é‡Šæ”¾è¯­å¥èµ„æº
+    sqlite3_finalize(stmt);
+}
+
+void SolarSystem::getDenormalizesBySolarSystemID()
+{
+
+    // è·å–æ•°æ®åº“å®ä¾‹
+    DatabaseManager* dbManager = DatabaseManager::getInstance();
+    sqlite3* db = dbManager->getDatabase();
+
+    // SQL æŸ¥è¯¢è¯­å¥ï¼Œè·å–æ‰€æœ‰æ’æ˜Ÿç³»çš„ x, y, z, solarSystemName å’Œ luminosity
+    std::string sql = "SELECT x, y, z, nameID, regionID ,constellationID ,solarSystemID,radius,itemID,typeID,celestialIndex,orbitIndex FROM mapDenormalize WHERE solarSystemID = " + std::to_string(m_solarSystem.solarSystemID) + ";";
+
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        auto temp = sqlite3_errmsg(db);
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // è¿­ä»£æŸ¥è¯¢ç»“æœå¹¶å°†æ•°æ®å­˜å‚¨åˆ° solarSystems ç»“æ„ä¸­
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+
+        auto p_denormalize = std::make_shared<DenormalizeData>();
+
+        // è·å–å„åˆ—æ•°æ®ï¼Œç¡®ä¿åˆ—ç´¢å¼•ä¸ SELECT è¯­å¥çš„é¡ºåºåŒ¹é…
+        p_denormalize->x = sqlite3_column_double(stmt, 0);
+        p_denormalize->y = sqlite3_column_double(stmt, 1);
+        p_denormalize->z = sqlite3_column_double(stmt, 2);
+        p_denormalize->nameID = sqlite3_column_int(stmt, 3); // è·å– wstring ç±»å‹çš„åç§°
+        p_denormalize->regionID = sqlite3_column_int(stmt, 4);
+        p_denormalize->constellationID = sqlite3_column_int(stmt, 5);
+        p_denormalize->solarSystemID = sqlite3_column_int(stmt, 6);
+        p_denormalize->radius = sqlite3_column_double(stmt, 7);
+        p_denormalize->itemID = sqlite3_column_int(stmt, 8);
+        p_denormalize->typeID = sqlite3_column_int(stmt, 9);
+        p_denormalize->celestialIndex = sqlite3_column_int(stmt, 10);
+        p_denormalize->orbitIndex = sqlite3_column_int(stmt, 11);
+
+        m_denormalizes.push_back(p_denormalize);
+
+    }
+
+    // é‡Šæ”¾è¯­å¥èµ„æº
+    sqlite3_finalize(stmt);
+
+    for (auto p_denormalize : m_denormalizes) {
+        p_denormalize->name = dbManager->getNameByTypeId(p_denormalize->typeID);
+    }
+
+}
+
+int SolarSystem::typeIDtoTextureID(int id)
+{
+    if (idToId.empty())InitIdToIdMap();
+
+
+    return  idToId[id];
+}
+
+void SolarSystem::InitIdToIdMap()
+{
+    idToId = {
+        {6, 0},
+        {7, 0},
+        {8, 0},
+        {9, 0},
+        {10, 0},
+        {3796, 0},
+        {3797, 0},
+        {3798, 0},
+        {3799, 0},
+        {3800, 0},
+        {3801, 0},
+        {3802, 0},
+        {3803, 0},
+        {45030, 0},
+        {45031, 0},
+        {45032, 0 },
+        {45033, 0},
+        {45034, 0},
+        {45035, 0},
+        {45036, 0},
+        {45037, 0},
+        {45038, 0},
+        {45039, 0},
+        {45040, 0},
+        {45041, 0},
+        {45042, 0},
+        {45046, 0},
+        {45047, 0},
+        {56082, 0},
+        {56083, 0},
+        {56084, 0},
+        {56085, 0},
+        {56086, 0},
+        {56097, 0},
+        {56098, 0},
+        {73909, 0},
+        {78350, 0},
+        {12, 1},
+        {13, 1},
+        {11, 1},
+        {2014, 1},
+        {2015, 1},
+        {2016, 1},
+        {2017, 1},
+        {2063, 1},
+        {30889, 1},
+        {56018, 1},
+        {56019, 1},
+        {56020, 1},
+        {56021, 1},
+        {56022, 1},
+        {56023, 1},
+        {56024, 1},
+        {14, 2},
+        {15, 3},
+        {29624, 4},
+        {2502,5},
+
+    };
 }

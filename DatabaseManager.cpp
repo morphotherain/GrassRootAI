@@ -2,9 +2,6 @@
 #include <locale>
 #include <codecvt>
 
-
-
-
 DatabaseManager* DatabaseManager::instance = nullptr;
 
 DatabaseManager::DatabaseManager() {
@@ -37,6 +34,21 @@ std::string DatabaseManager::sqlite3_column_string(sqlite3_stmt* stmt, int colum
 {
     const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, column_index));
     return std::string(text);
+}
+
+std::wstring DatabaseManager::getNameByTypeId(int id)
+{
+    DatabaseManager* dbManager = DatabaseManager::getInstance();
+    sqlite3* db = dbManager->getDatabase();
+
+    std::string sql = "SELECT typeName_zh FROM invtypes WHERE typeID = " + std::to_string(id) + ";";
+    sqlite3_stmt* stmt;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        return sqlite3_column_wstring(stmt, 0);
+    }
+    return std::wstring();
 }
 
 void testQueryAndWriteToFile(int typeID) {
