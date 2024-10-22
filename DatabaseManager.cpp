@@ -2,26 +2,7 @@
 #include <locale>
 #include <codecvt>
 
-DatabaseManager* DatabaseManager::instance = nullptr;
 
-DatabaseManager::DatabaseManager() {
-    int rc = sqlite3_open("EVEdata.sqlite", &db);
-    if (rc) {
-        // 可以选择抛出异常或采取其他错误处理方式
-    }
-    // 进行数据库初始化操作，如创建表等
-}
-
-DatabaseManager* DatabaseManager::getInstance() {
-    if (!instance) {
-        instance = new DatabaseManager();
-    }
-    return instance;
-}
-
-sqlite3* DatabaseManager::getDatabase() {
-    return db;
-}
 
 std::wstring DatabaseManager::sqlite3_column_wstring(sqlite3_stmt* stmt, int column_index)
 {

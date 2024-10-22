@@ -137,9 +137,9 @@ bool UIWindowInfo::Init()
 	AddUIComponent(text);
 
 
-	std::string IconPath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Icons\\Icons\\items\\dds\\";
-	IconPath += testItem.IconPath;
-	IconPath += ".dds";
+	std::string IconPath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Types\\Types\\dds\\";
+	IconPath += std::to_string(typeID);//testItem.IconPath;
+	IconPath += "_64.dds";
 
 	button = std::make_shared<UIButton>();
 	button->setSize(x + 20.0f, y + 30.0f, 128.0f, 128.0f);
@@ -184,7 +184,13 @@ void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
+	// 获取子类
+	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 
+	XMFLOAT3 adjustedPos;
+	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
+		XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f), XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f)));
+	cam1st->SetPosition(adjustedPos);
 
 
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
@@ -200,6 +206,28 @@ void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 void UIWindowInfo::DrawUI()
 {
 
+	// 假设 camera 是当前场景中的摄影机对象
+	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
+
+	// 映射常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (SUCCEEDED(hr))
+	{
+		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+		dataPtr->projection = XMMatrixTranspose(projMatrix);
+		dataPtr->TexIndex = 0;
+
+		// 取消映射常量缓冲区
+		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
+
+		// 将常量缓冲区绑定到顶点着色器
+		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
+	}
+
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
@@ -214,7 +242,38 @@ void UIWindowInfo::cleanup()
 
 bool UIWindowInfo::InitResource()
 {
+	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
+	m_pCamera = camera;
+	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
+	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
+	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
 
+	D3D11_BUFFER_DESC matrixBufferDesc;
+	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
+	// 使用设备创建缓冲区
+	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
+
+	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
+	// 更新常量缓冲区
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HR(m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+	MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtr->projection = XMMatrixTranspose(projMatrix);
+	dataPtr->TexIndex = 0;
+
+	// 取消映射常量缓冲区
+	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 	return true;
 }
 

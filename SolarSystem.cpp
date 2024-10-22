@@ -1,4 +1,7 @@
 ﻿#include "SolarSystem.h"
+#include "InvTypesManager.h"
+#include "invGroupsManager.h"
+#include "eveBracketsManager.h"
 
 std::vector<SolarSystemData> getSolarSystems()
 {
@@ -274,6 +277,10 @@ void SolarSystem::getDenormalizesBySolarSystemID()
 
     for (auto p_denormalize : m_denormalizes) {
         p_denormalize->name = dbManager->getNameByTypeId(p_denormalize->typeID);
+        int groupID = InvTypesManager::getInstance()->getGroupByTypeId(p_denormalize->typeID);
+        int bracketID = invGroupsManager::getInstance()->getBracketIDByGroupId(groupID);
+        p_denormalize->bracketID = bracketID;
+        p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(bracketID);
     }
 
 }

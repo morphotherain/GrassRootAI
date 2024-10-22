@@ -94,14 +94,15 @@ void UIButton::DrawUI()
 
 	//按钮绘制
 
-	//m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); //新增
-	//m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); //新增
+	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); //新增
+	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); //新增
 
 	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//D3D11_PRIMITIVE_TOPOLOGY_LINELIST
 
 	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //绑定纹理
 
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, button_m_pVertexBuffer.GetAddressOf(), &stride, &offset);
+	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
 
 	m_pd3dImmediateContext->Draw(6, 0);
 
@@ -145,5 +146,18 @@ bool UIButton::InitResource()
 bool UIButton::InitEffect()
 {	
 
+	ComPtr<ID3DBlob> blob;
+
+	// 创建顶点着色器
+	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
+
+	// 创建并绑定顶点布局
+	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
+		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
+
+	// 创建像素着色器
+	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 	return true;
 }

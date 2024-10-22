@@ -1,7 +1,11 @@
-﻿#include <string>
+﻿#pragma once
+
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include "DatabaseManager.h"
+
+
 
 // 定义用于存储恒星系数据的结构
 struct RegionData
@@ -68,6 +72,8 @@ public:
     int typeID;
     int celestialIndex;
     int orbitIndex;
+    int bracketID;
+    std::string dds_path;
 
 };
 

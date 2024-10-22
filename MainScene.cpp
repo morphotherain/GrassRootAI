@@ -69,21 +69,21 @@ MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 	button->setTex("demoTex\\MainScene\\button4.dds");
 	AddUIComponent(button);*/
 
-	/*auto window = std::make_shared<UIWindowInfo>();
-	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
-	window->setTypeID(18);
-	AddUIComponent(window);
+	//auto starmap = std::make_shared<UIWindowMap>();
+	//starmap->setSize(40.0f, 0.0f, 0.0f, 0.0f);
+	//AddUIComponent(starmap);
 
-	window = std::make_shared<UIWindowInfo>();
-	window->setSize(510.0f, 400.0f, 200.0f, 40.0f);
-	window->setTypeID(2605);
-	AddUIComponent(window);*/
+	//auto window = std::make_shared<UIWindowInfo>();
+	//window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
+	//window->setTypeID(18);
+	//AddUIComponent(window);
+
+	//window = std::make_shared<UIWindowInfo>();
+	//window->setSize(510.0f, 400.0f, 200.0f, 40.0f);
+	//window->setTypeID(2605);
+	//AddUIComponent(window);
 
 
-
-	auto window = std::make_shared<UIWindowMap>();
-	window->setSize(40.0f, 0.0f, 0.0f, 0.0f);
-	AddUIComponent(window);
 
 	/*auto button = std::make_shared<UIShaderTest>();
 	button->setSize(50.0f, 4.0f, 100.0f, 100.0f);
@@ -182,7 +182,6 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	for (auto& component : uiComponents) {
 		component->UpdateUI(dt, mouse, keyboard, switchScene);
 	}
-	switchScene = 3;
 
 
 	// ******************
@@ -195,6 +194,9 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	cam1st->SetPosition(adjustedPos);
 
 	tick++;
+
+	switchScene = 3;
+
 
 	// 退出程序，这里应向窗口发送销毁信息
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))

@@ -8,9 +8,6 @@
     <Filter Include="着色器">
       <UniqueIdentifier>{c01108ff-58e3-4fc8-a562-12673f255c27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dds">
-      <UniqueIdentifier>{712309f7-4d77-4942-9105-e622430ba4b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="d3d架构">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -40,8 +37,17 @@
     <Filter Include="sqlite">
       <UniqueIdentifier>{aa492ae9-328c-47e0-a60b-8edeb17c3eb2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="测试">
+    <Filter Include="UI\window">
+      <UniqueIdentifier>{5da6d1ce-04b2-4785-8799-4b56a7355f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dds">
+      <UniqueIdentifier>{712309f7-4d77-4942-9105-e622430ba4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库">
       <UniqueIdentifier>{422f5d06-315c-4509-b01d-742a6d478785}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\数据表">
+      <UniqueIdentifier>{640956c6-d434-4e35-8280-e4094ea2d7ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -124,21 +130,12 @@
       <Filter>sqlite</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseManager.cpp">
-      <Filter>测试</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindow.cpp">
-      <Filter>UI</Filter>
+      <Filter>数据库</Filter>
     </ClCompile>
     <ClCompile Include="DockScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="UIText.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowInfo.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowMap.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="SolarSystem.cpp">
@@ -149,6 +146,33 @@
     </ClCompile>
     <ClCompile Include="UISkyBox.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindow.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowInfo.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowMap.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowOverview.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="InvTypesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="demoManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="invGroupsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="eveBracketsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="D3DManager.cpp">
+      <Filter>d3d架构</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,21 +255,12 @@
       <Filter>sqlite</Filter>
     </ClInclude>
     <ClInclude Include="DatabaseManager.h">
-      <Filter>测试</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindow.h">
-      <Filter>UI</Filter>
+      <Filter>数据库</Filter>
     </ClInclude>
     <ClInclude Include="DockScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="UIText.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowInfo.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowMap.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="SolarSystem.h">
@@ -256,6 +271,36 @@
     </ClInclude>
     <ClInclude Include="UISkyBox.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindow.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowInfo.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowMap.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowOverview.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="InvTypesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonBase.h">
+      <Filter>数据库</Filter>
+    </ClInclude>
+    <ClInclude Include="demoManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="invGroupsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="eveBracketsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DManager.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -292,8 +337,12 @@
     <FxCompile Include="HLSL\Space\Billboard_VS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\Sky\Sky_VS.hlsl" />
-    <FxCompile Include="HLSL\Sky\Sky_PS.hlsl" />
+    <FxCompile Include="HLSL\Sky\Sky_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky\Sky_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
@@ -308,6 +357,8 @@
     <None Include="HLSL\Space\Billboard.hlsli">
       <Filter>着色器</Filter>
     </None>
-    <None Include="HLSL\Sky\Sky.hlsli" />
+    <None Include="HLSL\Sky\Sky.hlsli">
+      <Filter>着色器</Filter>
+    </None>
   </ItemGroup>
 </Project>

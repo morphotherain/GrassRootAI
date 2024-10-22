@@ -12,6 +12,8 @@
 #include "GameTimer.h"
 #include "ddsLoader.h"
 
+#include "D3DManager.h"
+
 // 添加所有要引用的库
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")

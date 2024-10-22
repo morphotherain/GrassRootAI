@@ -55,7 +55,11 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	bool InitMap();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
+	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) 
+	{ 
+		UIWindow::setSize(_x, _y, _deltaX, _deltaY); 
+	}
+
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 

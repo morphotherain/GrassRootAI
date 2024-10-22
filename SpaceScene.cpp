@@ -1,8 +1,13 @@
 ﻿#include "SpaceScene.h"
 #include "UIButton.h"
 #include "UIShaderTest.h"
+#include "UIWindowInfo.h"
+#include "UIWindowOverview.h"
+#include "UIWindowMap.h"
 #include "RenderComponent.h"
 #include "DatabaseManager.h"
+
+#include "eveBracketsManager.h"
 
 using namespace DirectX;
 
@@ -15,10 +20,6 @@ const D3D11_INPUT_ELEMENT_DESC SpaceScene::VertexPosColor::inputLayout[2] = {
 
 SpaceScene::SpaceScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
-	/*auto button = std::make_shared<UIButton>();
-	button->setSize(10.0f, 40.0f, 20.0f, 4.0f);
-	button->setTex("demoTex\\MainScene\\button1.dds");
-	AddUIComponent(button);*/
 
 }
 
@@ -47,21 +48,34 @@ bool SpaceScene::Init()
 	}
 
 	auto text = std::make_shared<UIText>();
-	text->setSize(100.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(m_pSolarSystem->m_solarSystem.regionName+L" > "); // 设置星域名称文本
+	text->setSize(300.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(m_pSolarSystem->m_solarSystem.regionName); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
 
 	text = std::make_shared<UIText>();
 	text->setSize(200.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(m_pSolarSystem->m_solarSystem.constellationName + L" > "); // 设置星域名称文本
+	text->setText(m_pSolarSystem->m_solarSystem.constellationName + L" < "); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
 
 	text = std::make_shared<UIText>();
-	text->setSize(300.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(m_pSolarSystem->m_solarSystem.solarSystemName ); // 设置星域名称文本
+	text->setSize(100.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(m_pSolarSystem->m_solarSystem.solarSystemName + L" < "); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
+
+	auto window = std::make_shared<UIWindowInfo>();
+	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
+	window->setTypeID(620);
+	AddUIComponent(window);
+
+	auto window_overview = std::make_shared<UIWindowOverview>();
+	window_overview->setSize(1500.0f, 200.0f, 200.0f, 40.0f);
+	AddUIComponent(window_overview);
+
+	auto starmap = std::make_shared<UIWindowMap>();
+	starmap->setSize(500.0f, 350.0f, 1120.0f, 657.0f);
+	AddUIComponent(starmap);
 
 
 	for (auto& component : uiComponents) {
@@ -257,7 +271,7 @@ void SpaceScene::DrawScene()
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
-		vertex3D.text->setSize((ndcCoord.x + 1.0f)/2.0f * 1920.0f+20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f+5.0f, 350.0f, 350.0f);
+		vertex3D.text->setSize((ndcCoord.x + 1.0f)/2.0f * 1920.0f+20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f+3.0f, 350.0f, 350.0f);
 
 		// 将转换后的顶点加入目标顶点数组
 		vertices.push_back(vertex);
@@ -361,15 +375,7 @@ bool SpaceScene::InitResource()
 
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
 
-	std::string dir = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Icons\\Icons\\items\\Brackets\\dds\\";
-	std::vector<std::string> textureFileNames = {
-		dir + "sun.dds",
-		dir + "planet.dds",
-		dir + "moon.dds",
-		dir + "asteroidBelt.dds",
-		dir + "stargate.dds",
-		dir + "station.dds",
-	};
+	std::vector<std::string> textureFileNames = eveBracketsManager::getInstance()->getAllDdsPaths();
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureFileNames, textureArraySRV);
 
@@ -405,24 +411,24 @@ bool SpaceScene::InitResource()
 	// 设置顶点着色器中的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
-	/*for (auto p_denormalize : m_pSolarSystem->m_denormalizes) {
-		double factor = 40000000000;
+	for (auto p_denormalize : m_pSolarSystem->m_denormalizes) {
+		double factor = 1000;
 		float x = p_denormalize->x / factor;
 		float y = p_denormalize->y / factor;
 		float z = p_denormalize->z / factor;
-		Vertex3DPosIndex temp = { {x,y,z},m_pSolarSystem->typeIDtoTextureID(p_denormalize->typeID),p_denormalize->name };
+		Vertex3DPosIndex temp = { {x,y,z},(p_denormalize->bracketID),p_denormalize->name };
 		if(abs(temp.texIndex - 1.0 ) > 0.5f && abs(temp.texIndex - 2.0) > 0.5f && abs(temp.texIndex - 4.0) > 0.5f)
 			vertices3D.push_back(temp);
-	}*/
-	vertices3D = {
-		{{0.0f,0.0f,0.0f},0.0f, L"恒星"},
-		{{0.0f,1.0f,0.0f},1.0f, L"行星"},
-		{{1.0f,0.0f,0.0f},2.0f, L"卫星"},
-		{{0.0f,0.0f,1.0f},3.0f, L"小行星带"},
-		{{0.0f,0.0f,-1.0f},4.0f, L"星门"},
-		{{0.0f,-1.0f,0.0f},5.0f, L"空间站"},
-		{{-1.0f,0.0f,0.0f},5.0f, L"空间站"},
-	};
+	}
+	//vertices3D = {
+	//	{{0.0f,0.0f,0.0f},0.0f, L"恒星"},
+	//	{{0.0f,1.0f,0.0f},1.0f, L"行星"},
+	//	{{1.0f,0.0f,0.0f},2.0f, L"卫星"},
+	//	{{0.0f,0.0f,1.0f},3.0f, L"小行星带"},
+	//	{{0.0f,0.0f,-1.0f},4.0f, L"星门"},
+	//	{{0.0f,-1.0f,0.0f},5.0f, L"空间站"},
+	//	{{-1.0f,0.0f,0.0f},5.0f, L"空间站"},
+	//};
 
 
 

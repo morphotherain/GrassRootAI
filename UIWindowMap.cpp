@@ -24,8 +24,6 @@ const D3D11_INPUT_ELEMENT_DESC UIWindowMap::LineVertexPosColor::inputLayout[2] =
 
 UIWindowMap::UIWindowMap() : UIWindow()
 {
-	width = 1880.0f;
-	height = 1080.0f;
 
 }
 
@@ -178,8 +176,10 @@ void UIWindowMap::DrawUI()
 
 	// 2. 设置新的视口，留出左边 40 像素
 	D3D11_VIEWPORT adjustedViewport = originalViewport;
-	adjustedViewport.TopLeftX = 40.0f;
-	adjustedViewport.Width = static_cast<float>(originalViewport.Width - 40);
+	adjustedViewport.TopLeftX = x;
+	adjustedViewport.TopLeftY = y + TitleHeight;
+	adjustedViewport.Width = deltaX;
+	adjustedViewport.Height = deltaY - TitleHeight;
 	m_pd3dImmediateContext->RSSetViewports(1, &adjustedViewport);
 
 
@@ -203,6 +203,7 @@ void UIWindowMap::DrawUI()
 
 	double factor = 40000000000000000.0; // 用于坐标缩放
 
+
 	// 遍历每个星域名称文本并更新位置
 	for (size_t i = 0; i < m_regions.size(); ++i)
 	{
@@ -219,8 +220,13 @@ void UIWindowMap::DrawUI()
 
 		// 将归一化设备坐标映射到屏幕坐标
 		DirectX::XMFLOAT2 screenPos;
-		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * 1920.0f;  // 假设 m_screenWidth 是屏幕宽度
-		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * 1080.0f; // 假设 m_screenHeight 是屏幕高度
+		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width + adjustedViewport.TopLeftX;  // 假设 m_screenWidth 是屏幕宽度
+
+		if (screenPos.x < adjustedViewport.TopLeftX || screenPos.x > adjustedViewport.TopLeftX + adjustedViewport.Width) screenPos.x = -10000.0f;
+
+		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height + adjustedViewport.TopLeftY; // 假设 m_screenHeight 是屏幕高度
+
+		if (screenPos.y < adjustedViewport.TopLeftY || screenPos.y > adjustedViewport.TopLeftY + adjustedViewport.Height) screenPos.y = -10000.0f;
 
 		// 更新文本位置
 		regionTexts[i]->setSize(screenPos.x, screenPos.y , 350.0f, 350.0f);

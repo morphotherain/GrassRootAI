@@ -24,6 +24,8 @@ public:
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 
+	ComPtr<ID2D1RenderTarget> GetD2DRenderTarget() { return m_pd2dRenderTarget; };
+
 protected:
 
 	HWND      m_hMainWnd;        // 主窗口句柄
