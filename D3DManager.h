@@ -2,7 +2,18 @@
 
 #include <d3d11_1.h>
 #include <wrl/client.h>
+#include "d3dUtil.h"
+#include <wrl/client.h>
+#include <string>
+#include <d3d11_1.h>
+#include <d2d1.h>
+#include <dwrite.h>
+#include <DirectXMath.h>
+#include "DXTrace.h"
 
+
+template <typename T>
+using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 class D3DManager {
 public:
@@ -13,10 +24,15 @@ public:
     }
 
     // 初始化：接受已经创建好的 D3D 设备和上下文
-    void initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain) {
+    void initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain,
+        ID3D11RenderTargetView* renderTargetView, ID3D11DepthStencilView* depthStencilView, UINT _width, UINT _height) {
         m_device = device;
         m_deviceContext = deviceContext;
         m_swapChain = swapChain;
+        m_renderTargetView = renderTargetView;
+        m_depthStencilView = depthStencilView;
+        width = _width;
+        height = _height;
     }
 
     // 清空渲染目标和深度模板
@@ -58,5 +74,12 @@ private:
     // 预留接口：支持渲染目标视图和深度模板视图的管理
     ComPtr<ID3D11RenderTargetView> m_renderTargetView;
     ComPtr<ID3D11DepthStencilView> m_depthStencilView;
+
+    ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
+    ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
+    ComPtr<IDWriteTextFormat> m_pTextFormat;
+
+    UINT width;
+    UINT height;
 };
 

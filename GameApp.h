@@ -1,9 +1,6 @@
 #ifndef GAMEAPP_H
 #define GAMEAPP_H
 
-#include "d3dApp.h"
-#include "Camera.h"
-#include "Scene.h"
 #include "demoScene.h"
 #include "DockScene.h"
 #include "MainScene.h"

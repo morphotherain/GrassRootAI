@@ -52,4 +52,6 @@ private:
 	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
 
 	std::vector<MapVertexPosColor> GenerateVertices(int n);
+
+	std::shared_ptr<Effect> m_effect;
 };

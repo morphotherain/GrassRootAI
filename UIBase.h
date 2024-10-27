@@ -1,5 +1,10 @@
 ﻿#pragma once
-#include "Scene.h"
+#include "d3dUtil.h"
+#include "DXTrace.h"
+#include <vector>
+#include <DirectXMath.h>
+#include "Camera.h"
+#include "ddsLoader.h"
 class UIBase
 {
 public:

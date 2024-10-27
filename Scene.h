@@ -4,8 +4,8 @@
 #include <vector>
 #include <DirectXMath.h>
 #include "Camera.h"
-#include "core.h"
 #include "ddsLoader.h"
+#include "RenderProxy.h"
 
 class UIBase;
 class GameObject;

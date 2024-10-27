@@ -49,6 +49,12 @@
     <Filter Include="数据库\数据表">
       <UniqueIdentifier>{640956c6-d434-4e35-8280-e4094ea2d7ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EffectComponent">
+      <UniqueIdentifier>{9519a093-4a8c-4882-950b-ce7fd53a549d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect框架">
+      <UniqueIdentifier>{274985dc-b5af-4033-b7ff-380af0ad55d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -90,17 +96,11 @@
     <ClCompile Include="GameApp.cpp">
       <Filter>游戏架构</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>游戏架构</Filter>
-    </ClCompile>
     <ClCompile Include="demoScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="MainScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="UIBase.cpp">
-      <Filter>游戏架构</Filter>
     </ClCompile>
     <ClCompile Include="UIButton.cpp">
       <Filter>UI</Filter>
@@ -174,6 +174,57 @@
     <ClCompile Include="D3DManager.cpp">
       <Filter>d3d架构</Filter>
     </ClCompile>
+    <ClCompile Include="BlendStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="GSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="PSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="VSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderProxy.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectComponent.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturesComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexData.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -215,17 +266,11 @@
     <ClInclude Include="GameApp.h">
       <Filter>游戏架构</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>游戏架构</Filter>
-    </ClInclude>
     <ClInclude Include="demoScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="MainScene.h">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="UIBase.h">
-      <Filter>游戏架构</Filter>
     </ClInclude>
     <ClInclude Include="UIButton.h">
       <Filter>UI</Filter>
@@ -301,6 +346,60 @@
     </ClInclude>
     <ClInclude Include="D3DManager.h">
       <Filter>d3d架构</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="GSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="PSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="VSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderProxy.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturesComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectComponent.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexData.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBufferData.h">
+      <Filter>EffectComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

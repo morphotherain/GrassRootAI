@@ -147,8 +147,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BlendStateComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ConstantBufferComponent.cpp" />
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="D3DManager.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
@@ -157,25 +159,34 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="demoManager.cpp" />
     <ClCompile Include="demoScene.cpp" />
+    <ClCompile Include="DepthStencilStateComponent.cpp" />
     <ClCompile Include="DockScene.cpp" />
     <ClCompile Include="DXTrace.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="eveBracketsManager.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GamePlayer.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="GSEffectComponent.cpp" />
+    <ClCompile Include="IndexBufferComponent.cpp" />
     <ClCompile Include="invGroupsManager.cpp" />
     <ClCompile Include="InvTypesManager.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="PSEffectComponent.cpp" />
+    <ClCompile Include="RasterizerStateComponent.cpp" />
     <ClCompile Include="RenderComponent.cpp" />
+    <ClCompile Include="RenderProxy.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shell.c" />
     <ClCompile Include="SolarSystem.cpp" />
     <ClCompile Include="SpaceScene.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="TexturesComponent.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="UIBase.cpp" />
@@ -187,11 +198,17 @@
     <ClCompile Include="UIWindowInfo.cpp" />
     <ClCompile Include="UIWindowMap.cpp" />
     <ClCompile Include="UIWindowOverview.cpp" />
+    <ClCompile Include="VertexBufferComponent.cpp" />
+    <ClCompile Include="vertexData.cpp" />
+    <ClCompile Include="VSEffectComponent.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlendStateComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ConstantBufferComponent.h" />
+    <ClInclude Include="ConstantBufferData.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="d3dApp.h" />
     <ClInclude Include="D3DManager.h" />
@@ -201,25 +218,35 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="demoManager.h" />
     <ClInclude Include="demoScene.h" />
+    <ClInclude Include="DepthStencilStateComponent.h" />
     <ClInclude Include="DockScene.h" />
     <ClInclude Include="DXTrace.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="eveBracketsManager.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GamePlayer.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="GSEffectComponent.h" />
+    <ClInclude Include="IndexBufferComponent.h" />
     <ClInclude Include="invGroupsManager.h" />
     <ClInclude Include="InvTypesManager.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="PSEffectComponent.h" />
+    <ClInclude Include="RasterizerStateComponent.h" />
     <ClInclude Include="RenderComponent.h" />
+    <ClInclude Include="RenderProxy.h" />
+    <ClInclude Include="SamplerStateComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SingletonBase.h" />
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="SpaceScene.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sqlite3ext.h" />
+    <ClInclude Include="TexturesComponent.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="UIBase.h" />
@@ -231,6 +258,9 @@
     <ClInclude Include="UIWindowInfo.h" />
     <ClInclude Include="UIWindowMap.h" />
     <ClInclude Include="UIWindowOverview.h" />
+    <ClInclude Include="VertexBufferComponent.h" />
+    <ClInclude Include="VertexData.h" />
+    <ClInclude Include="VSEffectComponent.h" />
     <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +438,7 @@
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </HeaderFileOutput>
     </FxCompile>
+    <ClCompile Include="SamplerStateComponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

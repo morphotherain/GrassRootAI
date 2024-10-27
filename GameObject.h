@@ -2,7 +2,6 @@
 #include <vector>
 #include <memory>
 // 包含所有组件类型的头文件
-#include "Component.h"
 #include "TransformComponent.h"
 
 class GameObject {

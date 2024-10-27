@@ -119,6 +119,14 @@ bool D3DApp::Init()
 	if (!InitDirect3D())
 		return false;
 
+	D3DManager::getInstance().initialize(m_pd3dDevice.Get(),
+		m_pd3dImmediateContext.Get(),
+		m_pSwapChain.Get(),
+		m_pRenderTargetView.Get(),
+		m_pDepthStencilView.Get(),
+		m_ClientWidth, 
+		m_ClientHeight);
+
 
 	return true;
 }
