@@ -52,6 +52,8 @@ public:
     template<typename T>
     std::shared_ptr<ConstantBufferComponent<T>> getConstantBuffer() { return std::dynamic_pointer_cast<ConstantBufferComponent<T>>(ConstantBuffer); }
 
+    std::shared_ptr<TexturesComponent> getTextures(){ return std::dynamic_pointer_cast<TexturesComponent>(Textures); }
+
     std::shared_ptr<EffectComponent> VS;
     std::shared_ptr<EffectComponent> PS;
     std::shared_ptr<EffectComponent> GS;

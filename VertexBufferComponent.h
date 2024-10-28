@@ -12,6 +12,7 @@ public:
     virtual void apply();
 
     void setVertices(const std::vector<VertexDataType>& _vertices) { m_vertices = _vertices; }
+	std::vector<VertexDataType> getVertices() { return m_vertices; }
     UINT getVerticsCount() { return (UINT)m_vertices.size(); }
 private:
 

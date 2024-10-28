@@ -14,27 +14,28 @@ const D3D11_INPUT_ELEMENT_DESC UIButton::VertexPosColor::inputLayout[3] = {
 
 
 
-std::vector<UIButton::MapVertexPosColor> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
+std::vector<PosTexIndex> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
 	_x = _x / 10.0f;
 	_y = 1080.0f - _y;
 	_y = _y / 10.0f;
 	_deltaX = _deltaX / 10.0f;
 	_deltaY = -_deltaY / 10.0f;
 
-	std::vector<MapVertexPosColor> vertices;
+	std::vector<PosTexIndex> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
 
+	float TexID = 2;
 
 	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), TexID });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
 
 	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), TexID });
 
 
 	return vertices;
@@ -88,23 +89,7 @@ void UIButton::DrawUI()
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
 
-	// 输入装配阶段的顶点缓冲区设置
-	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
-	UINT offset = 0;						// 起始偏移量
-
-	//按钮绘制
-
-	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); //新增
-	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); //新增
-
-	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);//D3D11_PRIMITIVE_TOPOLOGY_LINELIST
-
-	m_pd3dImmediateContext->PSSetShaderResources(0, 1, button_textureArraySRV.GetAddressOf()); //绑定纹理
-
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, button_m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
-
-	m_pd3dImmediateContext->Draw(6, 0);
+	m_effect->apply();
 
 }
 
@@ -116,29 +101,17 @@ void UIButton::cleanup()
 
 bool UIButton::InitResource()
 {
-
-	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
-
+	 
 	std::vector<std::string> textureButtonFileNames = {
 		TexPath
 	};
+	m_effect = std::make_shared<Effect>();
 
-	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, button_textureArraySRV);
-
-	std::vector<MapVertexPosColor> button_vertices = GenerateButtonVertices(x, y, deltaX, deltaY);
-	// 设置顶点缓冲区描述
-	D3D11_BUFFER_DESC vbd;
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(VertexPosColor) * button_vertices.size(); // 注意这里的变化
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	// 新建顶点缓冲区
-	D3D11_SUBRESOURCE_DATA InitData;
-	ZeroMemory(&InitData, sizeof(InitData));
-	InitData.pSysMem = button_vertices.data();
-	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, button_m_pVertexBuffer.GetAddressOf()));
-
+	m_effect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
+	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateButtonVertices(x, y, deltaX, deltaY));
+	m_effect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
+	m_effect->addTextures(textureButtonFileNames);
+	m_effect->Init();
 
 	return true;
 }
@@ -148,16 +121,17 @@ bool UIButton::InitEffect()
 
 	ComPtr<ID3DBlob> blob;
 
-	// 创建顶点着色器
-	HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
+	//// 创建顶点着色器
+	//HR(CreateShaderFromFile(L"HLSL\\Triangle_VS.cso", L"HLSL\\Triangle_VS.hlsl", "VS", "vs_5_0", blob.ReleaseAndGetAddressOf()));
+	//HR(m_pd3dDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pVertexShader.GetAddressOf()));
 
-	// 创建并绑定顶点布局
-	HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
-		blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
+	//// 创建并绑定顶点布局
+	//HR(m_pd3dDevice->CreateInputLayout(VertexPosColor::inputLayout, ARRAYSIZE(VertexPosColor::inputLayout),
+	//	blob->GetBufferPointer(), blob->GetBufferSize(), m_pVertexLayout.GetAddressOf()));
 
-	// 创建像素着色器
-	HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
+	//// 创建像素着色器
+	//HR(CreateShaderFromFile(L"HLSL\\Triangle_PS.cso", L"HLSL\\Triangle_PS.hlsl", "PS", "ps_5_0", blob.ReleaseAndGetAddressOf()));
+	//HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
+	//return true;
 	return true;
 }

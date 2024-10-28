@@ -57,7 +57,7 @@ private:
 	std::string MinTexPath;
 	std::string BodyTexPath;
 
-
+	std::shared_ptr<Effect> m_itemImgEffect;
 
 	// 窗口标志变量
 	bool isVisible = true;

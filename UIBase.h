@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include "Camera.h"
 #include "ddsLoader.h"
+#include "RenderProxy.h"
+
 class UIBase
 {
 public:
@@ -30,6 +32,8 @@ public:
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 
 	ComPtr<ID2D1RenderTarget> GetD2DRenderTarget() { return m_pd2dRenderTarget; };
+
+	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float TexID);
 
 protected:
 

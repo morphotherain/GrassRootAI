@@ -12,7 +12,8 @@ public:
 
 	virtual void apply();
 
-	void settextureFileNames(std::vector<std::string> textureFileNames) { this->textureFileNames = textureFileNames; }
+	void setTextureFileNames(std::vector<std::string> textureFileNames) { this->textureFileNames = textureFileNames; }
+	void addTextureFileName(std::string textureFileName) { this->textureFileNames.push_back(textureFileName); }
 
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ddsLoader m_ddsLoader;                                //材质加载

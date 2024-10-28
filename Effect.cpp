@@ -60,13 +60,13 @@ void Effect::Init()
 }
 
 void Effect::apply() {
+    applyEffectComponent(Textures);
     applyEffectComponent(VS);
     applyEffectComponent(PS);
     applyEffectComponent(GS);
     applyEffectComponent(VertexBuffer);
     applyEffectComponent(ConstantBuffer);
     applyEffectComponent(IndexBuffer);
-    applyEffectComponent(Textures);
     applyEffectComponent(BlendState);
     applyEffectComponent(DepthStencilState);
     applyEffectComponent(SamplerState);

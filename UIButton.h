@@ -52,6 +52,8 @@ private:
 	float deltaY = 4.0f;
 	std::string TexPath;
 
-	std::vector<UIButton::MapVertexPosColor> GenerateButtonVertices(float x, float y, float deltaX, float deltaY);
+	std::shared_ptr<Effect> m_effect;
+
+	std::vector<PosTexIndex> GenerateButtonVertices(float x, float y, float deltaX, float deltaY);
 };
 

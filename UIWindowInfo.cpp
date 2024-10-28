@@ -31,7 +31,6 @@ std::string extractFilename(const std::string& path) {
 	return "";
 }
 
-
 // 去除宽字符串中的尖括号内容
 std::wstring removeAngleBracketsContent(const std::wstring& str) {
 	std::wstring result = str;
@@ -57,10 +56,8 @@ void TestDataBase() {
 
 using namespace DirectX;
 
-
 UIWindowInfo::UIWindowInfo() : UIWindow()
 {
-
 }
 
 bool UIWindowInfo::Init()
@@ -73,7 +70,6 @@ bool UIWindowInfo::Init()
 	int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
 
 	while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-
 		testItem.Name = sqlite3_column_wstring(stmt, 6);
 		testItem.Description = sqlite3_column_wstring(stmt, 12);
 		testItem.IconId = sqlite3_column_int(stmt, 17);
@@ -93,19 +89,6 @@ bool UIWindowInfo::Init()
 		testItem.IconPath = extractFilename(testItem.IconPath);
 	}
 	sqlite3_finalize(stmt2);
-
-	InitWindowComponent();
-
-	auto button = std::make_shared<UIButton>();
-	button->setSize(x+20.0f, y+160.f, 379.0f, 1.0f);
-	button->setTex("demoTex\\UI\\Window\\window_line.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 20.0f, y + 161.f, 50.0f, 25.0f);
-	button->setTex("demoTex\\UI\\Window\\window_line.dds");
-	AddUIComponent(button);
-
 
 	auto text = std::make_shared<UIText>();
 	text->setSize(x + 170.0f, y + 50.0f, 350.0f, 350.0f);
@@ -130,21 +113,33 @@ bool UIWindowInfo::Init()
 	text->setText(Description);
 	AddUIComponent(text);
 
-
 	text = std::make_shared<UIText>();
 	text->setSize(x + 25.0f, y + 200.0f, 350.0f, 350.0f);
 	text->setText(testItem.Description);
 	AddUIComponent(text);
 
-
 	std::string IconPath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Types\\Types\\dds\\";
 	IconPath += std::to_string(typeID);//testItem.IconPath;
 	IconPath += "_64.dds";
 
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 20.0f, y + 30.0f, 128.0f, 128.0f);
-	button->setTex(IconPath);
-	AddUIComponent(button);
+	InitWindowComponent();
+	auto Texture = m_windowEffect->getTextures();
+	Texture->addTextureFileName("demoTex\\UI\\Window\\window_line.dds");
+
+	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
+	GenerateRectVertex(vertices, x + 20.0f, y + 160.f, 379.0f, 1.0f, 5.0f);
+	GenerateRectVertex(vertices, x + 20.0f, y + 160.f, 379.0f, 1.0f, 5.0f);
+	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
+	m_windowEffect->Init();
+
+	m_itemImgEffect = std::make_shared<Effect>();
+	std::vector<PosTexIndex> vertexsImg = {};
+	GenerateRectVertex(vertexsImg, x + 20.0f, y + 30.0f, 128.0f, 128.0f, 6.0f);
+	m_itemImgEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
+	m_itemImgEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsImg);
+	m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
+	m_itemImgEffect->addTextures({ IconPath });
+	m_itemImgEffect->Init();
 
 	if (!InitEffect())
 		return false;
@@ -166,7 +161,6 @@ bool UIWindowInfo::Init()
 		component->Init();
 	}
 
-
 	return false;
 }
 
@@ -176,109 +170,28 @@ void UIWindowInfo::OnResize()
 
 void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
 {
-	// 更新鼠标事件，获取相对偏移量
-	Mouse::State mouseState = mouse.GetState();
-	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
-	m_MouseTracker.Update(mouseState);
-
-	Keyboard::State keyState = keyboard.GetState();
-	m_KeyboardTracker.Update(keyState);
-
-	// 获取子类
-	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
-
-	XMFLOAT3 adjustedPos;
-	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
-		XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f), XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f)));
-	cam1st->SetPosition(adjustedPos);
-
-
-	// 在鼠标没进入窗口前仍为ABSOLUTE模式
-	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
-	{
-		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
-			switchScene = 2;
-	}
-
-
 }
 
 void UIWindowInfo::DrawUI()
 {
-
-	// 假设 camera 是当前场景中的摄影机对象
-	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
-
-	// 映射常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (SUCCEEDED(hr))
-	{
-		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
-		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
-		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
-		dataPtr->projection = XMMatrixTranspose(projMatrix);
-		dataPtr->TexIndex = 0;
-
-		// 取消映射常量缓冲区
-		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
-
-		// 将常量缓冲区绑定到顶点着色器
-		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
-	}
+	m_windowEffect->apply();
+	m_itemImgEffect->apply();
 
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
-
 }
 
 void UIWindowInfo::cleanup()
 {
 }
 
-
-
 bool UIWindowInfo::InitResource()
 {
-	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
-	m_pCamera = camera;
-	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
-	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
-	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
-
-	D3D11_BUFFER_DESC matrixBufferDesc;
-	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
-	// 使用设备创建缓冲区
-	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
-
-	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
-	// 更新常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	HR(m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
-	MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
-	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
-	dataPtr->projection = XMMatrixTranspose(projMatrix);
-	dataPtr->TexIndex = 0;
-
-	// 取消映射常量缓冲区
-	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 	return true;
 }
 
 bool UIWindowInfo::InitEffect()
 {
-
 	return true;
 }

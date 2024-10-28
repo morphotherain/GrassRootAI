@@ -35,6 +35,10 @@ protected:
 	float TitleHeight = 27.0f;
 	std::wstring windowTitle = L"";
 
+	std::shared_ptr<Effect> m_windowEffect;
+	std::vector<std::string> textureWindowFileNames;
+	std::vector<PosTexIndex> vertices;
+
 
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
@@ -53,7 +57,6 @@ private:
 	std::string MaxTexPath;
 	std::string MinTexPath;
 	std::string BodyTexPath;
-
 
 
 	// 窗口标志变量

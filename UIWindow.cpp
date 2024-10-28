@@ -74,6 +74,7 @@ void UIWindow::DrawUI()
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
+	m_windowEffect->apply();
 
 }
 
@@ -97,7 +98,27 @@ bool UIWindow::InitEffect()
 
 void UIWindow::InitWindowComponent()
 {
-	auto button = std::make_shared<UIButton>();
+	textureWindowFileNames = {
+		"demoTex\\UI\\Window\\window_body.dds",
+		"demoTex\\UI\\Window\\window_title.dds",
+		"demoTex\\UI\\Window\\window_min.dds",
+		"demoTex\\UI\\Window\\window_max.dds",
+		"demoTex\\UI\\Window\\window_close.dds"
+	};
+
+	GenerateRectVertex(vertices, x, y, width, height, 0.0f);
+	GenerateRectVertex(vertices, x, y, width, TitleHeight, 1.0f);
+	GenerateRectVertex(vertices, x + width - 3 * TitleHeight, y, TitleHeight, TitleHeight, 2.0f);
+	GenerateRectVertex(vertices, x + width - 2 * TitleHeight, y, TitleHeight, TitleHeight, 3.0f);
+	GenerateRectVertex(vertices, x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight, 4.0f);
+
+	m_windowEffect = std::make_shared<Effect>();
+	m_windowEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
+	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
+	m_windowEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
+	m_windowEffect->addTextures(textureWindowFileNames);
+
+	/*auto button = std::make_shared<UIButton>();
 	button->setSize(x, y, width, height);
 	button->setTex("demoTex\\UI\\Window\\window_body.dds");
 	AddUIComponent(button);
@@ -120,7 +141,7 @@ void UIWindow::InitWindowComponent()
 	button = std::make_shared<UIButton>();
 	button->setSize(x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight);
 	button->setTex("demoTex\\UI\\Window\\window_close.dds");
-	AddUIComponent(button);
+	AddUIComponent(button);*/
 
 	if (windowTitle != L"") {
 		auto text = std::make_shared<UIText>();
