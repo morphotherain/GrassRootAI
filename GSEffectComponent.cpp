@@ -15,3 +15,9 @@ void GSEffectComponent::apply()
 	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 	m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0); // 线的顶点着色器
 }
+
+void GSEffectComponent::clear()
+{
+	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
+	m_pd3dImmediateContext->GSSetShader(nullptr, nullptr, 0); // 线的顶点着色器
+}

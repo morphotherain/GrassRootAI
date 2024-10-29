@@ -44,6 +44,8 @@ public:
     void addBlendState();
     void addSamplerState();
 
+    void clearShader();
+
     template<typename T>
     std::shared_ptr<VSEffectComponent<T>> getVertexShader(){ return std::dynamic_pointer_cast<VSEffectComponent<T>>(VS); }
 

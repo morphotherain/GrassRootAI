@@ -31,5 +31,12 @@ struct LineVertexPosColor
 	static const D3D11_INPUT_ELEMENT_DESC inputLayout[2];
 };
 
+// 顶点结构，包含一个 3D 位置
+struct VertexPos
+{
+	DirectX::XMFLOAT3 PosL; // 立方体顶点的局部空间位置
+	static const D3D11_INPUT_ELEMENT_DESC inputLayout[1];
+};
+
 
 #endif

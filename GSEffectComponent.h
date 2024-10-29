@@ -11,6 +11,8 @@ public:
 
     virtual void apply();
 
+    virtual void clear();
+
 
     void SetGSFileName(std::wstring gsFileName) { m_gsFileName = gsFileName; };
     void SetCSOFileName(std::wstring csoFileName) { m_csoFileName = csoFileName; };

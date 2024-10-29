@@ -11,6 +11,8 @@ public:
 
     virtual void apply();
 
+    virtual void clear();
+
     void SetVSFileName(std::wstring vsFileName) { m_vsFileName = vsFileName; };
     void SetCSOFileName(std::wstring csoFileName) { m_csoFileName = csoFileName; };
     void setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY topology) { PrimitiveTopology = topology; };
@@ -45,4 +47,11 @@ void VSEffectComponent<VertexDataType>::apply()
     m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get()); // 顶点布局
     m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); // 线的顶点着色器
     m_pd3dImmediateContext->IASetPrimitiveTopology(PrimitiveTopology); // 图元拓扑
+}
+
+template<typename VertexDataType>
+inline void VSEffectComponent<VertexDataType>::clear()
+{
+    auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
+    m_pd3dImmediateContext->VSSetShader(nullptr, nullptr, 0); // 线的顶点着色器
 }

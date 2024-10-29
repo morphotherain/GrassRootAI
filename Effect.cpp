@@ -45,6 +45,11 @@ void Effect::addSamplerState()
     SamplerState = std::make_shared<SamplerStateComponent>();
 }
 
+void Effect::clearShader()
+{
+    GS->clear();
+}
+
 
 
 

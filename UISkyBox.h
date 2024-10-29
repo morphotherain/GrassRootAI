@@ -9,18 +9,13 @@ public:
 	UISkyBox(HINSTANCE _hInstance) :UIBase(_hInstance) {}
 	~UISkyBox() = default;
 
-	// 顶点结构，包含一个 3D 位置
-	struct VertexPos
-	{
-		DirectX::XMFLOAT3 PosL; // 立方体顶点的局部空间位置
-		static const D3D11_INPUT_ELEMENT_DESC inputLayout[1];
-	};
+
 
 	// 定义常量缓冲区结构
-	struct MatrixBufferType
+	/*struct MatrixBufferType
 	{
 		DirectX::XMMATRIX g_WorldViewProj;
-	};
+	};*/
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -36,6 +31,8 @@ public:
 	std::shared_ptr<bool> getClickFlag() { return clickFlag; }
 
 private:
+	std::shared_ptr<Effect> m_skyboxEffect;
+
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
 	ComPtr<ID3D11InputLayout> button_m_pVertexLayout;	// 顶点输入布局
@@ -55,6 +52,6 @@ private:
 	float deltaY = 4.0f;
 	std::string TexPath;
 
-	std::vector<UISkyBox::VertexPos> GenerateButtonVertices();
+	std::vector<VertexPos> GenerateButtonVertices();
 };
 

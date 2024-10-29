@@ -251,6 +251,8 @@ void UIWindowMap::DrawUI()
 	m_mapPointEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_mapPointEffect->apply();
 
+	m_mapPointEffect->clearShader();
+
 	m_pd3dImmediateContext->RSSetViewports(1, &originalViewport);
 
 	return;
