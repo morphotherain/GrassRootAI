@@ -19,49 +19,27 @@ const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-
-
-std::vector<MainScene::MapVertexPosColor>  MainScene::GenerateVertices(int n) {
-	std::vector<MapVertexPosColor> vertices;
-
-	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
-
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaX = 192.0f;
-	float deltaY = 108.0f;
-
-	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-
-	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
-
-	return vertices;
-}
 std::vector<PosTexIndex>  GenerateVertices(int n) {
 	std::vector<PosTexIndex> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
 
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaX = 192.0f;
-	float deltaY = 108.0f;
+	float _x = 0.0f;
+	float _y = 1080.0f;
+	_y = _y / 10.0f;
+	float _deltaX = 1920.0f / 10.0f;
+	float _deltaY = -1080.0f / 10.0f;
+	float TexID = 0.0f;
 
 	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
+	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), TexID });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
 
 	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
+	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
+	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), TexID });
 
 	return vertices;
 }
@@ -218,7 +196,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 	tick++;
 
-	switchScene = 0;
+	switchScene = 3;
 
 
 	// 退出程序，这里应向窗口发送销毁信息
@@ -241,18 +219,21 @@ void MainScene::DrawScene()
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
 
+
 	ConstantMVPIndex* dataPtr = m_effect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 	dataPtr->projection = XMMatrixTranspose(projMatrix);
 	dataPtr->TexIndex = 0;
 	m_effect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
-
 	m_effect->apply();
+
 
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
+
+
 
 	HR(m_pSwapChain->Present(1, 0));
 

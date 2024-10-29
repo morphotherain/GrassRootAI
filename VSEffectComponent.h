@@ -4,7 +4,7 @@
 template <typename VertexDataType>
 class VSEffectComponent : public EffectComponent {
 public:
-    VSEffectComponent(std::wstring vsFileName, std::wstring csoFileName):m_vsFileName(vsFileName), m_csoFileName(csoFileName) {}
+    VSEffectComponent(std::wstring vsFileName, std::wstring csoFileName):m_vsFileName(vsFileName), m_csoFileName(csoFileName),PrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST){}
     ~VSEffectComponent() {};
 
     virtual void Init();
@@ -13,12 +13,15 @@ public:
 
     void SetVSFileName(std::wstring vsFileName) { m_vsFileName = vsFileName; };
     void SetCSOFileName(std::wstring csoFileName) { m_csoFileName = csoFileName; };
+    void setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY topology) { PrimitiveTopology = topology; };
 
     std::wstring m_vsFileName;
     std::wstring m_csoFileName;
 
     ComPtr<ID3D11VertexShader> m_pVertexShader;	
     ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
+
+    D3D11_PRIMITIVE_TOPOLOGY PrimitiveTopology;
 };
 
 template <typename VertexDataType>
@@ -39,7 +42,7 @@ template <typename VertexDataType>
 void VSEffectComponent<VertexDataType>::apply()
 {
     auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
-    m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); // 线的顶点着色器
-    m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // 图元拓扑
     m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get()); // 顶点布局
+    m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); // 线的顶点着色器
+    m_pd3dImmediateContext->IASetPrimitiveTopology(PrimitiveTopology); // 图元拓扑
 }

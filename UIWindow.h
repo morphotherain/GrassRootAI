@@ -39,6 +39,8 @@ protected:
 	std::vector<std::string> textureWindowFileNames;
 	std::vector<PosTexIndex> vertices;
 
+	std::shared_ptr<Camera> m_pWindowCamera;						    // 摄像机
+
 
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;

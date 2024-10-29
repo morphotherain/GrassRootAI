@@ -139,6 +139,7 @@ bool UIWindowInfo::Init()
 	m_itemImgEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsImg);
 	m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_itemImgEffect->addTextures({ IconPath });
+	m_itemImgEffect->addConstantBuffer<ConstantMVPIndex>();
 	m_itemImgEffect->Init();
 
 	if (!InitEffect())
@@ -174,7 +175,26 @@ void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 void UIWindowInfo::DrawUI()
 {
+
+	// 假设 camera 是当前场景中的摄影机对象
+	DirectX::XMMATRIX viewMatrix = m_pWindowCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pWindowCamera->GetProjXM();
+
+	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtr->projection = XMMatrixTranspose(projMatrix);
+	dataPtr->TexIndex = 0;
+	m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_windowEffect->apply();
+
+
+	ConstantMVPIndex* dataPtrImg = m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtrImg->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtrImg->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtrImg->projection = XMMatrixTranspose(projMatrix);
+	dataPtrImg->TexIndex = 0;
+	m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_itemImgEffect->apply();
 
 	for (auto& component : childComponents) {

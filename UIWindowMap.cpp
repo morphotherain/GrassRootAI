@@ -33,6 +33,7 @@ bool UIWindowMap::Init()
 	UIWindow::windowTitle = L"星图";
 
 	InitWindowComponent();
+	m_windowEffect->Init();
 
 	if (!InitMap())
 		return false;
@@ -58,7 +59,7 @@ bool UIWindowMap::Init()
 		auto text = std::make_shared<UIText>();
 		text->setSize(scaledPos.x , scaledPos.y, 350.0f, 350.0f); // 设置文本位置和尺寸
 		text->setText(region.regionName); // 设置星域名称文本
-		AddUIComponent(text); // 假设 AddUIComponent 是用于添加 UI 组件的方法
+		AddUIComponent(text); 
 
 		// 存储文本对象以便后续更新
 		regionTexts.push_back(text);
@@ -166,9 +167,22 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 
 void UIWindowMap::DrawUI()
 {
+
+
+	DirectX::XMMATRIX viewMatrixWindow = m_pWindowCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrixWindow = m_pWindowCamera->GetProjXM();
+	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->view = XMMatrixTranspose(viewMatrixWindow); // 转置矩阵以匹配HLSL的期望
+	dataPtr->projection = XMMatrixTranspose(projMatrixWindow);
+	dataPtr->TexIndex = 0;
+	m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+	m_windowEffect->apply();
+
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
+
 	// 1. 保存当前视口
 	UINT numViewports = 1;
 	D3D11_VIEWPORT originalViewport;
@@ -181,18 +195,6 @@ void UIWindowMap::DrawUI()
 	adjustedViewport.Width = deltaX;
 	adjustedViewport.Height = deltaY - TitleHeight;
 	m_pd3dImmediateContext->RSSetViewports(1, &adjustedViewport);
-
-
-	//应用混合状态
-	float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_pd3dImmediateContext->OMSetBlendState(m_pBlendState.Get(), blendFactor, 0xffffffff);
-
-	//static float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// RGBA = (0,0,0,255)
-	//static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA = (255,255,255,255)
-	//m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
-	//m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-
 
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
@@ -232,57 +234,26 @@ void UIWindowMap::DrawUI()
 		regionTexts[i]->setSize(screenPos.x, screenPos.y , 350.0f, 350.0f);
 	}
 
-	// 映射常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	HRESULT hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if (SUCCEEDED(hr))
-	{
-		MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
-		dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
-		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
-		dataPtr->projection = XMMatrixTranspose(projMatrix);
-
-		// 将摄像机位置存储到常量缓冲区
-		DirectX::XMStoreFloat3(&dataPtr->cameraPosition, cameraPosition); // 将摄像机位置存储到常量缓冲区
-
-		// 取消映射常量缓冲区
-		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
-
-		// 将常量缓冲区绑定到顶点着色器
-		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
-	}
+	ConstantMVPIndex* dataPtrLine = m_mapLineEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtrLine->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtrLine->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtrLine->projection = XMMatrixTranspose(projMatrix);
+	dataPtrLine->TexIndex = 0;
+	m_mapLineEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+	m_mapLineEffect->apply();
 
 
+	ConstantMVPIndex* dataPtrPoint = m_mapPointEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtrPoint->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtrPoint->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtrPoint->projection = XMMatrixTranspose(projMatrix);
+	dataPtrPoint->TexIndex = 0;
+	m_mapPointEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+	m_mapPointEffect->apply();
 
-	// 绘制连接线（线条）
-	UINT stride = sizeof(LineVertexPosColor);
-	UINT offset = 0;
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBufferLines.GetAddressOf(), &stride, &offset);
-	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayoutLines.Get());
-	m_pd3dImmediateContext->VSSetShader(m_pVertexShaderLines.Get(), nullptr, 0); // 线的顶点着色器
-	m_pd3dImmediateContext->PSSetShader(m_pPixelShaderLines.Get(), nullptr, 0); // 线的像素着色器
-	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-	m_pd3dImmediateContext->Draw(numLinePoint, 0);
-
-	int temp = 0;
-	// 绘制星系（点）
-	stride = sizeof(PointVertexPosColor);
-	offset = 0;
-	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBufferPoints.GetAddressOf(), &stride, &offset); //这里在图形调试时始终会报错
-	m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayoutPoints.Get());     //!!!!!!!
-	m_pd3dImmediateContext->VSSetShader(m_pVertexShaderPoints.Get(), nullptr, 0); // 点的顶点着色器
-	m_pd3dImmediateContext->PSSetShader(m_pPixelShaderPoints.Get(), nullptr, 0); // 点的像素着色器
-	m_pd3dImmediateContext->GSSetShader(m_pGeometryShader.Get(), nullptr, 0); // 绑定几何着色器
-	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	m_pd3dImmediateContext->Draw(numPoint, 0); // 使用实例化渲染
-	m_pd3dImmediateContext->GSSetShader(nullptr, nullptr, 0);  // 空置几何着色器
-
-
-	m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0); // 顶点着色器
-	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); // 像素着色器
-	m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_pd3dImmediateContext->RSSetViewports(1, &originalViewport);
 
+	return;
 
 }
 
@@ -595,57 +566,6 @@ bool UIWindowMap::InitResource()
 	camera->Approach(-0.00f);
 
 
-	D3D11_SAMPLER_DESC sampDesc;
-	ZeroMemory(&sampDesc, sizeof(sampDesc));
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;  // 使用点采样
-	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用U方向上的循环
-	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用V方向上的循环
-	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;   // 禁用W方向上的循环，对3D纹理有效
-	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	sampDesc.MinLOD = 0;
-	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	ComPtr<ID3D11SamplerState> pSamplerState;
-	HRESULT hr = m_pd3dDevice->CreateSamplerState(&sampDesc, pSamplerState.GetAddressOf());
-	if (FAILED(hr))
-	{
-		// 处理错误
-	}
-
-	// 绑定采样器状态到像素着色器
-	m_pd3dImmediateContext->PSSetSamplers(0, 1, pSamplerState.GetAddressOf());
-
-
-	D3D11_BUFFER_DESC matrixBufferDesc;
-	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixBufferDesc.MiscFlags = 0;
-	matrixBufferDesc.StructureByteStride = 0;
-	// 使用设备创建缓冲区
-	m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
-
-	// 更新常量缓冲区
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
-	hr = m_pd3dImmediateContext->Map(matrixBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	// 确保检查hr的值...
-
-	// 获取子类
-	auto cam3st = std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
-
-	// 映射常量缓冲区，确保成功后...
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
-	dataPtr->view = XMMatrixTranspose(cam3st->GetViewXM()); // 确保矩阵是列主序以适配HLSL默认
-	dataPtr->projection = XMMatrixTranspose(cam3st->GetProjXM());
-
-	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
-
-	// 设置顶点着色器中的常量缓冲区
-	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 
 	std::vector<PointVertexPosColor> verticesPoints;
 	std::vector<LineVertexPosColor> verticesLines;
@@ -654,123 +574,32 @@ bool UIWindowMap::InitResource()
 	numPoint = verticesPoints.size();
 	numLinePoint = verticesLines.size();
 
-	/*std::vector<PointVertexPosColor> verticesPoints = {
-	{ DirectX::XMFLOAT3(0.2f, 0.2f, -0.2f) ,DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), 3.0f },
-	{ DirectX::XMFLOAT3(0.2f, 0.3f, 0.0f)  ,DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f),1.0f }, 
-	};*/
-	//{ DirectX::XMFLOAT3(2.0f, 2.0f, 0.0f) ,DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), 0.5f }
-	//};
-	// 设置顶点缓冲区描述
-	D3D11_BUFFER_DESC vbd;
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(PointVertexPosColor) * verticesPoints.size(); // 注意这里的变化
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	// 新建顶点缓冲区
-	D3D11_SUBRESOURCE_DATA InitDataPoints;
-	ZeroMemory(&InitDataPoints, sizeof(InitDataPoints));
-	InitDataPoints.pSysMem = verticesPoints.data();
-	auto mHR = (m_pd3dDevice->CreateBuffer(&vbd, &InitDataPoints, m_pVertexBufferPoints.GetAddressOf()));
-
-	/*std::vector<LineVertexPosColor> verticesLines = {
-	{ DirectX::XMFLOAT3(0.2f, 0.2f, -0.2f) ,DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), },
-	{ DirectX::XMFLOAT3(0.2f, 0.3f, 0.0f)  ,DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) }
-	};*/
-
-	ZeroMemory(&vbd, sizeof(vbd));
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(LineVertexPosColor) * verticesLines.size(); // 注意这里的变化
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-
-
-	D3D11_SUBRESOURCE_DATA InitDataLines;
-	ZeroMemory(&InitDataLines, sizeof(InitDataLines));
-	InitDataLines.pSysMem = verticesLines.data();
-	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitDataLines, m_pVertexBufferLines.GetAddressOf()));
 
 
 
-	D3D11_BLEND_DESC blendDesc = { 0 };
-	blendDesc.AlphaToCoverageEnable = FALSE;
-	blendDesc.IndependentBlendEnable = FALSE;
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	m_mapLineEffect = std::make_shared<Effect>();
 
-	// 创建混合状态对象
-	hr = m_pd3dDevice->CreateBlendState(&blendDesc, m_pBlendState.GetAddressOf());
-	if (SUCCEEDED(hr)) {
-	}
-	else {
-		// 错误处理
-	}
-
-	//// ******************
-	//// 给渲染管线各个阶段绑定好所需资源
-	////
-
-	//// 输入装配阶段的顶点缓冲区设置
-	//UINT stride = sizeof(PointVertexPosColor);	// 跨越字节数
-	//UINT offset = 0;						// 起始偏移量
-
-	//m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-	//// 设置图元类型，设定输入布局
-	//m_pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//m_pd3dImmediateContext->IASetInputLayout(m_pVertexLayout.Get());
-	//// 将着色器绑定到渲染管线
-	//m_pd3dImmediateContext->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
-	//m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
-	ComPtr<ID3DBlob> blobPoints;
-	ComPtr<ID3DBlob> blobLines;
-
-	// 创建点的顶点着色器
-	HR(CreateShaderFromFile(L"HLSL\\StarMap\\StarMapPoint_VS.cso", L"HLSL\\StarMap\\StarMapPoint_VS.hlsl", "VS", "vs_5_0", blobPoints.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreateVertexShader(blobPoints->GetBufferPointer(), blobPoints->GetBufferSize(), nullptr, m_pVertexShaderPoints.GetAddressOf()));
-
-	// 使用点的顶点着色器的 blob 创建点的顶点布局
-	HR(m_pd3dDevice->CreateInputLayout(UIWindowMap::PointVertexPosColor::inputLayout, ARRAYSIZE(UIWindowMap::PointVertexPosColor::inputLayout),
-		blobPoints->GetBufferPointer(), blobPoints->GetBufferSize(), m_pVertexLayoutPoints.GetAddressOf()));
-
-	// 创建线的顶点着色器
-	HR(CreateShaderFromFile(L"HLSL\\StarMap\\StarMapLine_VS.cso", L"HLSL\\StarMap\\StarMapLine_VS.hlsl", "VS", "vs_5_0", blobLines.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreateVertexShader(blobLines->GetBufferPointer(), blobLines->GetBufferSize(), nullptr, m_pVertexShaderLines.GetAddressOf()));
-
-	// 使用线的顶点着色器的 blob 创建线的顶点布局
-	HR(m_pd3dDevice->CreateInputLayout(UIWindowMap::LineVertexPosColor::inputLayout, ARRAYSIZE(UIWindowMap::LineVertexPosColor::inputLayout),
-		blobLines->GetBufferPointer(), blobLines->GetBufferSize(), m_pVertexLayoutLines.GetAddressOf()));
-
-	// 创建点的像素着色器
-	HR(CreateShaderFromFile(L"HLSL\\StarMap\\StarMapPoint_PS.cso", L"HLSL\\StarMap\\StarMapPoint_PS.hlsl", "PS", "ps_5_0", blobPoints.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreatePixelShader(blobPoints->GetBufferPointer(), blobPoints->GetBufferSize(), nullptr, m_pPixelShaderPoints.GetAddressOf()));
-
-	// 创建线的像素着色器
-	HR(CreateShaderFromFile(L"HLSL\\StarMap\\StarMapLine_PS.cso", L"HLSL\\StarMap\\StarMapLine_PS.hlsl", "PS", "ps_5_0", blobLines.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreatePixelShader(blobLines->GetBufferPointer(), blobLines->GetBufferSize(), nullptr, m_pPixelShaderLines.GetAddressOf()));
-
-	// 创建几何着色器
-	HR(CreateShaderFromFile(L"HLSL\\StarMap\\StarMapPoint_GS.cso", L"HLSL\\StarMap\\StarMapPoint_GS.hlsl", "GS", "gs_5_0", blobPoints.ReleaseAndGetAddressOf()));
-	HR(m_pd3dDevice->CreateGeometryShader(blobPoints->GetBufferPointer(), blobPoints->GetBufferSize(), nullptr, m_pGeometryShader.GetAddressOf()));
+	m_mapLineEffect->addVertexShaderBuffer<LineVertexPosColor>(L"HLSL\\StarMap\\StarMapLine_VS.hlsl", L"HLSL\\StarMap\\StarMapLine_VS.cso");
+	m_mapLineEffect->getVertexShader<LineVertexPosColor>()->setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	m_mapLineEffect->getVertexBuffer<LineVertexPosColor>()->setVertices(verticesLines);
+	m_mapLineEffect->addPixelShader(L"HLSL\\StarMap\\StarMapLine_PS.hlsl", L"HLSL\\StarMap\\StarMapLine_PS.cso");
+	m_mapLineEffect->addSamplerState();
+	m_mapLineEffect->addBlendState();
+	m_mapLineEffect->addConstantBuffer<ConstantMVPIndex>();
+	m_mapLineEffect->Init();
 
 
+	m_mapPointEffect = std::make_shared<Effect>();
 
-	// ******************
-	// 设置调试对象名
-	//
-	D3D11SetDebugObjectName(m_pVertexShaderPoints.Get(), "VertexShaderPoints");
-	D3D11SetDebugObjectName(m_pVertexLayoutPoints.Get(), "VertexLayoutPoints");
-	D3D11SetDebugObjectName(m_pVertexShaderLines.Get(), "VertexShaderLines");
-	D3D11SetDebugObjectName(m_pVertexLayoutLines.Get(), "VertexLayoutLines");
-	D3D11SetDebugObjectName(m_pPixelShaderPoints.Get(), "PixelShaderPoints");
-	D3D11SetDebugObjectName(m_pPixelShaderLines.Get(), "PixelShaderLines");
-	D3D11SetDebugObjectName(m_pGeometryShader.Get(), "GeometryShader");
+	m_mapPointEffect->addVertexShaderBuffer<PointVertexPosColor>(L"HLSL\\StarMap\\StarMapPoint_VS.hlsl", L"HLSL\\StarMap\\StarMapPoint_VS.cso");
+	m_mapPointEffect->getVertexShader<PointVertexPosColor>()->setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	m_mapPointEffect->getVertexBuffer<PointVertexPosColor>()->setVertices(verticesPoints);
+	m_mapPointEffect->addPixelShader(L"HLSL\\StarMap\\StarMapPoint_PS.hlsl", L"HLSL\\StarMap\\StarMapPoint_PS.cso");
+	m_mapPointEffect->addGeometryShader(L"HLSL\\StarMap\\StarMapPoint_GS.hlsl", L"HLSL\\StarMap\\StarMapPoint_GS.cso");
+	m_mapPointEffect->addSamplerState();
+	m_mapPointEffect->addBlendState();
+	m_mapPointEffect->addConstantBuffer<ConstantMVPIndex>();
+	m_mapPointEffect->Init();
 	return true;
 }
 

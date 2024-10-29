@@ -117,31 +117,7 @@ void UIWindow::InitWindowComponent()
 	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
 	m_windowEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_windowEffect->addTextures(textureWindowFileNames);
-
-	/*auto button = std::make_shared<UIButton>();
-	button->setSize(x, y, width, height);
-	button->setTex("demoTex\\UI\\Window\\window_body.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x, y, width, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_title.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 3 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_min.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 2 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_max.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_close.dds");
-	AddUIComponent(button);*/
+	m_windowEffect->addConstantBuffer<ConstantMVPIndex>();
 
 	if (windowTitle != L"") {
 		auto text = std::make_shared<UIText>();
@@ -149,4 +125,12 @@ void UIWindow::InitWindowComponent()
 		text->setText(windowTitle);
 		AddUIComponent(text);
 	}
+
+	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
+	m_pWindowCamera = camera;
+	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
+	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
+	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
+	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
+	camera->SetPosition(XMFLOAT3(96.8f, 52.05f, -96.85f));
 }

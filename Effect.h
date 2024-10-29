@@ -34,6 +34,7 @@ public:
     void addVertexShaderBuffer(std::wstring vsFileName, std::wstring csoFileName);
 
     void addPixelShader(std::wstring psFileName, std::wstring csoFileName);
+    void addGeometryShader(std::wstring gsFileName, std::wstring csoFileName);
 
     template<typename T>
     void addConstantBuffer();

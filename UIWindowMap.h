@@ -65,6 +65,9 @@ public:
 
 private:
 
+	std::shared_ptr<Effect> m_mapLineEffect;
+	std::shared_ptr<Effect> m_mapPointEffect;
+
 	ComPtr<ID3D11InputLayout> m_pVertexLayoutPoints;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBufferPoints;		// 顶点缓冲区
 
