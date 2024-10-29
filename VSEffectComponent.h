@@ -54,4 +54,5 @@ inline void VSEffectComponent<VertexDataType>::clear()
 {
     auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
     m_pd3dImmediateContext->VSSetShader(nullptr, nullptr, 0); // 线的顶点着色器
+    m_pd3dImmediateContext->IASetInputLayout(nullptr); // 顶点布局
 }

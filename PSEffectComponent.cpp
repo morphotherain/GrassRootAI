@@ -15,3 +15,9 @@ void PSEffectComponent::apply()
 	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 	m_pd3dImmediateContext->PSSetShader(m_pPixelShader.Get(), nullptr, 0); // 线的顶点着色器
 }
+
+void PSEffectComponent::clear()
+{
+	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
+	m_pd3dImmediateContext->PSSetShader(nullptr, nullptr, 0); // 线的顶点着色器
+}

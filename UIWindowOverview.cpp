@@ -70,7 +70,15 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 
 void UIWindowOverview::DrawUI()
 {
-
+	DirectX::XMMATRIX viewMatrix = m_pWindowCamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pWindowCamera->GetProjXM();
+	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtr->projection = XMMatrixTranspose(projMatrix);
+	dataPtr->TexIndex = 0;
+	m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+	m_windowEffect->apply();
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
@@ -97,35 +105,14 @@ bool UIWindowOverview::InitEffect()
 
 void UIWindowOverview::InitWindowComponent()
 {
-	auto button = std::make_shared<UIButton>();
-	button->setSize(x, y, width, height);
-	button->setTex("demoTex\\UI\\Window\\window_body.dds");
-	AddUIComponent(button);
+	UIWindow::InitWindowComponent();
+	auto Texture = m_windowEffect->getTextures();
+	Texture->addTextureFileName("demoTex\\UI\\Window\\window_line.dds");
 
-	button = std::make_shared<UIButton>();
-	button->setSize(x, y, width, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_title.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 3 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_min.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 2 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_max.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight);
-	button->setTex("demoTex\\UI\\Window\\window_close.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(x + 0.0f, y+ TitleHeight, 50.0f, 30.0f);
-	button->setTex("demoTex\\UI\\Window\\window_line.dds");
-	AddUIComponent(button);
+	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
+	GenerateRectVertex(vertices, x + 0.0f, y + TitleHeight, 50.0f, 30.0f, 5.0f);
+	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
+	m_windowEffect->Init();
 
 	auto text = std::make_shared<UIText>();
 	text->setSize(x + 11.0f,  y + TitleHeight+5.0f, 350.0f, 350.0f);

@@ -47,6 +47,8 @@ void Effect::addSamplerState()
 
 void Effect::clearShader()
 {
+    VS->clear();
+    PS->clear();
     GS->clear();
 }
 
@@ -70,6 +72,7 @@ void Effect::Init()
 }
 
 void Effect::apply() {
+    applyEffectComponent(GS);
     applyEffectComponent(ConstantBuffer);
     // 先设置渲染状态，确保渲染管线的配置完整
     applyEffectComponent(BlendState);
@@ -83,7 +86,6 @@ void Effect::apply() {
     // 接着绑定各个着色器
     applyEffectComponent(VS);
     applyEffectComponent(PS);
-    applyEffectComponent(GS);
 
     // 最后绑定缓冲区资源
     applyEffectComponent(IndexBuffer);

@@ -52,6 +52,8 @@ public:
 	bool InitResource();
 	bool InitEffect();
 private:
+	std::shared_ptr<Effect> m_pBracketEffect;
+	
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	std::fstream fs;
 

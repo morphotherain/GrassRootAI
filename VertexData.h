@@ -38,5 +38,10 @@ struct VertexPos
 	static const D3D11_INPUT_ELEMENT_DESC inputLayout[1];
 };
 
+struct Pos2Tex {
+	DirectX::XMFLOAT2 position;  // 2D 屏幕坐标
+	float texIndex;              // 纹理索引
+	static const D3D11_INPUT_ELEMENT_DESC inputLayout[2];
+};
 
 #endif
