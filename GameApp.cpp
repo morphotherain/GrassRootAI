@@ -126,11 +126,6 @@ void GameApp::UpdateScene(float dt)
 		SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 		break;
 	}
-	case 4:
-	{
-		SwitchToScene(std::make_unique<demoScene>(AppInst()));
-		break;
-	}
 	default:;
 	}
 	return;

@@ -1,7 +1,6 @@
 #ifndef GAMEAPP_H
 #define GAMEAPP_H
 
-#include "demoScene.h"
 #include "DockScene.h"
 #include "MainScene.h"
 #include "SpaceScene.h"

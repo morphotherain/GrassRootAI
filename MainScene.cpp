@@ -3,7 +3,6 @@
 #include "UIWindow.h"
 #include "UIWindowInfo.h"
 #include "UIWindowMap.h"
-#include "UIShaderTest.h"
 #include "UIText.h"
 #include "RenderComponent.h"
 
@@ -83,10 +82,6 @@ MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 	//window->setTypeID(2605);
 	//AddUIComponent(window);
 
-	/*auto button = std::make_shared<UIShaderTest>();
-	button->setSize(50.0f, 4.0f, 100.0f, 100.0f);
-	button->setTex("demoTex\\MainScene\\button1.dds");
-	AddUIComponent(button);*/
 
 
 
