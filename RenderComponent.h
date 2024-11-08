@@ -40,7 +40,7 @@ public:
 
 	bool Init();
 	void OnResize();
-	void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard);
+	void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	void Draw();
 	void cleanup();
 

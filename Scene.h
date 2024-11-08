@@ -19,7 +19,7 @@ public:
 
 	virtual bool Init() = 0;
 	virtual void OnResize() = 0;
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard ,int& switchScene) = 0;
+	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard ,UINT tick) = 0;
 	virtual void DrawScene() = 0;
 	virtual void cleanup() = 0;
 	virtual void AddUIComponent(std::shared_ptr<UIBase> component) {
@@ -52,6 +52,7 @@ protected:
 
 	CameraMode m_CameraMode;									// 摄像机模式
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
+	std::shared_ptr<Camera> m_pLocalCamera;						    // 摄像机
 
 	ComPtr<ID3D11Device> m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文

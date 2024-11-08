@@ -32,7 +32,7 @@ void main(point GeometryOutput input[1], inout TriangleStream<GeometryOutput> ou
         // 矫正后的纹理坐标，考虑宽高比因素
         float2 texCoord = offsets[index] / size + 0.5f;
         texCoord.y *= 1.0f / factor; // 调整纹理坐标的Y轴，矫正宽高比
-
+        texCoord.y = 1.0f - texCoord.y;
         vertex.texCoord = texCoord;  // 更新纹理坐标
 
         // 传递纹理索引，保持纹理正确

@@ -149,15 +149,6 @@ bool UIWindowInfo::Init()
 		return false;
 
 	for (auto& component : childComponents) {
-		component->setd3dResource(
-			*m_pd3dDevice.GetAddressOf(),
-			*m_pd3dImmediateContext.GetAddressOf(),
-			*m_pSwapChain.GetAddressOf(),
-			m_hMainWnd,
-			*m_pRenderTargetView.GetAddressOf(),
-			*m_pDepthStencilView.GetAddressOf()
-		);
-		component->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
@@ -169,7 +160,7 @@ void UIWindowInfo::OnResize()
 {
 }
 
-void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 }
 

@@ -88,7 +88,7 @@ void RenderComponent::OnResize()
 {
 }
 
-void RenderComponent::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard)
+void RenderComponent::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();

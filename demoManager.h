@@ -1,6 +1,8 @@
-﻿// InvTypesManager.h
-#pragma once
+﻿#pragma once
 #include "DatabaseManager.h"
+
+
+
 
 class demoManager : public SingletonBase<demoManager> {
 private:

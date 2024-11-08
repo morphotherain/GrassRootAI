@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <fstream>
 #include "Scene.h"
+#include "UIButton.h"
 
 
 class DockScene : public Scene
@@ -36,7 +37,7 @@ public:
 
 	virtual bool Init();
 	virtual void OnResize();
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
+	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	virtual void DrawScene();
 	virtual void cleanup();
 
@@ -49,5 +50,8 @@ private:
 	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
 
-	std::vector<MapVertexPosColor> GenerateVertices(int n);
+	std::vector<PosTexIndex> GenerateVertices(int n);
+	std::shared_ptr<Effect> m_effect;
+	std::shared_ptr<UIButton> m_button;
+
 };

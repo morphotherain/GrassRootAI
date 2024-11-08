@@ -74,29 +74,15 @@ void UISkyBox::OnResize()
 {
 }
 
-void UISkyBox::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+void UISkyBox::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
-	// 更新鼠标事件，获取相对偏移量
-	Mouse::State mouseState = mouse.GetState();
-	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
-	m_MouseTracker.Update(mouseState);
-
-	Keyboard::State keyState = keyboard.GetState();
-	m_KeyboardTracker.Update(keyState);
-
-	// 在鼠标没进入窗口前仍为ABSOLUTE模式
-	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
-	{
-		if (x < mouseState.x && (x + deltaX) > mouseState.x && (y + deltaY) > mouseState.y && y < mouseState.y)
-			switchScene = 2;
-		*clickFlag = true;
-	}
 }
 
 void UISkyBox::DrawUI()
 {
-	assert(m_pd3dImmediateContext);
-	assert(m_pSwapChain);
+
+	auto m_pd3dDevice = D3DManager::getInstance().getDevice();
+	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 
 	// 1. 关闭深度测试以确保 UI 不受场景深度影响
 	D3D11_DEPTH_STENCIL_DESC uiDepthStencilDesc;
@@ -142,10 +128,11 @@ void UISkyBox::cleanup()
 
 bool UISkyBox::InitResource()
 {
+	auto m_pd3dDevice = D3DManager::getInstance().getDevice();
 	
 	// 加载立方体纹理
 	ComPtr<ID3D11Resource> pTextureCube;
-	HR(DirectX::CreateDDSTextureFromFile(m_pd3dDevice.Get(), L"Texture\\demoTex\\SpaceScene\\skybox.dds", &pTextureCube, &textureArraySRV));
+	HR(DirectX::CreateDDSTextureFromFile(m_pd3dDevice, L"Texture\\demoTex\\SpaceScene\\skybox.dds", &pTextureCube, &textureArraySRV));
 
 	// 确保创建的 SRV 是 TEXTURECUBE 类型
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};

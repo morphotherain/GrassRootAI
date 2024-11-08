@@ -12,7 +12,7 @@ public:
 
 	virtual bool Init();
 	virtual void OnResize();
-	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
+	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	virtual void DrawUI();
 	virtual void cleanup();
 
@@ -23,13 +23,17 @@ public:
 	std::shared_ptr<bool> getClickFlag() { return clickFlag; }
 
 private:
-	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
-	ComPtr<ID3D11ShaderResourceView> Text_textureArraySRV;
-	ComPtr<ID3D11InputLayout> Text_m_pVertexLayout;	// 顶点输入布局
-	ComPtr<ID3D11Buffer> Text_m_pVertexBuffer;		// 顶点缓冲区
+	//ComPtr<ID3D11ShaderResourceView> textureArraySRV;
+	//ComPtr<ID3D11ShaderResourceView> Text_textureArraySRV;
+	//ComPtr<ID3D11InputLayout> Text_m_pVertexLayout;	// 顶点输入布局
+	//ComPtr<ID3D11Buffer> Text_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
 
-	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
+	//ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
+	//ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
+	//ComPtr<IDWriteTextFormat> m_pTextFormat;
+
+	//ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
 	std::shared_ptr<bool> clickFlag;
 

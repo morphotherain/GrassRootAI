@@ -5,6 +5,11 @@
 #include "TransformComponent.h"
 
 class GameObject {
+public:
+    UINT objectID;
+    std::shared_ptr<GameObject> parentObject;
+    std::vector<std::shared_ptr<GameObject>> childObjects;
+
 private:
     std::vector<std::shared_ptr<Component>> components;
     unsigned int tick = 0;
@@ -39,10 +44,12 @@ public:
         return matchedComponents;
     }
 
-    void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) {
+    virtual void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) {
         tick++;
         for (auto& comp : components) {
-            comp->Update(dt, mouse, keyboard);
+            comp->Update(tick);
         }
     }
+    virtual void Init() {};
+    virtual void Update(UINT tick) {}
 };

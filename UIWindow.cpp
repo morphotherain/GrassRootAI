@@ -24,15 +24,6 @@ bool UIWindow::Init()
 		return false;
 
 	for (auto& component : childComponents) {
-		component->setd3dResource(
-			*m_pd3dDevice.GetAddressOf(),
-			*m_pd3dImmediateContext.GetAddressOf(),
-			*m_pSwapChain.GetAddressOf(),
-			m_hMainWnd,
-			*m_pRenderTargetView.GetAddressOf(),
-			*m_pDepthStencilView.GetAddressOf()
-		);
-		component->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
@@ -45,7 +36,7 @@ void UIWindow::OnResize()
 {
 }
 
-void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
@@ -62,7 +53,7 @@ void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
 		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
-			switchScene = 2;
+			;
 	}
 
 

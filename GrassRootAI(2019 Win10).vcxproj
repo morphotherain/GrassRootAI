@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BlendStateComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="DepthStencilStateComponent.cpp" />
     <ClCompile Include="DockScene.cpp" />
     <ClCompile Include="DXTrace.cpp" />
+    <ClCompile Include="dynGameObjectsManager.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="eveBracketsManager.cpp" />
@@ -176,16 +178,26 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainScene.cpp" />
+    <ClCompile Include="mapDenormalizeManager.cpp" />
+    <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="NPCStation.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="Pilot.cpp" />
     <ClCompile Include="PSEffectComponent.cpp" />
     <ClCompile Include="RasterizerStateComponent.cpp" />
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="RenderProxy.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Sector.cpp" />
     <ClCompile Include="shell.c" />
+    <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SolarSystem.cpp" />
+    <ClCompile Include="SolarSystemMgr.cpp" />
     <ClCompile Include="SpaceScene.cpp" />
+    <ClCompile Include="SpaceTransformComponent.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="taskDatabaseManager.cpp" />
     <ClCompile Include="TexturesComponent.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
@@ -198,12 +210,14 @@
     <ClCompile Include="UIWindowInfo.cpp" />
     <ClCompile Include="UIWindowMap.cpp" />
     <ClCompile Include="UIWindowOverview.cpp" />
+    <ClCompile Include="UIWindowStorage.cpp" />
     <ClCompile Include="VertexBufferComponent.cpp" />
     <ClCompile Include="vertexData.cpp" />
     <ClCompile Include="VSEffectComponent.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BlendStateComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
@@ -221,6 +235,7 @@
     <ClInclude Include="DepthStencilStateComponent.h" />
     <ClInclude Include="DockScene.h" />
     <ClInclude Include="DXTrace.h" />
+    <ClInclude Include="dynGameObjectsManager.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="eveBracketsManager.h" />
@@ -234,18 +249,28 @@
     <ClInclude Include="InvTypesManager.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainScene.h" />
+    <ClInclude Include="mapDenormalizeManager.h" />
+    <ClInclude Include="MapManager.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="NPCStation.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="Pilot.h" />
     <ClInclude Include="PSEffectComponent.h" />
     <ClInclude Include="RasterizerStateComponent.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="RenderProxy.h" />
     <ClInclude Include="SamplerStateComponent.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Sector.h" />
+    <ClInclude Include="Ship.h" />
     <ClInclude Include="SingletonBase.h" />
     <ClInclude Include="SolarSystem.h" />
+    <ClInclude Include="SolarSystemMgr.h" />
     <ClInclude Include="SpaceScene.h" />
+    <ClInclude Include="SpaceTransformComponent.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sqlite3ext.h" />
+    <ClInclude Include="taskDatabaseManager.h" />
     <ClInclude Include="TexturesComponent.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformComponent.h" />
@@ -258,6 +283,7 @@
     <ClInclude Include="UIWindowInfo.h" />
     <ClInclude Include="UIWindowMap.h" />
     <ClInclude Include="UIWindowOverview.h" />
+    <ClInclude Include="UIWindowStorage.h" />
     <ClInclude Include="VertexBufferComponent.h" />
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="VSEffectComponent.h" />

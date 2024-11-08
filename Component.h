@@ -8,5 +8,5 @@ class Component {
 public:
     GameObject* owner;
     virtual ~Component() {}
-    virtual void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) = 0;
+    virtual void Update(UINT tick) = 0;
 };

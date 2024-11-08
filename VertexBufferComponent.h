@@ -17,9 +17,12 @@ public:
 
     void setVertices(const std::vector<VertexDataType>& _vertices) { m_vertices = _vertices; }
 	std::vector<VertexDataType> getVertices() { return m_vertices; }
-    UINT getVerticsCount() { return (UINT)m_vertices.size(); }
+    UINT getVerticesCount() { return verticsNum>0? verticsNum : (UINT)m_vertices.size(); }
+	UINT getVerticesCountMax() { return verticsMax > 0 ? verticsMax : (UINT)m_vertices.size(); }
 	void setCPUAccessFlags(D3D11_CPU_ACCESS_FLAG _CPUAccessFlags) { CPUAccessFlags = _CPUAccessFlags; }
     void setUsage(D3D11_USAGE _usage) { usage = _usage; }
+	void setVerticesNum(UINT num) { verticsNum = num; }
+	void setVerticesNumMax(UINT num) { verticsMax = num; }
 private:
 
     ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
@@ -27,6 +30,8 @@ private:
 
 	D3D11_CPU_ACCESS_FLAG CPUAccessFlags = static_cast<D3D11_CPU_ACCESS_FLAG>(0);
 	D3D11_USAGE usage = D3D11_USAGE_IMMUTABLE;
+	UINT verticsNum = 0;
+	UINT verticsMax = 0;
 };
 
 
@@ -45,7 +50,7 @@ void VertexBufferComponent<VertexDataType>::Init() {
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = usage;
-	vbd.ByteWidth = sizeof(VertexDataType) * m_vertices.size(); // 注意这里的变化
+	vbd.ByteWidth = sizeof(VertexDataType) * getVerticesCountMax(); // 注意这里的变化
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = CPUAccessFlags;
 	// 新建顶点缓冲区
@@ -62,7 +67,7 @@ void VertexBufferComponent<VertexDataType>::apply() {
 	UINT stride = sizeof(VertexDataType);
 	UINT offset = 0;
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
-	m_pd3dImmediateContext->Draw(m_vertices.size(), 0);
+	m_pd3dImmediateContext->Draw(getVerticesCount(), 0);
 }
 
 

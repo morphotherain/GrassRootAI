@@ -7,6 +7,10 @@ using namespace DirectX;
 bool UIText::Init()
 {
 
+	m_pd2dRenderTarget = D3DManager::getInstance().GetD2DRenderTarget();
+	m_pColorBrush = D3DManager::getInstance().GetColorBrush();
+	m_pTextFormat = D3DManager::getInstance().GetTextFormat();
+
 	if (!InitEffect())
 		return false;
 
@@ -22,7 +26,7 @@ void UIText::OnResize()
 {
 }
 
-void UIText::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+void UIText::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 
 }

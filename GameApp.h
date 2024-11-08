@@ -1,6 +1,7 @@
 #ifndef GAMEAPP_H
 #define GAMEAPP_H
 
+#include "SolarSystemMgr.h"
 #include "DockScene.h"
 #include "MainScene.h"
 #include "SpaceScene.h"
@@ -31,12 +32,9 @@ public:
 	// 在GameApp类中修改SwitchToScene方法为模板函数
 	void SwitchToScene(std::unique_ptr<Scene> newScene);
 
-	
 private:
 	bool InitEffect();
 	bool InitResource();
-
-
 
 private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
@@ -54,7 +52,8 @@ private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	std::unique_ptr<Scene> currentScene; //当前的界面
+	UINT currentSceneID = 0;
+	UINT tick = 0;
 };
-
 
 #endif

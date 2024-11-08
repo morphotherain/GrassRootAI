@@ -4,111 +4,47 @@
 #include <vector>
 #include <unordered_map>
 #include "DatabaseManager.h"
-
-
-
-// 定义用于存储恒星系数据的结构
-struct RegionData
-{
-    double x;                       //  x 坐标
-    double y;                       //  y 坐标
-    double z;                       //  z 坐标
-    std::wstring regionName;   // 名称
-    int regionID;
-};
-
-
-
-// 定义用于存储星门跳跃数据的结构
-struct SolarSystemJump
-{
-    int fromRegionID;          // 起点星域 ID
-    int fromConstellationID;   // 起点星座 ID
-    int fromSolarSystemID;     // 起点星系 ID
-    int toSolarSystemID;       // 终点星系 ID
-    int toConstellationID;     // 终点星座 ID
-    int toRegionID;            // 终点星域 ID
-};
-
-// 定义用于存储恒星系数据的结构
-struct SolarSystemData
-{
-public:
-    SolarSystemData() = default;
-    SolarSystemData(int id);
-
-    double x;                       // 恒星系的 x 坐标
-    double y;                       // 恒星系的 y 坐标
-    double z;                       // 恒星系的 z 坐标
-    std::wstring solarSystemName;   // 恒星系名称
-    std::wstring constellationName;   // 名称
-    std::wstring regionName;   // 名称
-    float luminosity;              // 光度
-    int solarSystemID;
-    int constellationID;
-    int regionalID;
-
-    void getConstellationName();
-    void getRegionaName();
-
-};
-
-struct DenormalizeData {
-
-public:
-    DenormalizeData() = default;
-    DenormalizeData(int id);
-
-    std::wstring name;
-    double x;                       //  x 坐标
-    double y;                       //  y 坐标
-    double z;                       //  z 坐标
-    int nameID;   // 名称
-    int regionID;
-    int constellationID;
-    int solarSystemID;
-    double radius;
-    int itemID;
-    int typeID;
-    int celestialIndex;
-    int orbitIndex;
-    int bracketID;
-    std::string dds_path;
-
-};
-
+#include "dynGameObjectsManager.h"
+#include "MapManager.h"
+#include "GameObject.h"
+#include "Pilot.h"
+#include "Ship.h"
+#include "Sector.h"
 
 
 struct SolarSystem {
+	SolarSystem() = default;
+	SolarSystem(int id) :m_solarSystem(id) { };
 
-    SolarSystem() = default;
-    SolarSystem(int id) :m_solarSystem(id) { };
+	SolarSystemData m_solarSystem;
 
-    SolarSystemData m_solarSystem;
+	std::vector<std::shared_ptr<DenormalizeData>> m_denormalizes;
 
-    std::vector<std::shared_ptr<DenormalizeData>> m_denormalizes;
+	std::unordered_map<UINT, std::shared_ptr<GameObject>> map_objects;
+	std::vector<std::shared_ptr<GameObject>> space_objects;
+	std::vector<std::shared_ptr<GameObject>> other_objects;
+	std::vector<std::shared_ptr<Pilot>> Pilot_objects;
+	std::shared_ptr<Pilot> currentPilot;
+	std::shared_ptr<Sector> currentSector;
 
-    void getDenormalizesBySolarSystemID();
+	std::unordered_map<long long int, std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>> m_Sectors;
 
-    int typeIDtoTextureID(int id);
+	void Init();
+	void Update(UINT tick);
 
-    std::unordered_map<int, int> idToId;
-    void InitIdToIdMap();
+	void getDenormalizesBySolarSystemID();
 
+	// 函数用于计算哈希单元的索引
+	long long int CalculateHashIndex(long long int x, long long int  y, long long int  z) const { return x + y * 10000000 + z * 100000000000000; }
+	long long int CalculateHashIndex(double x, double y, double z);
+	void addObjectToSector(std::shared_ptr<GameObject> object);
+	std::shared_ptr<Sector> addSector(double x, double y, double z);
+	std::shared_ptr<Sector> getSector(double x, double y, double z);
+	void checkObjectsInSector();
+	void setCurrentSector();
+
+	UINT getSolarSystemID() { return m_solarSystem.solarSystemID; };
+	std::vector<std::shared_ptr<Pilot>> getPilots();
+	void setCurrentPilots(std::shared_ptr<Pilot> _Pilot);
 };
 
-
-
-
-
-// 从数据库中获取所有恒星系数据的函数
-
-std::vector<SolarSystemData> getSolarSystems();
-
-SolarSystemData getSolarsystem(int id);
-
-// 获取星门跳跃数据的函数声明
-std::vector<SolarSystemJump> getSolarSystemJumps();
-
-// 获取星门跳跃数据的函数声明
-std::vector<RegionData> getRegions();

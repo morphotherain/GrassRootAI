@@ -34,6 +34,16 @@ public:
         width = _width;
         height = _height;
     }
+    void setd2dResource(ID2D1RenderTarget* pd2dRenderTarget, ID2D1SolidColorBrush* pColorBrush, IDWriteTextFormat* pTextFormat) {
+        m_pd2dRenderTarget= pd2dRenderTarget; 
+        m_pColorBrush = pColorBrush;
+        m_pTextFormat = pTextFormat;
+    }
+    ID2D1RenderTarget* GetD2DRenderTarget() { return m_pd2dRenderTarget.Get(); }
+    ID2D1SolidColorBrush* GetColorBrush() { return m_pColorBrush.Get(); }
+    IDWriteTextFormat* GetTextFormat() { return m_pTextFormat.Get(); }
+
+
 
     // 清空渲染目标和深度模板
     void clearRenderTarget(float color[4]);

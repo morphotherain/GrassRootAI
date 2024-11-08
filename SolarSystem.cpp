@@ -3,234 +3,71 @@
 #include "invGroupsManager.h"
 #include "eveBracketsManager.h"
 
-std::vector<SolarSystemData> getSolarSystems()
+
+void SolarSystem::Init()
 {
-    std::vector<SolarSystemData> solarSystems;
-
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
-
-    // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT x, y, z, solarSystemName, luminosity ,solarSystemID ,constellationID,regionID FROM mapSolarSystems;";
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        auto temp = sqlite3_errmsg(db);
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-        return solarSystems;
+    auto p_vGameObjectData = dynGameObjectsManager::getInstance()->getGameObjectBySolarSystemID(m_solarSystem.solarSystemID);
+    for (auto& objectData : *p_vGameObjectData) {
+        std::shared_ptr<GameObject> object;
+        switch (objectData.categoryID) {
+        case 5: {    //附件(克隆人飞行员)
+            object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
+            other_objects.push_back(object);
+            Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));
+            break;
+        }
+        case 6: {    //舰船(含太空舱
+            object = std::make_shared<Ship>(objectData.objectID);
+            space_objects.push_back(object);
+            break;
+        }
+        default: {
+            continue;
+        }
+        }
+        object->Init();
+        map_objects[objectData.objectID] = object;
+        object->objectID = objectData.objectID;
+        if (object->GetComponent<BaseComponent>() != nullptr) {
+            auto base = object->GetComponent<BaseComponent>();
+            base->objectID = objectData.objectID;
+            base->typeID = objectData.typeID;
+            base->ownerID = objectData.OwnerID;
+            base->containerID = objectData.ContainerID;
+            base->solarSystemID = objectData.SolarSystemID;
+            base->groupID = objectData.groupID;
+            base->categoryID = objectData.categoryID;
+        }
     }
-
-    // 迭代查询结果并将数据存储到 solarSystems 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        SolarSystemData system;
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        system.x = sqlite3_column_double(stmt, 0);
-        system.y = sqlite3_column_double(stmt, 1);
-        system.z = sqlite3_column_double(stmt, 2);
-        system.solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // 获取 wstring 类型的名称
-        system.luminosity = sqlite3_column_double(stmt, 4);
-        system.solarSystemID = sqlite3_column_int(stmt, 5);
-        system.constellationID = sqlite3_column_int(stmt, 6);
-        system.regionalID = sqlite3_column_int(stmt, 7);
-
-        // 将数据添加到向量中
-        solarSystems.push_back(system);
+    for (auto p_object : space_objects) {
+        addObjectToSector(p_object);
     }
-
-    // 释放语句资源
-    sqlite3_finalize(stmt);
-
-    return solarSystems;
-}
-
-SolarSystemData getSolarsystem(int id)
-{
-    return SolarSystemData(id);
-}
-
-// 从数据库中获取所有星门跳跃数据的函数
-std::vector<SolarSystemJump> getSolarSystemJumps()
-{
-    std::vector<SolarSystemJump> solarSystemJumps;
-
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
-
-    // SQL 查询语句，获取星门跳跃数据
-    std::string sql = "SELECT fromRegionID, fromConstellationID, fromSolarSystemID, toSolarSystemID, toConstellationID, toRegionID FROM mapSolarSystemJumps;";
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-        return solarSystemJumps;
+    for (auto p_object : other_objects) {
     }
-
-    // 迭代查询结果并将数据存储到 solarSystemJumps 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        SolarSystemJump jump;
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        jump.fromRegionID = sqlite3_column_int(stmt, 0);
-        jump.fromConstellationID = sqlite3_column_int(stmt, 1);
-        jump.fromSolarSystemID = sqlite3_column_int(stmt, 2);
-        jump.toSolarSystemID = sqlite3_column_int(stmt, 3);
-        jump.toConstellationID = sqlite3_column_int(stmt, 4);
-        jump.toRegionID = sqlite3_column_int(stmt, 5);
-
-        // 将数据添加到向量中
-        solarSystemJumps.push_back(jump);
-    }
-
-    // 释放语句资源
-    sqlite3_finalize(stmt);
-
-    return solarSystemJumps;
-}
-
-std::vector<RegionData> getRegions()
-{
-    std::vector<RegionData> regions;
-
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
-
-    // SQL 查询语句，获取星门跳跃数据
-    std::string sql = "SELECT x, y, z,regionName,regionID FROM mapRegions;";
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-        return regions;
-    }
-
-    // 迭代查询结果并将数据存储到 solarSystemJumps 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        RegionData region;
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        region.x = sqlite3_column_double(stmt, 0);
-        region.y = sqlite3_column_double(stmt, 1);
-        region.z = sqlite3_column_double(stmt, 2);
-        region.regionName = dbManager->sqlite3_column_wstring(stmt, 3); // 获取 wstring 类型的名称
-        region.regionID = sqlite3_column_int(stmt, 4);
-
-        // 将数据添加到向量中
-        regions.push_back(region);
-    }
-
-    // 释放语句资源
-    sqlite3_finalize(stmt);
-
-    return regions;
-}
-
-std::vector<std::shared_ptr<DenormalizeData>> getDenormalizesBySolarSystemID(int id)
-{
-    return std::vector<std::shared_ptr<DenormalizeData>>();
-}
-
-SolarSystemData::SolarSystemData(int id)
-{
-
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
-
-    // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT x, y, z, solarSystemName, luminosity  ,constellationID,regionID FROM mapSolarSystems WHERE solarSystemID = " + std::to_string(id) + ";"; 
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        auto temp = sqlite3_errmsg(db);
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-    }
-
-    // 迭代查询结果并将数据存储到 solarSystems 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        x = sqlite3_column_double(stmt, 0);
-        y = sqlite3_column_double(stmt, 1);
-        z = sqlite3_column_double(stmt, 2);
-        solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // 获取 wstring 类型的名称
-        luminosity = sqlite3_column_double(stmt, 4);
-        constellationID = sqlite3_column_int(stmt, 5);
-        regionalID = sqlite3_column_int(stmt, 6);
-        solarSystemID = id;
-
-    }
-
-    // 释放语句资源
-    sqlite3_finalize(stmt);
-
-    getConstellationName();
-    getRegionaName();
 
 }
 
-void SolarSystemData::getConstellationName()
+void SolarSystem::Update(UINT tick)
 {
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
+    auto obj = map_objects[2];
+    auto Tran = obj->GetComponent<SpaceTransformComponent>();
 
-    // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT constellationName FROM mapConstellations WHERE constellationID = " + std::to_string(constellationID) + ";";
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        auto temp = sqlite3_errmsg(db);
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+    for (auto obj : space_objects) {
+        obj->Update(tick);
     }
 
-    // 迭代查询结果并将数据存储到 solarSystems 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        constellationName = dbManager->sqlite3_column_wstring(stmt, 0); // 获取 wstring 类型的名称
-
+    if (tick % 60 == 0) {
+        checkObjectsInSector();
+        setCurrentSector();
     }
 
-    // 释放语句资源
-    sqlite3_finalize(stmt);
+
+
+    //Tran->x -= 16;
+
 }
 
-void SolarSystemData::getRegionaName()
-{
-    // 获取数据库实例
-    DatabaseManager* dbManager = DatabaseManager::getInstance();
-    sqlite3* db = dbManager->getDatabase();
 
-    // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT regionName FROM mapRegions WHERE regionID = " + std::to_string(regionalID) + ";";
-
-    sqlite3_stmt* stmt;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        auto temp = sqlite3_errmsg(db);
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-    }
-
-    // 迭代查询结果并将数据存储到 solarSystems 结构中
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-
-        // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-        regionName = dbManager->sqlite3_column_wstring(stmt, 0); // 获取 wstring 类型的名称
-
-    }
-
-    // 释放语句资源
-    sqlite3_finalize(stmt);
-}
 
 void SolarSystem::getDenormalizesBySolarSystemID()
 {
@@ -277,82 +114,178 @@ void SolarSystem::getDenormalizesBySolarSystemID()
 
     for (auto p_denormalize : m_denormalizes) {
         p_denormalize->name = dbManager->getNameByTypeId(p_denormalize->typeID);
-        int groupID = InvTypesManager::getInstance()->getGroupByTypeId(p_denormalize->typeID);
-        int bracketID = invGroupsManager::getInstance()->getBracketIDByGroupId(groupID);
-        p_denormalize->bracketID = bracketID;
-        p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(bracketID);
+        p_denormalize->groupID = InvTypesManager::getInstance()->getGroupByTypeId(p_denormalize->typeID);
+        p_denormalize->bracketID = invGroupsManager::getInstance()->getBracketIDByGroupId(p_denormalize->groupID);
+        p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(p_denormalize->bracketID);
     }
 
 }
 
-int SolarSystem::typeIDtoTextureID(int id)
+
+long long int SolarSystem::CalculateHashIndex(double x, double y, double z)
 {
-    if (idToId.empty())InitIdToIdMap();
-
-
-    return  idToId[id];
+    return 0;
 }
 
-void SolarSystem::InitIdToIdMap()
-{
-    idToId = {
-        {6, 0},
-        {7, 0},
-        {8, 0},
-        {9, 0},
-        {10, 0},
-        {3796, 0},
-        {3797, 0},
-        {3798, 0},
-        {3799, 0},
-        {3800, 0},
-        {3801, 0},
-        {3802, 0},
-        {3803, 0},
-        {45030, 0},
-        {45031, 0},
-        {45032, 0 },
-        {45033, 0},
-        {45034, 0},
-        {45035, 0},
-        {45036, 0},
-        {45037, 0},
-        {45038, 0},
-        {45039, 0},
-        {45040, 0},
-        {45041, 0},
-        {45042, 0},
-        {45046, 0},
-        {45047, 0},
-        {56082, 0},
-        {56083, 0},
-        {56084, 0},
-        {56085, 0},
-        {56086, 0},
-        {56097, 0},
-        {56098, 0},
-        {73909, 0},
-        {78350, 0},
-        {12, 1},
-        {13, 1},
-        {11, 1},
-        {2014, 1},
-        {2015, 1},
-        {2016, 1},
-        {2017, 1},
-        {2063, 1},
-        {30889, 1},
-        {56018, 1},
-        {56019, 1},
-        {56020, 1},
-        {56021, 1},
-        {56022, 1},
-        {56023, 1},
-        {56024, 1},
-        {14, 2},
-        {15, 3},
-        {29624, 4},
-        {2502,5},
+void SolarSystem::addObjectToSector(std::shared_ptr<GameObject> object) {
+    auto Tran = object->GetComponent<SpaceTransformComponent>();
 
-    };
+    auto sector = getSector(Tran->x, Tran->y, Tran->z);
+    if (sector == nullptr) {
+        sector = addSector(Tran->x, Tran->y, Tran->z);
+        sector->addObject(object);
+    }
+    else {
+        sector->addObject(object);
+    }
+}
+
+
+std::shared_ptr<Sector> SolarSystem::addSector(double x, double y, double z) {
+    std::shared_ptr<Sector> newSector = std::make_shared<Sector>();
+
+    const long long int gridSideLength = 10000000;
+    long long int xInt = static_cast<long long int>(x / gridSideLength);
+    long long int yInt = static_cast<long long int>(y / gridSideLength);
+    long long int zInt = static_cast<long long int>(z / gridSideLength);
+    // 对取整后的负数坐标进行调整
+    if (xInt < 0) xInt -= 1;
+    if (yInt < 0) yInt -= 1;
+    if (zInt < 0) zInt -= 1;
+
+    // 分别根据处理后的x、y、z坐标作为各层哈希表的键
+    std::unordered_map<long long int, std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>>::iterator outerIt;
+    std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>::iterator middleIt;
+    std::unordered_map<long long int, std::shared_ptr<Sector>>::iterator innerIt;
+
+    // 最外层哈希表查找或插入
+    outerIt = m_Sectors.find(xInt);
+    if (outerIt == m_Sectors.end()) {
+        // 如果不存在，插入一个新的中层哈希表
+        std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>> newMiddleMap;
+        m_Sectors[xInt] = newMiddleMap;
+        outerIt = m_Sectors.find(xInt);
+    }
+
+    // 中层哈希表查找或插入
+    middleIt = outerIt->second.find(yInt);
+    if (middleIt == outerIt->second.end()) {
+        // 如果不存在，插入一个新的内层哈希表
+        std::unordered_map<long long int, std::shared_ptr<Sector>> newInnerMap;
+        outerIt->second[yInt] = newInnerMap;
+        middleIt = outerIt->second.find(yInt);
+    }
+
+    // 内层哈希表查找或插入
+    innerIt = middleIt->second.find(zInt);
+    if (innerIt == middleIt->second.end()) {
+        long long int xFull = xInt * 10000000;
+        long long int yFull = yInt * 10000000;
+        long long int zFull = zInt * 10000000;
+        newSector->x = xFull + newSector->radius;
+        newSector->y = yFull + newSector->radius;
+        newSector->z = zFull + newSector->radius;
+        newSector->x_Min = xFull;
+        newSector->y_Min = yFull;
+        newSector->z_Min = zFull;
+        newSector->x_Max = xFull + 2 * newSector->radius;
+        newSector->y_Max = yFull + 2 * newSector->radius;
+        newSector->z_Max = zFull + 2 * newSector->radius;
+
+        middleIt->second[zInt] = newSector;
+        innerIt = middleIt->second.find(zInt);
+    }
+
+    return innerIt->second;
+}
+
+std::shared_ptr<Sector> SolarSystem::getSector(double x, double y, double z)
+{
+    const long long int gridSideLength = 10000000;
+    long long int xInt = static_cast<long long int>(x / gridSideLength);
+    long long int yInt = static_cast<long long int>(y / gridSideLength);
+    long long int zInt = static_cast<long long int>(z / gridSideLength);
+    // 对取整后的负数坐标进行调整
+    if (xInt < 0) xInt -= 1;
+    if (yInt < 0) yInt -= 1;
+    if (zInt < 0) zInt -= 1;
+
+    // 三层嵌套哈希表的查找逻辑
+    std::unordered_map<long long int, std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>>::iterator outerIt;
+    std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>::iterator middleIt;
+    std::unordered_map<long long int, std::shared_ptr<Sector>>::iterator innerIt;
+
+    // 最外层哈希表查找
+    outerIt = m_Sectors.find(xInt);
+    if (outerIt != m_Sectors.end()) {
+        // 中层哈希表查找
+        middleIt = outerIt->second.find(yInt);
+        if (middleIt != outerIt->second.end()) {
+            // 内层哈希表查找
+            innerIt = middleIt->second.find(zInt);
+            if (innerIt != middleIt->second.end()) {
+                return innerIt->second;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void SolarSystem::checkObjectsInSector()
+{
+    // 遍历最外层map的键值对
+    for (const auto& outerPair : m_Sectors) {
+        const auto& middleMap = outerPair.second;
+
+        // 遍历中层map的键值对
+        for (const auto& middlePair : middleMap) {
+            const auto& innerMap = middlePair.second;
+
+            // 遍历内层map的键值对
+            for (const auto& innerPair : innerMap) {
+                const std::shared_ptr<Sector>& sector = innerPair.second;
+                // 创建一个迭代器，用于遍历space_objects向量并可能进行删除操作
+                auto objectIter = sector->space_objects.begin();
+
+                while (objectIter != sector->space_objects.end()) {
+                    const auto& object = *objectIter;
+
+                    auto Tran = object->GetComponent<SpaceTransformComponent>();
+
+                    if (sector->isInSector(Tran->x, Tran->y, Tran->z)) {
+                        ++objectIter;
+                    }
+                    else {
+                        objectIter = sector->space_objects.erase(objectIter);
+                        addObjectToSector(object);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void SolarSystem::setCurrentSector()
+{
+    if (currentPilot == nullptr)return;
+    auto ship = currentPilot->currentShip;
+    auto Tran = ship->GetComponent<SpaceTransformComponent>();
+    currentSector = getSector(Tran->x, Tran->y, Tran->z);
+}
+
+std::vector<std::shared_ptr<Pilot>> SolarSystem::getPilots()
+{
+
+    return Pilot_objects;
+}
+
+void SolarSystem::setCurrentPilots(std::shared_ptr<Pilot> _Pilot)
+{
+    currentPilot = _Pilot;
+    UINT shipID = currentPilot->GetComponent<BaseComponent>()->containerID;
+    if (map_objects.find(shipID) != map_objects.end())
+    {
+        currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>(map_objects[shipID]);
+    }
+    return;
 }

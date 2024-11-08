@@ -11,6 +11,9 @@ int invGroupsManager::getBracketIDByGroupId(int group_id) {
             bracketID = sqlite3_column_int(stmt, 0);
         }
     }
+    else {
+        return 0;
+    }
     sqlite3_finalize(stmt);
     return bracketID;
 }

@@ -3,6 +3,10 @@
 #include "DXTrace.h"
 #include <vector>
 #include <DirectXMath.h>
+#include "dynGameObjectsManager.h"
+#include "mapDenormalizeManager.h"
+#include "InvTypesManager.h"
+
 
 using namespace DirectX;
 
@@ -54,6 +58,9 @@ bool GameApp::Init()
 	m_pMouse->SetWindow(m_hMainWnd);
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
+	SolarSystemMgr::getInstance().Init();
+	SolarSystemMgr::getInstance().setCurrentPilot();
+
 	SwitchToScene(std::make_unique<MainScene>(AppInst()));
 
 
@@ -103,27 +110,55 @@ void GameApp::OnResize()
 		assert(m_pd2dRenderTarget);
 	}
 
+	D3DManager::getInstance().setd2dResource(m_pd2dRenderTarget.Get(), m_pColorBrush.Get(), m_pTextFormat.Get());
+
 }
 
 void GameApp::UpdateScene(float dt)
 {
+	tick++;
 	int switchScene = 0;
-	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, switchScene);
+	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
+	SolarSystemMgr::getInstance().Update(tick);
+
+	if(tick % 10 == 0)
+	{
+		auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+		UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
+
+		if (ContainerID > 40000000) {
+			UINT ContainerTypeID = mapDenormalizeManager::getInstance()->getTypeIDByContainerId(ContainerID);
+			UINT ContainerGroupID = InvTypesManager::getInstance()->getGroupByTypeId(ContainerTypeID);
+			if (ContainerGroupID == 6) //当前处于恒星系空间
+			{
+				if (currentSceneID != 3)
+					switchScene = 3;
+			}
+			else {
+				if (currentSceneID != 2)
+					switchScene = 2;
+			}
+		}
+	}
+
 	switch (switchScene)
 	{
 	case 1:
 	{
 		SwitchToScene(std::make_unique<MainScene>(AppInst()));
+		currentSceneID = 1;
 		break;
 	}
 	case 2:
 	{
 		SwitchToScene(std::make_unique<DockScene>(AppInst()));
+		currentSceneID = 2;
 		break;
 	}
 	case 3:
 	{
 		SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+		currentSceneID = 3;
 		break;
 	}
 	default:;

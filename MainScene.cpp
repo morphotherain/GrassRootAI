@@ -89,9 +89,6 @@ MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 
 bool MainScene::Init()
 {
-	
-
-
 
 	if (!InitEffect())
 		return false;
@@ -100,15 +97,6 @@ bool MainScene::Init()
 		return false;
 
 	for (auto& component : uiComponents) {
-		component->setd3dResource(
-			*m_pd3dDevice.GetAddressOf(),
-			*m_pd3dImmediateContext.GetAddressOf(),
-			*m_pSwapChain.GetAddressOf(),
-			m_hMainWnd,
-			*m_pRenderTargetView.GetAddressOf(),
-			*m_pDepthStencilView.GetAddressOf()
-		);
-		component->setd2dResource(*m_pd2dRenderTarget.GetAddressOf(), *m_pColorBrush.GetAddressOf(), *m_pTextFormat.GetAddressOf());
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
@@ -120,7 +108,7 @@ void MainScene::OnResize()
 {
 }
 
-void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
@@ -176,7 +164,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	}
 
 	for (auto& component : uiComponents) {
-		component->UpdateUI(dt, mouse, keyboard, switchScene);
+		component->UpdateUI(dt, mouse, keyboard, tick);
 	}
 
 
@@ -188,10 +176,6 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	XMStoreFloat3(&adjustedPos, XMVectorClamp(cam1st->GetPositionXM(),
 		XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f), XMVectorSet(96.8f, 52.05f, -96.85f, 0.0f)));
 	cam1st->SetPosition(adjustedPos);
-
-	tick++;
-
-	switchScene = 3;
 
 
 	// 退出程序，这里应向窗口发送销毁信息

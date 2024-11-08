@@ -61,7 +61,7 @@
 //{
 //}
 //
-//void UIShaderTest::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene)
+//void UIShaderTest::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 //{
 //	// 更新鼠标事件，获取相对偏移量
 //	Mouse::State mouseState = mouse.GetState();

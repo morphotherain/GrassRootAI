@@ -36,7 +36,7 @@ public:
 
 	virtual bool Init();
 	virtual void OnResize();
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
+	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	virtual void DrawScene();
 	virtual void cleanup();
 

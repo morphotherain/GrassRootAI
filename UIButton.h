@@ -9,23 +9,11 @@ public:
 	UIButton(HINSTANCE _hInstance) :UIBase(_hInstance) {}
 	~UIButton() = default;
 
-	struct VertexPosColor
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT2 TexCoor;
-		float index;
-		static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
-	};
-
-	struct MapVertexPosColor {
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT2 texCoord;
-		float texIndex;    // 纹理索引，作为浮点数存储
-	};
+	//
 
 	virtual bool Init();
 	virtual void OnResize();
-	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, int& switchScene);
+	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	virtual void DrawUI();
 	virtual void cleanup();
 
@@ -36,13 +24,8 @@ public:
 	std::shared_ptr<bool> getClickFlag() { return clickFlag; }
 
 private:
-	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
-	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
-	ComPtr<ID3D11InputLayout> button_m_pVertexLayout;	// 顶点输入布局
-	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
 
-	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
 	std::shared_ptr<bool> clickFlag;
 

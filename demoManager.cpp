@@ -1,5 +1,4 @@
-﻿// InvTypesManager.cpp
-#include "demoManager.h"
+﻿#include "demoManager.h"
 
 std::wstring demoManager::getNameByTypeId(int type_id) {
     std::wstring name;

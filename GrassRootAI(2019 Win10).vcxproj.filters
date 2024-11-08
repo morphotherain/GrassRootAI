@@ -225,6 +225,45 @@
     <ClCompile Include="SamplerStateComponent.cpp">
       <Filter>EffectComponent</Filter>
     </ClCompile>
+    <ClCompile Include="UIWindowStorage.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="Pilot.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SolarSystemMgr.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="dynGameObjectsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceTransformComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="mapDenormalizeManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="taskDatabaseManager.cpp">
+      <Filter>数据库</Filter>
+    </ClCompile>
+    <ClCompile Include="NPCStation.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="MapManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -400,6 +439,45 @@
     </ClInclude>
     <ClInclude Include="ConstantBufferData.h">
       <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowStorage.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="Pilot.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SolarSystemMgr.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="dynGameObjectsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceTransformComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="mapDenormalizeManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="taskDatabaseManager.h">
+      <Filter>数据库</Filter>
+    </ClInclude>
+    <ClInclude Include="NPCStation.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MapManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
