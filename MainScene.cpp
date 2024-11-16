@@ -45,45 +45,10 @@ std::vector<PosTexIndex>  GenerateVertices(int n) {
 
 MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
-	
-
-
-	/*auto button = std::make_shared<UIButton>();
-	button->setSize(1500.0f, 700.0f, 200.0f, 40.0f);
-	button->setTex("demoTex\\MainScene\\button1.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(1500.0f, 800.0f, 200.0f, 40.0f);
-	button->setTex("demoTex\\MainScene\\button2.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(1500.0f, 900.0f, 200.0f, 40.0f);
-	button->setTex("demoTex\\MainScene\\button3.dds");
-	AddUIComponent(button);
-
-	button = std::make_shared<UIButton>();
-	button->setSize(1500.0f, 1000.0f, 200.0f, 40.0f);
-	button->setTex("demoTex\\MainScene\\button4.dds");
-	AddUIComponent(button);*/
-
-	//auto starmap = std::make_shared<UIWindowMap>();
-	//starmap->setSize(40.0f, 0.0f, 0.0f, 0.0f);
-	//AddUIComponent(starmap);
-
 	auto window = std::make_shared<UIWindowInfo>();
 	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
 	window->setTypeID(18);
 	AddUIComponent(window);
-
-	//window = std::make_shared<UIWindowInfo>();
-	//window->setSize(510.0f, 400.0f, 200.0f, 40.0f);
-	//window->setTypeID(2605);
-	//AddUIComponent(window);
-
-
-
 
 }
 

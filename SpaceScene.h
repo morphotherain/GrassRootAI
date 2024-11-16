@@ -5,6 +5,7 @@
 #include "SolarSystem.h"
 #include "UIText.h"
 #include "UISkyBox.h"
+#include "UIRButtonMenu.h"
 
 
 class SpaceScene : public Scene
@@ -35,6 +36,7 @@ public:
 	bool InitEffect();
 private:
 	std::shared_ptr<Effect> m_pBracketEffect;
+	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
 	
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	std::fstream fs;

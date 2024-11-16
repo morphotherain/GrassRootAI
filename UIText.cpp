@@ -17,7 +17,6 @@ bool UIText::Init()
 	if (!InitResource())
 		return false;
 
-	clickFlag = std::make_shared<bool>(false);
 
 	return false;
 }

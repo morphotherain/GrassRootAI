@@ -111,5 +111,9 @@ public:
 	bool IsManeuverInProgress(UINT tick) {
 		return tick >= maneuverStartTime && tick < maneuverEndTime;
 	}
-
+	
+	// 计算速度绝对值的方法
+	float CalculateSpeedMagnitude() const {
+		return sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
+	}
 };

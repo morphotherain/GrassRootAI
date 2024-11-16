@@ -2,6 +2,7 @@
 #pragma once
 #include <fstream>
 #include "UIBase.h"
+#include "UIText.h"
 class UIButton : public UIBase
 {
 public:
@@ -21,6 +22,7 @@ public:
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setTex(std::string _Tex) { TexPath = _Tex; };
+	void setText(std::wstring text);
 	std::shared_ptr<bool> getClickFlag() { return clickFlag; }
 
 private:
@@ -28,6 +30,7 @@ private:
 
 
 	std::shared_ptr<bool> clickFlag;
+	std::shared_ptr<UIText> text;
 
 	float x = 10.0f;
 	float y = 30.0f;

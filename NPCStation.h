@@ -3,9 +3,17 @@
 #include "PhysicsComponent.h"
 #include "SpaceTransformComponent.h"
 
-class ship : public GameObject {
+class NPCStation : public GameObject {
 public:
-	ship();
-	~ship();
+	NPCStation() = default;
+	NPCStation(UINT _objectID) :objectID(_objectID) {};
+	~NPCStation() = default;
+
+	virtual void Init();
+
+	UINT objectID;
+
+	std::shared_ptr<BaseComponent> m_pBase;
+	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 
 };

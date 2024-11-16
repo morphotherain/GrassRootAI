@@ -9,7 +9,10 @@
 #include "GameObject.h"
 #include "Pilot.h"
 #include "Ship.h"
+#include "Astro.h"
+#include "NPCStation.h"
 #include "Sector.h"
+
 
 
 struct SolarSystem {
@@ -20,6 +23,7 @@ struct SolarSystem {
 
 	std::vector<std::shared_ptr<DenormalizeData>> m_denormalizes;
 
+	std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
 	std::unordered_map<UINT, std::shared_ptr<GameObject>> map_objects;
 	std::vector<std::shared_ptr<GameObject>> space_objects;
 	std::vector<std::shared_ptr<GameObject>> other_objects;
@@ -33,6 +37,8 @@ struct SolarSystem {
 	void Update(UINT tick);
 
 	void getDenormalizesBySolarSystemID();
+
+	void addGameObject(dynGameObject& objData);
 
 	// 函数用于计算哈希单元的索引
 	long long int CalculateHashIndex(long long int x, long long int  y, long long int  z) const { return x + y * 10000000 + z * 100000000000000; }

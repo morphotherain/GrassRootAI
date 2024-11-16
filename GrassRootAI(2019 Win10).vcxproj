@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Astro.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BlendStateComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -197,12 +198,14 @@
     <ClCompile Include="SpaceScene.cpp" />
     <ClCompile Include="SpaceTransformComponent.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="Task.cpp" />
     <ClCompile Include="taskDatabaseManager.cpp" />
     <ClCompile Include="TexturesComponent.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIButton.cpp" />
+    <ClCompile Include="UIRButtonMenu.cpp" />
     <ClCompile Include="UIShaderTest.cpp" />
     <ClCompile Include="UISkyBox.cpp" />
     <ClCompile Include="UIText.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Astro.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BlendStateComponent.h" />
     <ClInclude Include="Camera.h" />
@@ -276,6 +280,7 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIButton.h" />
+    <ClInclude Include="UIRButtonMenu.h" />
     <ClInclude Include="UIShaderTest.h" />
     <ClInclude Include="UISkyBox.h" />
     <ClInclude Include="UIText.h" />

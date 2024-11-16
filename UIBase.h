@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "ddsLoader.h"
 #include "RenderProxy.h"
+#include "SolarSystemMgr.h"
 
 class UIBase
 {

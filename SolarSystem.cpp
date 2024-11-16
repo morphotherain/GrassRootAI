@@ -6,38 +6,11 @@
 
 void SolarSystem::Init()
 {
+    getDenormalizesBySolarSystemID();
     auto p_vGameObjectData = dynGameObjectsManager::getInstance()->getGameObjectBySolarSystemID(m_solarSystem.solarSystemID);
     for (auto& objectData : *p_vGameObjectData) {
-        std::shared_ptr<GameObject> object;
-        switch (objectData.categoryID) {
-        case 5: {    //附件(克隆人飞行员)
-            object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
-            other_objects.push_back(object);
-            Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));
-            break;
-        }
-        case 6: {    //舰船(含太空舱
-            object = std::make_shared<Ship>(objectData.objectID);
-            space_objects.push_back(object);
-            break;
-        }
-        default: {
-            continue;
-        }
-        }
-        object->Init();
-        map_objects[objectData.objectID] = object;
-        object->objectID = objectData.objectID;
-        if (object->GetComponent<BaseComponent>() != nullptr) {
-            auto base = object->GetComponent<BaseComponent>();
-            base->objectID = objectData.objectID;
-            base->typeID = objectData.typeID;
-            base->ownerID = objectData.OwnerID;
-            base->containerID = objectData.ContainerID;
-            base->solarSystemID = objectData.SolarSystemID;
-            base->groupID = objectData.groupID;
-            base->categoryID = objectData.categoryID;
-        }
+        addGameObject(objectData);
+        
     }
     for (auto p_object : space_objects) {
         addObjectToSector(p_object);
@@ -49,9 +22,6 @@ void SolarSystem::Init()
 
 void SolarSystem::Update(UINT tick)
 {
-    auto obj = map_objects[2];
-    auto Tran = obj->GetComponent<SpaceTransformComponent>();
-
     for (auto obj : space_objects) {
         obj->Update(tick);
     }
@@ -77,7 +47,7 @@ void SolarSystem::getDenormalizesBySolarSystemID()
     sqlite3* db = dbManager->getDatabase();
 
     // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT x, y, z, nameID, regionID ,constellationID ,solarSystemID,radius,itemID,typeID,celestialIndex,orbitIndex FROM mapDenormalize WHERE solarSystemID = " + std::to_string(m_solarSystem.solarSystemID) + ";";
+    std::string sql = "SELECT x, y, z, nameID, regionID ,constellationID ,solarSystemID,radius,itemID,mapDenormalize.typeID,celestialIndex,orbitIndex, invtypes.groupID, invGroups.categoryID FROM mapDenormalize JOIN invtypes ON mapDenormalize.typeID = invtypes.typeID JOIN invGroups ON invtypes.groupID = invGroups.groupID WHERE solarSystemID = " + std::to_string(m_solarSystem.solarSystemID) + ";";
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
@@ -90,6 +60,7 @@ void SolarSystem::getDenormalizesBySolarSystemID()
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
 
         auto p_denormalize = std::make_shared<DenormalizeData>();
+        dynGameObject objectData;
 
         // 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
         p_denormalize->x = sqlite3_column_double(stmt, 0);
@@ -107,6 +78,15 @@ void SolarSystem::getDenormalizesBySolarSystemID()
 
         m_denormalizes.push_back(p_denormalize);
 
+        objectData.x = p_denormalize->x;
+        objectData.y = p_denormalize->y;
+        objectData.z = p_denormalize->z;
+        objectData.SolarSystemID = p_denormalize->solarSystemID;
+        objectData.objectID = p_denormalize->itemID;
+        objectData.typeID = p_denormalize->typeID;
+        objectData.groupID = sqlite3_column_int(stmt, 12);
+        objectData.categoryID = sqlite3_column_int(stmt, 13);
+        addGameObject(objectData);
     }
 
     // 释放语句资源
@@ -119,6 +99,53 @@ void SolarSystem::getDenormalizesBySolarSystemID()
         p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(p_denormalize->bracketID);
     }
 
+}
+
+void SolarSystem::addGameObject(dynGameObject& objectData)
+{
+    std::shared_ptr<GameObject> object;
+    switch (objectData.categoryID) {
+    case 2: {    //天体
+        object = std::make_shared<Astro>(objectData.objectID);
+        break;
+    }
+    case 3: {    //NPC 空间站
+        object = std::make_shared<NPCStation>(objectData.objectID);
+        break;
+    }
+    case 5: {    //附件(克隆人飞行员)
+        object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
+        other_objects.push_back(object);
+        Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));
+        break;
+    }
+    case 6: {    //舰船(含太空舱
+        object = std::make_shared<Ship>(objectData.objectID);
+        break;
+    }
+    default: {
+        return;
+    }
+    }
+    auto p_object = object->ConvertBasedOnGroupID(objectData.groupID);
+    if (p_object != nullptr)object = p_object;
+    object->Init();
+    map_objects[objectData.objectID] = object;
+    (*p_mapObject)[objectData.objectID] = object;
+    object->objectID = objectData.objectID;
+    if (object->GetComponent<SpaceTransformComponent>() != nullptr) {
+        space_objects.push_back(object);
+    }
+    if (object->GetComponent<BaseComponent>() != nullptr) {
+        auto base = object->GetComponent<BaseComponent>();
+        base->objectID = objectData.objectID;
+        base->typeID = objectData.typeID;
+        base->ownerID = objectData.OwnerID;
+        base->containerID = objectData.ContainerID;
+        base->solarSystemID = objectData.SolarSystemID;
+        base->groupID = objectData.groupID;
+        base->categoryID = objectData.categoryID;
+    }
 }
 
 
@@ -244,20 +271,22 @@ void SolarSystem::checkObjectsInSector()
             // 遍历内层map的键值对
             for (const auto& innerPair : innerMap) {
                 const std::shared_ptr<Sector>& sector = innerPair.second;
-                // 创建一个迭代器，用于遍历space_objects向量并可能进行删除操作
-                auto objectIter = sector->space_objects.begin();
 
-                while (objectIter != sector->space_objects.end()) {
-                    const auto& object = *objectIter;
+                int size = sector->space_objects.size();
+                for (int i = 0; i < size; ++i) {
+                    const auto& object = sector->space_objects[i];
 
                     auto Tran = object->GetComponent<SpaceTransformComponent>();
 
                     if (sector->isInSector(Tran->x, Tran->y, Tran->z)) {
-                        ++objectIter;
+                        continue;
                     }
                     else {
-                        objectIter = sector->space_objects.erase(objectIter);
+                        sector->space_objects.erase(sector->space_objects.begin() + i);
                         addObjectToSector(object);
+                        // 由于删除了一个元素，索引需要减1，以确保下一次循环能正确检查当前位置的元素
+                        i--;
+                        size--;
                     }
                 }
             }

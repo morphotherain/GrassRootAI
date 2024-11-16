@@ -2,11 +2,13 @@
 
 void SolarSystemMgr::Init()
 {
+	p_mapObject = std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>();
 	auto IDs = dynGameObjectsManager::getInstance()->getSolarSystemIDHasPilot();
 	for (auto id : IDs) {
 		auto p_solarSystem = std::make_shared<SolarSystem>(id);
+		p_solarSystem->p_mapObject = p_mapObject;
 		p_solarSystem->Init();
-		SolarSystems.push_back(p_solarSystem);
+		SolarSystems[id] = (p_solarSystem);
 
 		std::vector<std::shared_ptr<Pilot>> otherPilots = p_solarSystem->getPilots();
 		Pilots.insert(Pilots.end(), otherPilots.begin(), otherPilots.end());
@@ -15,8 +17,8 @@ void SolarSystemMgr::Init()
 }
 
 void SolarSystemMgr::Update(UINT tick) {
-	for (auto p : SolarSystems) {
-		p->Update(tick);
+	for (const auto& pair : SolarSystems) {
+		pair.second->Update(tick);
 	}
 }
 
@@ -26,6 +28,8 @@ void SolarSystemMgr::getCurrentPilot()
 		if (p->PilotID == currentPilotID)
 		{
 			currentPilot = p;
+			auto Base = currentPilot->GetComponent<BaseComponent>();
+			currentSolarSystem = SolarSystems[Base->solarSystemID];
 		}
 	}
 }
@@ -33,9 +37,9 @@ void SolarSystemMgr::getCurrentPilot()
 void SolarSystemMgr::setCurrentPilot()
 {
 	getCurrentPilot();
-	for (auto pSolarSystem : SolarSystems) {
-		pSolarSystem->setCurrentPilots(currentPilot);
-		pSolarSystem->setCurrentSector();
+	for (const auto& pair : SolarSystems) {
+		pair.second->setCurrentPilots(currentPilot);
+		pair.second->setCurrentSector();
 	}
 }
 

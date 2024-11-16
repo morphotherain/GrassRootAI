@@ -12,5 +12,6 @@ public:
 
     // 假设在 invtypes 表中根据 type_id 查找 name 列
     int getBracketIDByGroupId(int group_id);
+    std::wstring getNameByGroupId(int group_id);
 };
 

@@ -52,4 +52,5 @@ public:
     }
     virtual void Init() {};
     virtual void Update(UINT tick) {}
+    virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID) { return nullptr; }
 };

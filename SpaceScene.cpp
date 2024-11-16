@@ -24,8 +24,7 @@ bool SpaceScene::Init()
 
 	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
-	m_pSolarSystem = SolarSystemMgr::getInstance().SolarSystems[0];
-	m_pSolarSystem->getDenormalizesBySolarSystemID();
+	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
 	if (!InitEffect())
 		return false;
@@ -72,6 +71,11 @@ bool SpaceScene::Init()
 	/*auto starmap = std::make_shared<UIWindowMap>();
 	starmap->setSize(500.0f, 350.0f, 1120.0f, 657.0f);
 	AddUIComponent(starmap);*/
+
+	m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);
+	m_RButtonMenu->setSize(100.0f, 100.0f);
+	m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+	m_RButtonMenu->Init();
 
 
 	for (auto& component : uiComponents) {
@@ -174,6 +178,22 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 		}
 	}
 
+	// 在鼠标没进入窗口前仍为ABSOLUTE模式
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+	{
+
+		m_RButtonMenu = nullptr;
+	}
+
+	// 在鼠标没进入窗口前仍为ABSOLUTE模式
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+	{
+		m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);
+		m_RButtonMenu->setSize(mouseState.x, mouseState.y);
+		m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+		m_RButtonMenu->Init();
+	}
+
 	for (auto& component : uiComponents) {
 		component->UpdateUI(dt, mouse, keyboard, tick);
 	}
@@ -273,7 +293,7 @@ void SpaceScene::DrawScene()
 			vertex3D.y - sector->y,
 			vertex3D.z - sector->z,
 			vertex3D.texIndex ,vertex3D.name };
-			objectVertices3D.push_back(temp);
+			//objectVertices3D.push_back(temp);
 			continue;
 		}
 
@@ -374,6 +394,8 @@ void SpaceScene::DrawScene()
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
+	if(m_RButtonMenu != nullptr)
+		m_RButtonMenu->DrawUI();
 
 	HR(m_pSwapChain->Present(1, 0));
 }

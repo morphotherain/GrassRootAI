@@ -55,6 +55,9 @@
     <Filter Include="Effect框架">
       <UniqueIdentifier>{274985dc-b5af-4033-b7ff-380af0ad55d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Task">
+      <UniqueIdentifier>{46cf3438-c16e-46c6-9fdf-48de1a2641db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -263,6 +266,15 @@
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="Astro.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRButtonMenu.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task.cpp">
+      <Filter>Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +490,12 @@
     </ClInclude>
     <ClInclude Include="PhysicsComponent.h">
       <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Astro.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRButtonMenu.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

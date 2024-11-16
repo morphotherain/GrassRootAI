@@ -2,18 +2,6 @@
 
 using namespace DirectX;
 
-//const D3D11_INPUT_ELEMENT_DESC UIButton::VertexPosColor::inputLayout[3] = {
-//	// 位置字段
-//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-//	// 纹理坐标字段
-//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-//	// 纹理索引字段
-//	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-//};
-//
-
-
-
 std::vector<PosTexIndex> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
 	_x = _x / 10.0f;
 	_y = 1080.0f - _y;
@@ -52,7 +40,6 @@ bool UIButton::Init()
 		return false;
 
 	clickFlag = std::make_shared<bool>(false);
-
 	return false;
 }
 
@@ -74,7 +61,6 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
 		if (x < mouseState.x && (x + deltaX) > mouseState.x && (y + deltaY) > mouseState.y && y < mouseState.y)
-			//switchScene = 2;
 			*clickFlag = true;
 	}
 	
@@ -83,10 +69,11 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 
 void UIButton::DrawUI()
 {
-	assert(m_pd3dImmediateContext);
-	assert(m_pSwapChain);
 
 	m_effect->apply();
+	if (text != nullptr) {
+		text->DrawUI();
+	}
 
 }
 
@@ -116,4 +103,12 @@ bool UIButton::InitResource()
 bool UIButton::InitEffect()
 {	
 	return true;
+}
+
+void UIButton::setText(std::wstring _text)
+{
+	text = std::make_shared<UIText>();
+	text->setText(_text);
+	text->setSize(x+10.0f,y+2.0f,200.0f,200.0f);
+	text->Init();
 }

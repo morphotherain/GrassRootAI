@@ -71,7 +71,7 @@ std::vector<double> dynGameObjectsManager::getPosByObjectID(int object_id) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             pos[0] = (sqlite3_column_double(stmt, 0));
             pos[1] = (sqlite3_column_double(stmt, 1));
-            pos[2] = (sqlite3_column_double(stmt, 2));
+            pos[2] = (sqlite3_column_double(stmt, 2));  
         }
     }
     sqlite3_finalize(stmt);

@@ -16,12 +16,14 @@ public :
 	SolarSystemMgr() = default;
 	~SolarSystemMgr() = default;
 
-	std::vector<std::shared_ptr<SolarSystem>> SolarSystems;
+	std::unordered_map<UINT, std::shared_ptr<SolarSystem>> SolarSystems;
+	/*std::vector<std::shared_ptr<SolarSystem>> SolarSystems;*/
 	std::shared_ptr<SolarSystem> currentSolarSystem;
 	std::vector<std::shared_ptr<Pilot>> Pilots;
 	UINT currentPilotID = 0;
 	std::shared_ptr<Pilot> currentPilot;
 
+	std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
 
 	void Init();
 	void getCurrentPilot();

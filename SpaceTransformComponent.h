@@ -24,4 +24,12 @@ public:
     SpaceTransformComponent() : orientation(1,0,0,0){}
     SpaceTransformComponent(float _x, float _y, float _z) : x(_x),y(_y),z(_z), orientation(1, 0, 0, 0) {}
 
+    double calculateDistance(double _x, double _y, double _z) {
+        double dx = this->x - _x;
+        double dy = this->y - _y;
+        double dz = this->z - _z;
+
+        return sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
 };
