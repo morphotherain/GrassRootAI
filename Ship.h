@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
+#include <DirectXMath.h>
 #include "PhysicsComponent.h"
 
 class Ship : public GameObject{
@@ -17,5 +18,8 @@ public:
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<PhysicsComponent> m_pPhysics;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
+
+
+	virtual void handleTask(const Task& task);
 
 };

@@ -5,6 +5,7 @@
 
 #include "UIButton.h"
 #include "UIText.h"
+#include "UIRButtonMenu.h"
 
 class UIWindowOverview : public UIWindow
 {
@@ -26,6 +27,7 @@ public:
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 	struct Row {
+		UINT objectID;
 		double distance;
 		double velocity;
 		std::wstring typeName;
@@ -72,6 +74,7 @@ private:
 	std::string BodyTexPath;
 
 
+	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
 
 	// 窗口标志变量
 	bool isVisible = true;

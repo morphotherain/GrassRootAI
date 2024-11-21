@@ -22,6 +22,8 @@ void SolarSystem::Init()
 
 void SolarSystem::Update(UINT tick)
 {
+    
+
     for (auto obj : space_objects) {
         obj->Update(tick);
     }
@@ -82,6 +84,7 @@ void SolarSystem::getDenormalizesBySolarSystemID()
         objectData.y = p_denormalize->y;
         objectData.z = p_denormalize->z;
         objectData.SolarSystemID = p_denormalize->solarSystemID;
+        objectData.ContainerID = p_denormalize->solarSystemID;
         objectData.objectID = p_denormalize->itemID;
         objectData.typeID = p_denormalize->typeID;
         objectData.groupID = sqlite3_column_int(stmt, 12);

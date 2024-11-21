@@ -183,6 +183,7 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NPCStation.cpp" />
+    <ClCompile Include="StationComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="Pilot.cpp" />
     <ClCompile Include="PSEffectComponent.cpp" />
@@ -200,6 +201,7 @@
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="taskDatabaseManager.cpp" />
+    <ClCompile Include="TaskMgr.cpp" />
     <ClCompile Include="TexturesComponent.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
@@ -217,6 +219,7 @@
     <ClCompile Include="VertexBufferComponent.cpp" />
     <ClCompile Include="vertexData.cpp" />
     <ClCompile Include="VSEffectComponent.cpp" />
+    <ClCompile Include="WarpGateComponent.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +260,7 @@
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NPCStation.h" />
+    <ClInclude Include="StationComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="Pilot.h" />
     <ClInclude Include="PSEffectComponent.h" />
@@ -274,7 +278,9 @@
     <ClInclude Include="SpaceTransformComponent.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sqlite3ext.h" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="taskDatabaseManager.h" />
+    <ClInclude Include="TaskMgr.h" />
     <ClInclude Include="TexturesComponent.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformComponent.h" />
@@ -292,6 +298,7 @@
     <ClInclude Include="VertexBufferComponent.h" />
     <ClInclude Include="VertexData.h" />
     <ClInclude Include="VSEffectComponent.h" />
+    <ClInclude Include="WarpGateComponent.h" />
     <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>

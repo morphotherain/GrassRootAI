@@ -43,6 +43,8 @@ void UIWindowOverview::OnResize()
 
 void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	if (m_RButtonMenu != nullptr)
+		m_RButtonMenu->UpdateUI(dt, mouse, keyboard, tick);
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -71,6 +73,28 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 				m_RowMgr->next_index = 0;
 			}
 		}
+		// 在鼠标没进入窗口前仍为ABSOLUTE模式
+		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+		{
+
+			m_RButtonMenu = nullptr;
+		}
+
+		// 在鼠标没进入窗口前仍为ABSOLUTE模式
+		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+		{
+			UINT currentID = SolarSystemMgr::getInstance().currentPilot->currentShip->GetComponent<BaseComponent>()->objectID;
+			int index = (mouseState.y - y - 35) / TitleHeight - 2;
+			if(m_RowMgr->Rows.size()>index)
+			{
+				UINT targetID = m_RowMgr->Rows[index]->objectID;
+				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
+				m_RButtonMenu->setSize(mouseState.x, mouseState.y);
+				m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+				m_RButtonMenu->Init();
+			}
+		}
+
 
 	}
 
@@ -93,6 +117,8 @@ void UIWindowOverview::DrawUI()
 		component->DrawUI();
 	}
 	m_RowMgr->Draw();
+	if (m_RButtonMenu != nullptr)
+		m_RButtonMenu->DrawUI();
 
 }
 
@@ -281,7 +307,7 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 
 			temp->Name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 			temp->typeName = invGroupsManager::getInstance()->getNameByGroupId(base->groupID);
-			temp->distance = currentTran->calculateDistance(Tran->x, Tran->y, Tran->z);
+			temp->distance = currentTran->calculateDistance(*Tran);
 			if (Physics != nullptr) {
 				temp->velocity = Physics->CalculateSpeedMagnitude();
 			}
@@ -289,6 +315,7 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			{
 				temp->velocity = 0.0f;
 			}
+			temp->objectID = base->objectID;
 			temp->Init(x, y + count * Height, Height); count++;
 			Rows.push_back(temp);
 		}
@@ -300,11 +327,11 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			auto Tran = object->GetComponent<SpaceTransformComponent>();
 			auto Physics = object->GetComponent<PhysicsComponent>();
 
-			if (base->groupID == 7 && base->groupID == 8)continue;
+			if (base->groupID == 7 || base->groupID == 8)continue;
 
 			temp->Name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 			temp->typeName = invGroupsManager::getInstance()->getNameByGroupId(base->groupID);
-			temp->distance = currentTran->calculateDistance(Tran->x, Tran->y, Tran->z);
+			temp->distance = currentTran->calculateDistance(*Tran);
 			if (temp->distance < 10000000)continue;
 			if (Physics != nullptr) {
 				temp->velocity = Physics->CalculateSpeedMagnitude();
@@ -313,6 +340,7 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			{
 				temp->velocity = 0.0f;
 			}
+			temp->objectID = base->objectID;
 			temp->Init(x, y + count * Height, Height); count++;
 			Rows.push_back(temp);
 		}

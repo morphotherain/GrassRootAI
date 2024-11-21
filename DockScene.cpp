@@ -146,10 +146,18 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	}
 
 	if (*m_button->getClickFlag()) {
-		UINT currentPilotID = SolarSystemMgr::getInstance().currentPilotID;
-		UINT currentPilotObjectID = dynGameObjectsManager::getInstance()->getPilotObjectIDByPilotID(currentPilotID);
-		UINT currentPilotContainerID = dynGameObjectsManager::getInstance()->getContainerIdByObjectID(currentPilotObjectID);
-		dynGameObjectsManager::getInstance()->updateContainerIDByObjectID(currentPilotContainerID, 40000001);
+		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+		auto currentStationID = currentShip->GetComponent<BaseComponent>()->containerID;
+		auto currentStation = (*SolarSystemMgr::getInstance().p_mapObject)[currentStationID];
+		std::shared_ptr<Task> task = std::make_shared<Task>();
+		task->isInnerTask = true;
+		task->taskID = -1;
+		task->publisher = currentShip;
+		task->target = currentStation;
+		task->taskTypeId = 1;
+		if(currentStation != nullptr)
+			currentStation->addTask(task);
+
 		*(m_button->getClickFlag()) = false;
 	}
 	// ******************

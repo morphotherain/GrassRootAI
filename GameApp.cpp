@@ -61,7 +61,7 @@ bool GameApp::Init()
 	SolarSystemMgr::getInstance().Init();
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
-	SwitchToScene(std::make_unique<MainScene>(AppInst()));
+	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 
 
 	return true;
@@ -121,11 +121,15 @@ void GameApp::UpdateScene(float dt)
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
 	SolarSystemMgr::getInstance().Update(tick);
 
-	if(tick % 10 == 0)
+	if(tick % 100 == 0)
 	{
 		auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
 		UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
 
+		if (ContainerID >= 30000000 && ContainerID < 40000000) {
+			if (currentSceneID != 3)
+				switchScene = 3;
+		}
 		if (ContainerID > 40000000) {
 			UINT ContainerTypeID = mapDenormalizeManager::getInstance()->getTypeIDByContainerId(ContainerID);
 			UINT ContainerGroupID = InvTypesManager::getInstance()->getGroupByTypeId(ContainerTypeID);

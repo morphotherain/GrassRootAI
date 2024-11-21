@@ -59,10 +59,10 @@ bool SpaceScene::Init()
 	text->setText(m_pSolarSystem->m_solarSystem.solarSystemName + L" < "); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
-	auto window = std::make_shared<UIWindowInfo>();
+	/*auto window = std::make_shared<UIWindowInfo>();
 	window->setSize(100.0f, 400.0f, 200.0f, 40.0f);
 	window->setTypeID(620);
-	AddUIComponent(window);
+	AddUIComponent(window);*/
 
 	auto window_overview = std::make_shared<UIWindowOverview>();
 	window_overview->setSize(1500.0f, 200.0f, 200.0f, 40.0f);
@@ -394,8 +394,8 @@ void SpaceScene::DrawScene()
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
-	if(m_RButtonMenu != nullptr)
-		m_RButtonMenu->DrawUI();
+	/*if(m_RButtonMenu != nullptr)
+		m_RButtonMenu->DrawUI();*/
 
 	HR(m_pSwapChain->Present(1, 0));
 }

@@ -16,7 +16,7 @@ std::shared_ptr<GameObject> Astro::ConvertBasedOnGroupID(UINT groupID)
 		return std::make_shared<AsteroidBelt>(objectID);
 	}
 	case 10: {
-		return std::make_shared<Stargate>(objectID);
+		return std::make_shared<StarGate>(objectID);
 	}
 
 	}
@@ -55,10 +55,12 @@ void AsteroidBelt::Init()
 	AddComponent<Component>(m_pSpaceTran);
 }
 
-void Stargate::Init()
+void StarGate::Init()
 {
 	m_pBase = std::make_shared<BaseComponent>(objectID);
 	AddComponent<Component>(m_pBase);
 	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
 	AddComponent<Component>(m_pSpaceTran);
+	m_pWarpGate = std::make_shared<WarpGateComponent>(objectID);
+	AddComponent<Component>(m_pWarpGate);
 }

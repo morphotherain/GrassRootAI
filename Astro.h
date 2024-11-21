@@ -64,18 +64,19 @@ public:
 
 };
 
-class Stargate : public GameObject
+class StarGate : public GameObject
 {
 public:
-	Stargate() = default;
-	Stargate(UINT _objectID) :objectID(_objectID) {};
-	~Stargate() = default;
+	StarGate() = default;
+	StarGate(UINT _objectID) :objectID(_objectID) {};
+	~StarGate() = default;
 
 	virtual void Init();
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
+	std::shared_ptr<WarpGateComponent>m_pWarpGate;
 
 };
 

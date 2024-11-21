@@ -276,6 +276,15 @@
     <ClCompile Include="Task.cpp">
       <Filter>Task</Filter>
     </ClCompile>
+    <ClCompile Include="TaskMgr.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="StationComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="WarpGateComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -496,6 +505,18 @@
     </ClInclude>
     <ClInclude Include="UIRButtonMenu.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskMgr.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="StationComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="WarpGateComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

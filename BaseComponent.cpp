@@ -9,4 +9,4 @@ BaseComponent::BaseComponent(UINT _objectID)
 	containerID  = dynGameObjectsManager::getInstance()->getContainerIdByObjectID(_objectID);
 	ownerID = dynGameObjectsManager::getInstance()->getOwnerIdByObjectID(_objectID);
 
-}
+}	

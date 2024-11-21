@@ -4,6 +4,8 @@
 #include "Pilot.h"
 #include "dynGameObjectsManager.h"
 
+#include "TaskMgr.h"
+
 class SolarSystemMgr {
 public :
 
@@ -29,6 +31,8 @@ public :
 	void getCurrentPilot();
 	void setCurrentPilot();
 	void Update(UINT tick);
+
+	void distributeTasksFromTaskMgr();
 
 private:
 };
