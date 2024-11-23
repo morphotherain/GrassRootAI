@@ -14,8 +14,8 @@ public:
 		const std::vector<std::string>& textureFileNames,
 		ComPtr<ID3D11ShaderResourceView>& shaderResourceView);
 
-	D3D11_TEXTURE2D_DESC td32;
-	D3D11_TEXTURE2D_DESC td16;
+	D3D11_TEXTURE2D_DESC td32 = {};
+	D3D11_TEXTURE2D_DESC td16 = {};
 
 	ComPtr<ID3D11Texture2D> m_Tex16;
 	ComPtr<ID3D11Texture2D> m_Tex32;

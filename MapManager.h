@@ -37,7 +37,7 @@ public:
 	std::wstring solarSystemName;   // 恒星系名称
 	std::wstring constellationName;   // 名称
 	std::wstring regionName;   // 名称
-	float luminosity;              // 光度
+	double luminosity;              // 光度
 	int solarSystemID;
 	int constellationID;
 	int regionalID;
@@ -51,27 +51,27 @@ public:
 	DenormalizeData() = default;
 	DenormalizeData(int id);
 
-	std::wstring name;
-	double x;                       //  x 坐标
-	double y;                       //  y 坐标
-	double z;                       //  z 坐标
-	int nameID;   // 名称
-	int regionID;
-	int constellationID;
-	int solarSystemID;
-	double radius;
-	int itemID;
-	int typeID;
-	int groupID;
-	int celestialIndex;
-	int orbitIndex;
-	int bracketID;
-	std::string dds_path;
+	std::wstring name = L"";
+	double x = 0;                       //  x 坐标
+	double y = 0;                       //  y 坐标
+	double z = 0;                       //  z 坐标
+	int nameID = 0;   // 名称
+	int regionID = 0;
+	int constellationID = 0;
+	int solarSystemID = 0;
+	double radius = 0;
+	int itemID = 0;
+	int typeID = 0;
+	int groupID = 0;
+	int celestialIndex = 0;
+	int orbitIndex = 0;
+	int bracketID = 0;
+	std::string dds_path = "";
 };
 
 class MapManager : public SingletonBase<MapManager> {
 private:
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     sqlite3* db;
 
 public:

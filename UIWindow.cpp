@@ -53,7 +53,7 @@ void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
 		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
-			;
+			x;
 	}
 
 

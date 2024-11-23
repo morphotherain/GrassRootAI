@@ -16,8 +16,8 @@ public:
 		std::wstring Description;
 		std::wstring IconPathPrint;
 		std::string IconPath;
-		int IconId;
-	}testItem;;
+		int IconId = 0;
+	}testItem;
 
 	struct MatrixBufferType
 	{
@@ -50,7 +50,7 @@ private:
 
 	std::wstring windowTitle;
 
-	int typeID;
+	int typeID = 0;
 	std::string TitleTexPath;
 	std::string CloseTexPath;
 	std::string MaxTexPath;

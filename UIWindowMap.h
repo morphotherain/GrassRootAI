@@ -103,8 +103,8 @@ private:
 	bool isMaximized = false;
 	bool isMinimized = false;
 
-	UINT numPoint;
-	UINT numLinePoint;
+	UINT numPoint = 0;
+	UINT numLinePoint = 0;
 
 	std::vector<SolarSystemData> m_solarSystem;
 	std::vector<SolarSystemJump> m_solarSystemJump;

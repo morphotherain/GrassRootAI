@@ -21,5 +21,6 @@ public:
 
 
 	virtual void handleTask(const Task& task);
+	void handleApproach(const Task& task);
 
 };

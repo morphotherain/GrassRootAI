@@ -5,7 +5,7 @@
 
 class eveBracketsManager : public SingletonBase<eveBracketsManager> {
 private:
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     sqlite3* db;
 
 public:

@@ -25,11 +25,13 @@ public:
 
 class dynGameObjectsManager : public SingletonBase<dynGameObjectsManager> {
 private:
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     sqlite3* db;
 
 public:
-    dynGameObjectsManager() { db = DatabaseManager::getInstance()->getDatabase(); };
+    dynGameObjectsManager() { 
+        db = DatabaseManager::getInstance()->getDatabase();
+    };
 
     // 假设在 invtypes 表中根据 type_id 查找 name 列
     unsigned int getTypeIdByObjectID(int object_id);

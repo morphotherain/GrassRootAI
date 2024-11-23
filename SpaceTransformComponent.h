@@ -13,14 +13,14 @@ public:
     virtual void Update(UINT tick) {};
 
 
-    double x;
-    double y;
-    double z;
+    double x = 0.0f;
+    double y = 0.0f;
+    double z = 0.0f;
     DirectX::XMFLOAT4 orientation; // 空间朝向
     double radius = 100.0f;
 
     Transform m_Tran = {};
-    UINT objectID;
+    UINT objectID = 0;
 
     SpaceTransformComponent() : orientation(1,0,0,0){}
     SpaceTransformComponent(float _x, float _y, float _z) : x(_x),y(_y),z(_z), orientation(1, 0, 0, 0) {}

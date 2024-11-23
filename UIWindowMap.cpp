@@ -290,7 +290,7 @@ void GenerateRandomVerticesAndLines(
 
 	if (solarSystem != nullptr)
 	{
-		numPoints = solarSystem->size();
+		numPoints = static_cast<int>(solarSystem->size());
 	}
 
 
@@ -299,8 +299,11 @@ void GenerateRandomVerticesAndLines(
 		UIWindowMap::PointVertexPosColor point;
 		if (solarSystem != nullptr) {
 			double factor = 40000000000000000;
-			point.pos = DirectX::XMFLOAT3((*solarSystem)[i].x/ factor, (*solarSystem)[i].y/ factor, (*solarSystem)[i].z / factor);
-			point.luminosity = (*solarSystem)[i].luminosity>2.0f?2.0f:(*solarSystem)[i].luminosity; // 调整亮度范围
+			point.pos = DirectX::XMFLOAT3(
+				static_cast<float>((*solarSystem)[i].x / factor),
+				static_cast<float>((*solarSystem)[i].y / factor),
+				static_cast<float>((*solarSystem)[i].z / factor));
+			point.luminosity = static_cast<float>((*solarSystem)[i].luminosity > 2.0f ? 2.0f : (*solarSystem)[i].luminosity); // 调整亮度范围
 			point.luminosity = point.luminosity * 3.0f;
 		}
 		else
@@ -448,8 +451,8 @@ void GenerateRandomVerticesAndLines(
 			[](const std::pair<int, float>& a, const std::pair<int, float>& b) { return a.second < b.second; });
 
 		// 根据最近的点数量生成线条
-		int randomN = (RandomFloat(2, 3));
-		int connections = randomN > distances.size() ? distances.size() : randomN;
+		int randomN = static_cast<int>(RandomFloat(2, 3));
+		int connections = randomN > static_cast<int>(distances.size()) ? static_cast<int>(distances.size()) : randomN;
 
 		// 生成线条连接
 		for (int k = 0; k < connections; ++k)
@@ -488,7 +491,7 @@ void GenerateEVEMapVerticesAndLines(
 				static_cast<float>((*solarSystem)[i].x / factor),
 				static_cast<float>((*solarSystem)[i].y / factor),
 				static_cast<float>((*solarSystem)[i].z / factor));
-			point.luminosity = (*solarSystem)[i].luminosity > 2.0f ? 2.0f : (*solarSystem)[i].luminosity; // 调整亮度范围
+			point.luminosity = static_cast<float>((*solarSystem)[i].luminosity > 2.0f ? 2.0f : (*solarSystem)[i].luminosity); // 调整亮度范围
 			point.luminosity = point.luminosity * 3.0f;
 
 			// 将 SolarSystemID 与坐标映射起来，便于后续查找
@@ -564,8 +567,8 @@ bool UIWindowMap::InitResource()
 	std::vector<LineVertexPosColor> verticesLines;
 	GenerateEVEMapVerticesAndLines(verticesPoints, verticesLines, &m_solarSystem, &m_solarSystemJump);
 
-	numPoint = verticesPoints.size();
-	numLinePoint = verticesLines.size();
+	numPoint = static_cast<UINT>(verticesPoints.size());
+	numLinePoint = static_cast<UINT>(verticesLines.size());
 
 
 

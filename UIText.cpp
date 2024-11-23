@@ -37,7 +37,7 @@ void UIText::DrawUI()
 	{
 		m_pd2dRenderTarget->BeginDraw();
 		std::wstring textStr = Text;
-		m_pd2dRenderTarget->DrawTextW(textStr.c_str(), textStr.size(), m_pTextFormat.Get(),
+		m_pd2dRenderTarget->DrawTextW(textStr.c_str(), static_cast<UINT32>(textStr.size()), m_pTextFormat.Get(),
 			D2D1_RECT_F{ x,  y, x+deltaX, y +deltaY}, m_pColorBrush.Get());
 		HR(m_pd2dRenderTarget->EndDraw());
 	}

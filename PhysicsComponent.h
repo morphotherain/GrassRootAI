@@ -12,12 +12,12 @@ public:
 	~PhysicsComponent() = default;
 
 	UINT object_id;
-	UINT m_tick;
+	UINT m_tick = 0;
 
 	// 速度向量
-	DirectX::XMFLOAT3 velocity;
-	DirectX::XMFLOAT3 begin_velocity;
-	DirectX::XMFLOAT3 target_velocity;
+	DirectX::XMFLOAT3 velocity = { 0.0f,0.0f,0.0f };
+	DirectX::XMFLOAT3 begin_velocity = { 0.0f,0.0f,0.0f };
+	DirectX::XMFLOAT3 target_velocity = { 0.0f,0.0f,0.0f };
 
 	std::shared_ptr<SpaceTransformComponent> SpaceTran;
 
@@ -25,10 +25,10 @@ public:
 	float inertialCoefficient = 1.0;
 
 	// 用于记录机动开始的时间（tick数）
-	UINT maneuverStartTime;
+	UINT maneuverStartTime = 0;
 
 	// 用于记录机动预计完成的时间（tick数）
-	UINT maneuverEndTime;
+	UINT maneuverEndTime = 0;
 
 	// 假设最大速度是一个固定值，你可根据实际情况调整
 	const float maxSpeed = 1000.0f;
@@ -70,7 +70,7 @@ public:
 	}
 
 	// 计算速度绝对值的方法
-	float CalculateSpeedMagnitude() const {
+	double CalculateSpeedMagnitude() const {
 		return sqrt(velocity.x * velocity.x + velocity.y * velocity.y + velocity.z * velocity.z);
 	}
 

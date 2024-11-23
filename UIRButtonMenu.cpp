@@ -61,7 +61,7 @@ void UIRButtonMenu::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
 			UINT currentID = SolarSystemMgr::getInstance().currentPilot->currentShip->GetComponent<BaseComponent>()->objectID;
-			int index = (mouseState.y - y) / 25.0f;
+			int index = static_cast<int>((mouseState.y - y) / 25.0f);
 			if (index >= 0 && m_Rows.size() > index)
 			{
 				auto source_object = (*SolarSystemMgr::getInstance().p_mapObject)[source_object_id];

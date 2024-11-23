@@ -23,30 +23,7 @@ void Ship::handleTask(const Task& task)
 	switch (task.taskTypeId) {
 	case 0:
 	{
-		auto Tran = task.target->GetComponent<SpaceTransformComponent>();
-		// 计算朝向向量
-		DirectX::XMFLOAT3 direction;
-		direction.x = Tran->x - m_pSpaceTran->x;
-		direction.y = Tran->y - m_pSpaceTran->y;
-		direction.z = Tran->z - m_pSpaceTran->z;
-
-		// 将XMFLOAT3转换为XMVECTOR（方便后续数学运算）
-		XMVECTOR dirVec = XMLoadFloat3(&direction);
-		float length = XMVector3Length(dirVec).m128_f32[0];
-
-		// 归一化向量（计算单位向量）
-		if (length > 0.0f)  // 避免除以0的情况
-		{
-			dirVec = XMVector3Normalize(dirVec);
-			XMStoreFloat3(&direction, dirVec);
-		}
-
-		float maxSpeed = m_pPhysics->maxSpeed;  // 这里假设最大速度为10，你可以根据实际情况修改
-		// 乘以最大速度
-		m_pPhysics->target_velocity.x = direction.x * maxSpeed;
-		m_pPhysics->target_velocity.y = direction.y * maxSpeed;
-		m_pPhysics->target_velocity.z = direction.z * maxSpeed;
-		m_pPhysics->StartManeuver();
+		handleApproach(task);
 		break;
 	}
 	case 1:
@@ -56,4 +33,32 @@ void Ship::handleTask(const Task& task)
 	}
 	default:;
 	}
+}
+
+void Ship::handleApproach(const Task& task)
+{
+	auto Tran = task.target->GetComponent<SpaceTransformComponent>();
+	// 计算朝向向量
+	DirectX::XMFLOAT3 direction;
+	direction.x = static_cast<float>(Tran->x - m_pSpaceTran->x);
+	direction.y = static_cast<float>(Tran->y - m_pSpaceTran->y);
+	direction.z = static_cast<float>(Tran->z - m_pSpaceTran->z);
+
+	// 将XMFLOAT3转换为XMVECTOR（方便后续数学运算）
+	XMVECTOR dirVec = XMLoadFloat3(&direction);
+	float length = XMVector3Length(dirVec).m128_f32[0];
+
+	// 归一化向量（计算单位向量）
+	if (length > 0.0f)  // 避免除以0的情况
+	{
+		dirVec = XMVector3Normalize(dirVec);
+		XMStoreFloat3(&direction, dirVec);
+	}
+
+	float maxSpeed = m_pPhysics->maxSpeed*10;  // 这里假设最大速度为10，你可以根据实际情况修改
+	// 乘以最大速度
+	m_pPhysics->target_velocity.x = direction.x * maxSpeed;
+	m_pPhysics->target_velocity.y = direction.y * maxSpeed;
+	m_pPhysics->target_velocity.z = direction.z * maxSpeed;
+	m_pPhysics->StartManeuver();
 }

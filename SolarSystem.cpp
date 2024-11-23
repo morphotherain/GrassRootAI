@@ -209,9 +209,9 @@ std::shared_ptr<Sector> SolarSystem::addSector(double x, double y, double z) {
     // 内层哈希表查找或插入
     innerIt = middleIt->second.find(zInt);
     if (innerIt == middleIt->second.end()) {
-        long long int xFull = xInt * 10000000;
-        long long int yFull = yInt * 10000000;
-        long long int zFull = zInt * 10000000;
+        double xFull = static_cast<double>(xInt * 10000000);
+        double yFull = static_cast<double>(yInt * 10000000);
+        double zFull = static_cast<double>(zInt * 10000000);
         newSector->x = xFull + newSector->radius;
         newSector->y = yFull + newSector->radius;
         newSector->z = zFull + newSector->radius;
@@ -275,7 +275,7 @@ void SolarSystem::checkObjectsInSector()
             for (const auto& innerPair : innerMap) {
                 const std::shared_ptr<Sector>& sector = innerPair.second;
 
-                int size = sector->space_objects.size();
+                size_t size = sector->space_objects.size();
                 for (int i = 0; i < size; ++i) {
                     const auto& object = sector->space_objects[i];
 

@@ -4,7 +4,7 @@
 
 class invGroupsManager : public SingletonBase<invGroupsManager> {
 private:
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     sqlite3* db;
 
 public:

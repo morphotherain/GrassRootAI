@@ -130,7 +130,7 @@ void RenderComponent::Draw()
 		dataPtr->model = XMMatrixTranspose(modelMartix);
 		dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
-		dataPtr->TexIndex = left ? (((tick / 60) % 2)) : (((tick / 60) % 2) + 2);
+		dataPtr->TexIndex = static_cast<float>(left ? (((tick / 60) % 2)) : (((tick / 60) % 2) + 2));
 
 
 		// 取消映射常量缓冲区
@@ -215,7 +215,7 @@ bool RenderComponent::InitResource()
 	D3D11_BUFFER_DESC vbd;
 	ZeroMemory(&vbd, sizeof(vbd));
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(VertexPosColor) * button_vertices.size(); // 注意这里的变化
+	vbd.ByteWidth = static_cast<UINT>(sizeof(VertexPosColor) * button_vertices.size()); // 注意这里的变化
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	// 新建顶点缓冲区

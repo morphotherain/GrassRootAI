@@ -4,6 +4,7 @@
 
 SpaceTransformComponent::SpaceTransformComponent(UINT _objectID)
 {
+	orientation = { 0.0f, 0.0f, 0.0f, 0.0f };
 	if(_objectID<40000000)
 	{
 		auto pos = dynGameObjectsManager::getInstance()->getPosByObjectID(_objectID);
@@ -11,10 +12,10 @@ SpaceTransformComponent::SpaceTransformComponent(UINT _objectID)
 		x = pos[0];
 		y = pos[1];
 		z = pos[2];
-		orientation.w = q[0];
-		orientation.x = q[1];
-		orientation.y = q[2];
-		orientation.z = q[3];
+		orientation.w = static_cast<float>(q[0]);
+		orientation.x = static_cast<float>(q[1]);
+		orientation.y = static_cast<float>(q[2]);
+		orientation.z = static_cast<float>(q[3]);
 		objectID = _objectID;
 	}
 	else {

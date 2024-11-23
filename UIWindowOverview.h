@@ -27,6 +27,8 @@ public:
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 	struct Row {
+		Row() = default;
+		~Row() = default;
 		UINT objectID;
 		double distance;
 		double velocity;

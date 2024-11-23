@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <vector>
 #include <memory>
+#include <unordered_map>
+#include <cstdint>
 // 包含所有组件类型的头文件
 #include "StationComponent.h"
 #include "TransformComponent.h"
@@ -9,7 +11,7 @@
 
 class GameObject {
 public:
-    UINT objectID;
+    UINT objectID = 0;
     std::shared_ptr<GameObject> parentObject;
     std::vector<std::shared_ptr<GameObject>> childObjects;
 
@@ -62,7 +64,6 @@ public:
 
     // 添加任务的方法
     void addTask(const std::shared_ptr<Task>& task) {
-        task.get();
         tasks.push_back(task);
     }
 
@@ -73,7 +74,7 @@ public:
 
     // 处理任务队列中任务的方法（这里简单示例为按顺序逐个处理，实际可根据具体逻辑调整）
     void processTasks() {
-        int size = tasks.size();
+        size_t size = tasks.size();
         for (int i = 0; i < size; ++i) {
             auto task = tasks[i];
             handleTask(*task);
@@ -90,3 +91,27 @@ public:
 
 
 };
+
+
+class GameObjectMgr {
+private:
+    // 使用智能指针管理对象映射表，初始化为nullptr，后续由外部传入进行初始化
+    static std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
+
+    // 私有构造函数，保证单例模式，外部不能随意创建实例
+    GameObjectMgr() {}
+
+    // 静态单例对象，定义并初始化（C++11及之后可以保证线程安全的初始化）
+    static GameObjectMgr instance;
+
+public:
+    // 设置映射表的静态方法，用于接收外部初始化好的映射表
+    static void setObjectMap(std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> map);
+
+    // 根据id获取对象的静态成员函数，可直接调用
+    static std::shared_ptr<GameObject> getObject(UINT id);
+
+    // 添加对象到映射表的方法（前提是映射表已通过setObjectMap设置好）
+    static void addObject(UINT id, std::shared_ptr<GameObject> obj);
+};
+

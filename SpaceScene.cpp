@@ -131,13 +131,13 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 		}
 		if (keyState.IsKeyDown(Keyboard::A))
 		{
-			cam3st->RotateY(-0.002f);
-			cam3stLocal->RotateY(-0.002f);
+			cam3st->RotateY(-0.005f);
+			cam3stLocal->RotateY(-0.005f);
 		}
 		if (keyState.IsKeyDown(Keyboard::D))
 		{
-			cam3st->RotateY(0.002f);
-			cam3stLocal->RotateY(0.002f);
+			cam3st->RotateY(0.005f);
+			cam3stLocal->RotateY(0.005f);
 		}
 		if (keyState.IsKeyDown(Keyboard::Q))
 		{
@@ -189,7 +189,7 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
 	{
 		m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);
-		m_RButtonMenu->setSize(mouseState.x, mouseState.y);
+		m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 		m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		m_RButtonMenu->Init();
 	}
@@ -209,14 +209,23 @@ XMFLOAT2 Convert3DToNDC(const XMFLOAT3& worldPos, const XMMATRIX& viewMatrix, co
 {
 	// 将三维世界坐标转换为裁剪空间
 	XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
-	XMVECTOR clipPosition = XMVector3TransformCoord(worldPosition, viewMatrix * projMatrix);
+	XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
+	
+	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
+	XMFLOAT4  clipPos;
+	XMStoreFloat4(&clipPos, clipPosition);
 
-	// 透视除法，得到标准化设备坐标(NDC)
-	XMFLOAT3 ndcPos;
-	XMStoreFloat3(&ndcPos, clipPosition);
+	if (clipPos.w <0.0f)
+	{
+		return XMFLOAT2(FLT_MAX, FLT_MAX);
+	}
+
+	// 手动透视除法
+	float x_ndc = clipPos.x / clipPos.w;
+	float y_ndc = clipPos.y / clipPos.w;
 
 	// 返回的ndcPos.x 和 ndcPos.y 直接是 NDC 范围 [-1, 1]
-	return XMFLOAT2(ndcPos.x, ndcPos.y);
+	return XMFLOAT2(x_ndc, y_ndc);
 }
 
 
@@ -234,27 +243,30 @@ void SpaceScene::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), black);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	objectVertices3D.clear();
-	auto sector = m_pSolarSystem->currentSector;
-	auto objects = sector->space_objects;
-	for (auto obj : objects) {
-		auto Tran = obj->GetComponent<SpaceTransformComponent>();
-		auto Base = obj->GetComponent<BaseComponent>();
-		auto texIndex = invGroupsManager::getInstance()->getBracketIDByGroupId(Base->groupID);
-		Vertex3DPosIndex temp = { 
-			(Tran->x - sector->x),
-			(Tran->y - sector->y),
-			(Tran->z - sector->z),
-			texIndex ,L""};
-		objectVertices3D.push_back(temp);
-	}
-
-	m_skybox->DrawUI();
-
 	auto Pilot = m_pSolarSystem->currentPilot;
 	auto currentShip = Pilot->currentShip;
 	auto Tran = currentShip->GetComponent<SpaceTransformComponent>();
 
+	objectVertices3D.clear();
+	auto sector = m_pSolarSystem->currentSector;
+	auto objects = sector->space_objects;
+	for (auto obj : objects) {
+		auto TranObj = obj->GetComponent<SpaceTransformComponent>();
+		auto Base = obj->GetComponent<BaseComponent>();
+		auto texIndex = invGroupsManager::getInstance()->getBracketIDByGroupId(Base->groupID);
+		auto distance = Tran->calculateDistance(*TranObj);
+		Vertex3DPosIndex temp = { 
+			(TranObj->x - sector->x),
+			(TranObj->y - sector->y),
+			(TranObj->z - sector->z),
+			static_cast<float>(texIndex),std::to_wstring(distance)};
+		temp.text = std::make_shared<UIText>();
+		temp.text->setText(temp.name);
+		temp.text->Init();
+		objectVertices3D.push_back(temp);
+	}
+
+	m_skybox->DrawUI();
 
 	auto ThirdCamera = std::reinterpret_pointer_cast<ThirdPersonCamera>(m_pCamera);
 	ThirdCamera->SetTarget(
@@ -287,16 +299,10 @@ void SpaceScene::DrawScene()
 		auto distance = std::sqrt(dx * dx + dy * dy + dz * dz);
 		if (distance < 10000000)
 		{
-			vertex3D.text->setSize(0.0f, 0.0f,0.0f,0.0f);
-			Vertex3DPosIndex temp = {
-			vertex3D.x - sector->x,
-			vertex3D.y - sector->y,
-			vertex3D.z - sector->z,
-			vertex3D.texIndex ,vertex3D.name };
-			//objectVertices3D.push_back(temp);
+			vertex3D.text->setSize(-100.0f, 0.0f,0.0f,0.0f);
 			continue;
 		}
-
+		std::wstring temp;
 		// 将每个三维坐标转换为 NDC 坐标
 		XMFLOAT2 ndcCoord = Convert3DToNDC({ 
 			static_cast<float>(vertex3D.x),
@@ -324,14 +330,13 @@ void SpaceScene::DrawScene()
 
 	// 取消映射顶点缓冲区
 	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->Unmap();
-	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVerticesNum(vertices.size());
+	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVerticesNum(static_cast<UINT>(vertices.size()));
 	//
 
 	m_pBracketEffect->apply();
 	m_pBracketEffect->clearShader();
 
 	//-------------------------
-	// 等下调整摄像机
 	// 假设 camera 是当前场景中的摄影机对象
 
 
@@ -369,8 +374,8 @@ void SpaceScene::DrawScene()
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
-		//vertex3D.text->setSize((ndcCoord.x + 1.0f) / 2.0f * 1920.0f + 20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f + 3.0f, 350.0f, 350.0f);
-
+		vertex3D.text->setSize((ndcCoord.x + 1.0f) / 2.0f * 1920.0f + 20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f + 3.0f, 350.0f, 350.0f);
+		vertex3D.text->DrawUI();
 		// 将转换后的顶点加入目标顶点数组
 		objectVertices.push_back(vertex);
 	}
@@ -384,7 +389,7 @@ void SpaceScene::DrawScene()
 
 	// 取消映射顶点缓冲区
 	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->Unmap();
-	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVerticesNum(objectVertices.size());
+	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVerticesNum(static_cast<UINT>(objectVertices.size()));
 	//
 
 	m_pBracketEffect->apply();
@@ -438,19 +443,10 @@ bool SpaceScene::InitResource()
 		double x = p_denormalize->x / factor;
 		double y = p_denormalize->y / factor;
 		double z = p_denormalize->z / factor;
-		Vertex3DPosIndex temp = { x,y,z,(p_denormalize->bracketID),p_denormalize->name };
+		Vertex3DPosIndex temp = { x,y,z,static_cast<float>(p_denormalize->bracketID),p_denormalize->name };
 		//if(abs(temp.texIndex - 1.0 ) > 0.5f && abs(temp.texIndex - 2.0) > 0.5f && abs(temp.texIndex - 4.0) > 0.5f)
 		vertices3D.push_back(temp);
 	}
-	//vertices3D = {
-	//	{{0.0f,0.0f,0.0f},0.0f, L"恒星"},
-	//	{{0.0f,1.0f,0.0f},1.0f, L"行星"},
-	//	{{1.0f,0.0f,0.0f},2.0f, L"卫星"},
-	//	{{0.0f,0.0f,1.0f},3.0f, L"小行星带"},
-	//	{{0.0f,0.0f,-1.0f},4.0f, L"星门"},
-	//	{{0.0f,-1.0f,0.0f},5.0f, L"空间站"},
-	//	{{-1.0f,0.0f,0.0f},5.0f, L"空间站"},
-	//};
 
 	vertices.resize(vertices3D.size());
 

@@ -89,7 +89,7 @@ private:
     ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
     ComPtr<IDWriteTextFormat> m_pTextFormat;
 
-    UINT width;
-    UINT height;
+    UINT width = 800;
+    UINT height = 600;
 };
 

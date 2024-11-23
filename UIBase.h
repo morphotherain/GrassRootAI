@@ -41,7 +41,7 @@ protected:
 
 	ddsLoader m_ddsLoader;                                //材质加载
 
-	CameraMode m_CameraMode;									// 摄像机模式
+	CameraMode m_CameraMode = CameraMode::Free;									// 摄像机模式
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
 
 	ComPtr<ID3D11Device> m_pd3dDevice;
@@ -56,10 +56,10 @@ protected:
 	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // 深度模板缓冲区
 	ComPtr<ID3D11RenderTargetView> m_pRenderTargetView;   // 渲染目标视图
 	ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;   // 深度模板视图
-	D3D11_VIEWPORT m_ScreenViewport;                      // 视口
+	D3D11_VIEWPORT m_ScreenViewport = {};                      // 视口
 
-	int m_ClientWidth;                                    // 视口宽度
-	int m_ClientHeight;                                   // 视口高度
+	int m_ClientWidth = 800;                                    // 视口宽度
+	int m_ClientHeight = 600;                                   // 视口高度
 
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区

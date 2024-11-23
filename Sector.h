@@ -7,16 +7,16 @@ public:
 	Sector(double _x, double _y, double _z) :x(_x), y(_y),z(_y) {};
 	~Sector() = default;
 
-	long long int SectorID;
+	long long int SectorID = 0;
 	double x;
 	double y;
 	double z;
-	double x_Max;
-	double y_Max;
-	double z_Max;
-	double x_Min;
-	double y_Min;
-	double z_Min;
+	double x_Max = 0;
+	double y_Max = 0;
+	double z_Max = 0;
+	double x_Min = 0;
+	double y_Min = 0;
+	double z_Min = 0;
 	double radius = 5000000.0f;
 
 

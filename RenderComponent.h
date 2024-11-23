@@ -76,8 +76,8 @@ protected:
 	ComPtr<ID3D11DepthStencilView> m_pDepthStencilView;   // 深度模板视图
 	D3D11_VIEWPORT m_ScreenViewport;                      // 视口
 
-	int m_ClientWidth;                                    // 视口宽度
-	int m_ClientHeight;                                   // 视口高度
+	int m_ClientWidth = 800;                                    // 视口宽度
+	int m_ClientHeight = 600;                                   // 视口高度
 
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
@@ -92,11 +92,11 @@ protected:
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 
-	float posX;
-	float posY;
-	float posZ;
+	float posX = 0.0f;
+	float posY = 0.0f;
+	float posZ = 0.0f;
 
-	DirectX::XMMATRIX modelMartix;
+	DirectX::XMMATRIX modelMartix = {};
 
 	unsigned int tick = 0;
 

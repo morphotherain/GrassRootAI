@@ -84,12 +84,12 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
 		{
 			UINT currentID = SolarSystemMgr::getInstance().currentPilot->currentShip->GetComponent<BaseComponent>()->objectID;
-			int index = (mouseState.y - y - 35) / TitleHeight - 2;
+			int index = static_cast<int>((mouseState.y - y - 35) / TitleHeight - 2);
 			if(m_RowMgr->Rows.size()>index)
 			{
 				UINT targetID = m_RowMgr->Rows[index]->objectID;
 				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
-				m_RButtonMenu->setSize(mouseState.x, mouseState.y);
+				m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 				m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 				m_RButtonMenu->Init();
 			}
@@ -352,11 +352,13 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 void UIWindowOverview::RowMgr::Draw()
 {
 	index = next_index;
-	size_t total = Rows.size();
+	int total = static_cast<int>(Rows.size());
 	if (total <= 18)
 		index = 0;
-	if (index > total - 18)
-		index = (total - 18);
+	else {
+		if (index > total - 18)
+			index = (total - 18);
+	}
 
 	int count = -1 * index;
 	for (auto& component : Rows) {
