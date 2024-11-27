@@ -3,15 +3,10 @@
 void SolarSystemMgr::Init()
 {
 	p_mapObject = std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>();
+	p_starGateTransferObjects = std::make_shared < std::vector<std::shared_ptr<GameObject>>>();
 	auto IDs = dynGameObjectsManager::getInstance()->getSolarSystemIDHasPilot();
 	for (auto id : IDs) {
-		auto p_solarSystem = std::make_shared<SolarSystem>(id);
-		p_solarSystem->p_mapObject = p_mapObject;
-		p_solarSystem->Init();
-		SolarSystems[id] = (p_solarSystem);
-
-		std::vector<std::shared_ptr<Pilot>> otherPilots = p_solarSystem->getPilots();
-		Pilots.insert(Pilots.end(), otherPilots.begin(), otherPilots.end());
+		loadSolarSystem(id);
 	}
 	return;
 }
@@ -19,9 +14,27 @@ void SolarSystemMgr::Init()
 void SolarSystemMgr::Update(UINT tick) {
 	distributeTasksFromTaskMgr();
 
+	if (tick % 100 == 1) {
+		handleStarGateTransferObjects();
+	}
+
 	for (const auto& pair : SolarSystems) {
 		pair.second->Update(tick);
 	}
+}
+
+std::shared_ptr<SolarSystem> SolarSystemMgr::loadSolarSystem(int id)
+{
+	auto p_solarSystem = std::make_shared<SolarSystem>(id);
+	p_solarSystem->p_mapObject = p_mapObject;
+	p_solarSystem->p_starGateTransferObjects = p_starGateTransferObjects;
+	p_solarSystem->Init();
+	SolarSystems[id] = (p_solarSystem);
+
+	std::vector<std::shared_ptr<Pilot>> otherPilots = p_solarSystem->getPilots();
+	Pilots.insert(Pilots.end(), otherPilots.begin(), otherPilots.end());
+
+	return p_solarSystem;
 }
 
 void SolarSystemMgr::distributeTasksFromTaskMgr()
@@ -43,6 +56,25 @@ void SolarSystemMgr::distributeTasksFromTaskMgr()
 	//}
 }
 
+void SolarSystemMgr::handleStarGateTransferObjects()
+{
+	for (auto p : (*p_starGateTransferObjects)) {
+		auto solarSystemID = p->GetComponent<BaseComponent>()->solarSystemID;
+		auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
+		auto solarSystem = currentSolarSystem;
+		if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
+			// 找到了对应的太阳系，获取其值
+			solarSystem = it->second;
+		}
+		else {
+			solarSystem = loadSolarSystem(solarSystemID);
+		}
+		solarSystem->space_objects.push_back(p);
+		solarSystem->addObjectToSector(p);
+	}
+	(*p_starGateTransferObjects).clear();
+}
+
 void SolarSystemMgr::getCurrentPilot()
 {
 	for (auto p : Pilots) {
@@ -51,16 +83,15 @@ void SolarSystemMgr::getCurrentPilot()
 			currentPilot = p;
 			auto Base = currentPilot->GetComponent<BaseComponent>();
 			currentSolarSystem = SolarSystems[Base->solarSystemID];
+			UINT shipID = currentPilot->GetComponent<BaseComponent>()->containerID;
+			currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>((*p_mapObject)[shipID]);
 		}
 	}
 }
 
 void SolarSystemMgr::setCurrentPilot()
 {
-	getCurrentPilot();
-	for (const auto& pair : SolarSystems) {
-		pair.second->setCurrentPilots(currentPilot);
-		pair.second->setCurrentSector();
-	}
+	currentSolarSystem->setCurrentPilots(currentPilot);
+	currentSolarSystem->setCurrentSector();
 }
 

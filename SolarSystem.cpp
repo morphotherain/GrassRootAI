@@ -15,8 +15,8 @@ void SolarSystem::Init()
     for (auto p_object : space_objects) {
         addObjectToSector(p_object);
     }
-    for (auto p_object : other_objects) {
-    }
+    /*for (auto p_object : other_objects) {
+    }*/
 
 }
 
@@ -133,7 +133,6 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
     auto p_object = object->ConvertBasedOnGroupID(objectData.groupID);
     if (p_object != nullptr)object = p_object;
     object->Init();
-    map_objects[objectData.objectID] = object;
     (*p_mapObject)[objectData.objectID] = object;
     object->objectID = objectData.objectID;
     if (object->GetComponent<SpaceTransformComponent>() != nullptr) {
@@ -261,8 +260,11 @@ std::shared_ptr<Sector> SolarSystem::getSector(double x, double y, double z)
     return nullptr;
 }
 
+
+
 void SolarSystem::checkObjectsInSector()
 {
+
     // 遍历最外层map的键值对
     for (const auto& outerPair : m_Sectors) {
         const auto& middleMap = outerPair.second;
@@ -280,6 +282,27 @@ void SolarSystem::checkObjectsInSector()
                     const auto& object = sector->space_objects[i];
 
                     auto Tran = object->GetComponent<SpaceTransformComponent>();
+                    auto Base = object->GetComponent<BaseComponent>();
+
+                    if (Base->solarSystemID != getSolarSystemID()) {
+                        sector->space_objects.erase(sector->space_objects.begin() + i);
+                        // 由于删除了一个元素，索引需要减1，以确保下一次循环能正确检查当前位置的元素
+                        // 从another_space_objects中查找并删除对应的元素，通过比较智能指针
+                        for (auto it = space_objects.begin(); it != space_objects.end(); ) {
+                            if (*it == object) {
+                                space_objects.erase(it);
+                                (*p_starGateTransferObjects).push_back(object);
+                                break;
+                            }
+                            else {
+                                ++it;
+                            }
+                        }
+
+                        i--;
+                        size--;
+                        continue;
+                    }
 
                     if (sector->isInSector(Tran->x, Tran->y, Tran->z)) {
                         continue;
@@ -302,22 +325,27 @@ void SolarSystem::setCurrentSector()
     if (currentPilot == nullptr)return;
     auto ship = currentPilot->currentShip;
     auto Tran = ship->GetComponent<SpaceTransformComponent>();
+    addObjectToSector(ship);
     currentSector = getSector(Tran->x, Tran->y, Tran->z);
+}
+
+void SolarSystem::clearCurrentSector()
+{
+    currentSector.reset();
 }
 
 std::vector<std::shared_ptr<Pilot>> SolarSystem::getPilots()
 {
-
     return Pilot_objects;
 }
 
 void SolarSystem::setCurrentPilots(std::shared_ptr<Pilot> _Pilot)
 {
     currentPilot = _Pilot;
-    UINT shipID = currentPilot->GetComponent<BaseComponent>()->containerID;
-    if (map_objects.find(shipID) != map_objects.end())
-    {
-        currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>(map_objects[shipID]);
-    }
     return;
+}
+
+void SolarSystem::clearCurrentPilots()
+{
+    currentPilot.reset();
 }

@@ -72,11 +72,15 @@ public:
 	~StarGate() = default;
 
 	virtual void Init();
+	virtual void Update(UINT tick);
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 	std::shared_ptr<WarpGateComponent>m_pWarpGate;
+
+
+	virtual void handleTask(const Task& task);
 
 };
 

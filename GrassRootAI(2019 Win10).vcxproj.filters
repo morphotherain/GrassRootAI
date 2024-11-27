@@ -288,6 +288,9 @@
     <ClCompile Include="StargateLoadingScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="mapJumpsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -523,6 +526,9 @@
     </ClInclude>
     <ClInclude Include="StargateLoadingScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="mapJumpsManager.h">
+      <Filter>数据库\数据表</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

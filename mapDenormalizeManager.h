@@ -11,6 +11,7 @@ public:
     mapDenormalizeManager() { db = DatabaseManager::getInstance()->getDatabase(); };
 
     unsigned int getTypeIDByContainerId(int container_id);
+    unsigned int getSolarSystemIDByObjectId(int object_id);
     std::vector<double> getPosByObjectID(int object_id);
 
 };

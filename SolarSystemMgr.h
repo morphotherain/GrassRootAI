@@ -18,12 +18,17 @@ public :
 	SolarSystemMgr() = default;
 	~SolarSystemMgr() = default;
 
+	//总体相关
 	std::unordered_map<UINT, std::shared_ptr<SolarSystem>> SolarSystems;
-	/*std::vector<std::shared_ptr<SolarSystem>> SolarSystems;*/
-	std::shared_ptr<SolarSystem> currentSolarSystem;
 	std::vector<std::shared_ptr<Pilot>> Pilots;
-	UINT currentPilotID = 0;
+
+	//当前相关
+	std::shared_ptr<SolarSystem> currentSolarSystem;
 	std::shared_ptr<Pilot> currentPilot;
+	UINT currentPilotID = 0;
+
+	//缓冲区相关
+	std::shared_ptr < std::vector<std::shared_ptr<GameObject>>> p_starGateTransferObjects;
 
 	std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
 
@@ -32,7 +37,10 @@ public :
 	void setCurrentPilot();
 	void Update(UINT tick);
 
+	std::shared_ptr<SolarSystem> loadSolarSystem(int id);
+
 	void distributeTasksFromTaskMgr();
+	void handleStarGateTransferObjects();
 
 private:
 };

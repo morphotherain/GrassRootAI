@@ -105,6 +105,14 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			std::shared_ptr<Task> task = std::make_shared<Task>();
+			task->isInnerTask = true;
+			task->taskID = -1;
+			task->publisher = sourceObject;
+			task->target = targetObject;
+			task->taskTypeId = 0;
+			targetObject->addTask(task);
+			return;
 		}
 	};
 	// 表示“跳跃”菜单项对应的行类

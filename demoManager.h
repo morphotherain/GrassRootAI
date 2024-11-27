@@ -2,11 +2,9 @@
 #include "DatabaseManager.h"
 
 
-
-
 class demoManager : public SingletonBase<demoManager> {
 private:
-    sqlite3_stmt* stmt;
+    sqlite3_stmt* stmt = nullptr;
     sqlite3* db;
 
 public:

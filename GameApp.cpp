@@ -59,6 +59,7 @@ bool GameApp::Init()
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
 	SolarSystemMgr::getInstance().Init();
+	SolarSystemMgr::getInstance().getCurrentPilot();
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
 	SwitchToScene(std::make_unique<MainScene>(AppInst()));
@@ -116,6 +117,7 @@ void GameApp::OnResize()
 
 void GameApp::UpdateScene(float dt)
 {
+
 	tick++;
 	int switchScene = 0;
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
@@ -123,25 +125,61 @@ void GameApp::UpdateScene(float dt)
 
 	if(tick % 100 == 0)
 	{
-		auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
-		UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
-
-		if (ContainerID >= 30000000 && ContainerID < 40000000) {
-			if (currentSceneID != 3)
+		while(true)
+		{
+			if (currentSceneID == 4) {
 				switchScene = 3;
-		}
-		if (ContainerID > 40000000) {
-			UINT ContainerTypeID = mapDenormalizeManager::getInstance()->getTypeIDByContainerId(ContainerID);
-			UINT ContainerGroupID = InvTypesManager::getInstance()->getGroupByTypeId(ContainerTypeID);
-			if (ContainerGroupID == 6) //当前处于恒星系空间
-			{
+				break;
+			}
+
+			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+			UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
+			UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
+
+			if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
+				if (currentSceneID != 4) {
+					switchScene = 4;
+				}
+				auto nextSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+				auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+				auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
+				if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
+					// 找到了对应的太阳系，获取其值
+					auto nextSolarSystem = it->second;
+				}
+				else {
+					nextSolarSystem.reset();
+					nextSolarSystem = SolarSystemMgr::getInstance().loadSolarSystem(solarSystemID);
+				}
+				SolarSystemMgr::getInstance().currentSolarSystem = nextSolarSystem;
+				SolarSystemMgr::getInstance().setCurrentPilot();
+				currentSolarSystem->clearCurrentPilots();
+				currentSolarSystem->clearCurrentSector();
+				
+
+				break;
+			}
+
+			if (ContainerID >= 30000000 && ContainerID < 40000000) {
 				if (currentSceneID != 3)
 					switchScene = 3;
+				break;
 			}
-			else {
-				if (currentSceneID != 2)
-					switchScene = 2;
+			if (ContainerID > 40000000) {
+				UINT ContainerTypeID = mapDenormalizeManager::getInstance()->getTypeIDByContainerId(ContainerID);
+				UINT ContainerGroupID = InvTypesManager::getInstance()->getGroupByTypeId(ContainerTypeID);
+				if (ContainerGroupID == 6) //当前处于恒星系空间
+				{
+					if (currentSceneID != 3)
+						switchScene = 3;
+				}
+				else {
+					if (currentSceneID != 2)
+						switchScene = 2;
+				}
+				break;
 			}
+			break;
 		}
 	}
 
@@ -163,6 +201,12 @@ void GameApp::UpdateScene(float dt)
 	{
 		SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 		currentSceneID = 3;
+		break;
+	}
+	case 4:
+	{
+		SwitchToScene(std::make_unique<StargateLoadingScene>(AppInst()));
+		currentSceneID = 4;
 		break;
 	}
 	default:;

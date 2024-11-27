@@ -20,12 +20,12 @@ bool UIRButtonMenu::Init()
 		auto sourceTran = source_object->GetComponent<SpaceTransformComponent>();
 		addRow(std::make_shared<OrientRow>());
 		distance = sourceTran->calculateDistance(*Tran);
+		if (distance >= 150000) {
+			addRow(std::make_shared<WarpToRow>());
+		}
 		if (distance < 10000000) {
 			addRow(std::make_shared<OrbitRow>());
 			addRow(std::make_shared<MaintainDistanceRow>());
-		}
-		if (distance >= 150000) {
-			addRow(std::make_shared<WarpToRow>());
 		}
 	}
 	if(distance < 2500)

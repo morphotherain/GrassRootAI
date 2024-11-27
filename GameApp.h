@@ -5,6 +5,7 @@
 #include "DockScene.h"
 #include "MainScene.h"
 #include "SpaceScene.h"
+#include "StargateLoadingScene.h"
 
 class GameApp : public D3DApp
 {

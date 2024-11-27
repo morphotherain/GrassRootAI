@@ -24,7 +24,7 @@ struct SolarSystem {
 	std::vector<std::shared_ptr<DenormalizeData>> m_denormalizes;
 
 	std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
-	std::unordered_map<UINT, std::shared_ptr<GameObject>> map_objects;
+	std::shared_ptr < std::vector<std::shared_ptr<GameObject>>> p_starGateTransferObjects;
 	std::vector<std::shared_ptr<GameObject>> space_objects;
 	std::vector<std::shared_ptr<GameObject>> other_objects;
 	std::vector<std::shared_ptr<Pilot>> Pilot_objects;
@@ -48,9 +48,11 @@ struct SolarSystem {
 	std::shared_ptr<Sector> getSector(double x, double y, double z);
 	void checkObjectsInSector();
 	void setCurrentSector();
+	void clearCurrentSector();
 
 	UINT getSolarSystemID() { return m_solarSystem.solarSystemID; };
 	std::vector<std::shared_ptr<Pilot>> getPilots();
 	void setCurrentPilots(std::shared_ptr<Pilot> _Pilot);
+	void clearCurrentPilots();
 };
 

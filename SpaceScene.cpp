@@ -24,7 +24,7 @@ bool SpaceScene::Init()
 {
 
 	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
-
+	
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
 	if (!InitEffect())
@@ -98,6 +98,8 @@ void SpaceScene::OnResize()
 
 void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -237,6 +239,8 @@ void SpaceScene::DrawScene()
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	auto Pilot = m_pSolarSystem->currentPilot;
+	if (Pilot == nullptr)
+		return;
 	auto currentShip = Pilot->currentShip;
 	auto Tran = currentShip->GetComponent<SpaceTransformComponent>();
 
