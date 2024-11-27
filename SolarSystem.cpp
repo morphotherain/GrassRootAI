@@ -28,7 +28,7 @@ void SolarSystem::Update(UINT tick)
         obj->Update(tick);
     }
 
-    if (tick % 60 == 0) {
+    if (tick % 30 == 0) {
         checkObjectsInSector();
         setCurrentSector();
     }

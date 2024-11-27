@@ -61,7 +61,7 @@ bool GameApp::Init()
 	SolarSystemMgr::getInstance().Init();
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
-	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+	SwitchToScene(std::make_unique<MainScene>(AppInst()));
 
 
 	return true;

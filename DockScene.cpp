@@ -17,45 +17,16 @@ const D3D11_INPUT_ELEMENT_DESC DockScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-
-
-std::vector<PosTexIndex>  DockScene::GenerateVertices(int n) {
-	std::vector<PosTexIndex> vertices;
-
-	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
-
-	float x = 0.0f;
-	float y = 0.0f;
-	float deltaX = 192.0f;
-	float deltaY = 108.0f;
-
-	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(x, y, 0.0f),             XMFLOAT2(0.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-
-	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f),       XMFLOAT2(1.0f, 1.0f), 0 });
-	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f),       XMFLOAT2(0.0f, 0.0f), 0 });
-	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 0.0f), 0 });
-
-	return vertices;
-}
-
 DockScene::DockScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
-
-
 }
 
 bool DockScene::Init()
 {
-
 	m_button = std::make_shared<UIButton>();
 	m_button->setSize(1500.0f, 400.0f, 100.0f, 40.0f);
 	m_button->setTex("demoTex\\UI\\Window\\window_line.dds");
 	AddUIComponent(m_button);
-
 
 	/*auto storage = std::make_shared<UIWindowStorage>();
 	storage->setSize(10.0f, 40.0f, 20.0f, 4.0f);
@@ -65,8 +36,6 @@ bool DockScene::Init()
 	text->setSize(1530.0f, 410.0f, 500.0f, 500.0f);
 	text->setText(L"出站");
 	AddUIComponent(text);
-
-	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
 	if (!InitEffect())
 		return false;
@@ -155,7 +124,7 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		task->publisher = currentShip;
 		task->target = currentStation;
 		task->taskTypeId = 1;
-		if(currentStation != nullptr)
+		if (currentStation != nullptr)
 			currentStation->addTask(task);
 
 		*(m_button->getClickFlag()) = false;
@@ -184,11 +153,9 @@ void DockScene::DrawScene()
 	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
 	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
-
 
 	ConstantMVPIndex* dataPtr = m_effect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
@@ -198,32 +165,19 @@ void DockScene::DrawScene()
 	m_effect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_effect->apply();
 
-
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
-
-	/*if (m_pd2dRenderTarget != nullptr)
-	{
-		m_pd2dRenderTarget->BeginDraw();
-		std::wstring textStr = L"$~:hello_你好 ";
-		m_pd2dRenderTarget->DrawTextW(textStr.c_str(), textStr.size(), m_pTextFormat.Get(),
-			D2D1_RECT_F{ 0.0f, 0.0f, 600.0f, 200.0f }, m_pColorBrush.Get());
-		HR(m_pd2dRenderTarget->EndDraw());
-	}*/
 
 	HR(m_pSwapChain->Present(1, 0));
 }
 
 void DockScene::cleanup()
 {
-	fs.close();
 }
 
 bool DockScene::InitResource()
 {
-
-
 	tick = 0;
 
 	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
@@ -234,8 +188,6 @@ bool DockScene::InitResource()
 	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
 	camera->SetPosition(XMFLOAT3(1.0f, 1.0f, -10.0f));
 
-
-
 	std::vector<std::string> textureFileNames = {
 		"demoTex\\DockScene\\background.dds"
 	};
@@ -243,7 +195,7 @@ bool DockScene::InitResource()
 	m_effect = std::make_shared<Effect>();
 
 	m_effect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
-	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateVertices(4));
+	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateVertices(0.0f, 0.0f, 192.0f, 108.0f));
 	m_effect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_effect->addConstantBuffer<ConstantMVPIndex>();
 	m_effect->addTextures(textureFileNames);
@@ -251,13 +203,10 @@ bool DockScene::InitResource()
 	m_effect->addSamplerState();
 	m_effect->Init();
 
-
 	return true;
 }
 
 bool DockScene::InitEffect()
 {
-
-
 	return true;
 }

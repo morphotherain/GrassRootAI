@@ -183,6 +183,7 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NPCStation.cpp" />
+    <ClCompile Include="StargateLoadingScene.cpp" />
     <ClCompile Include="StationComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="Pilot.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NPCStation.h" />
+    <ClInclude Include="StargateLoadingScene.h" />
     <ClInclude Include="StationComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="Pilot.h" />

@@ -5,6 +5,14 @@
 #include "Component.h"
 #include "SpaceTransformComponent.h"
 
+const double AU_TO_METERS = 149597870700.0;
+
+struct Pos {
+	double x;
+	double y;
+	double z;
+};
+
 class PhysicsComponent : public Component {
 public:
 	PhysicsComponent() = default;
@@ -31,7 +39,43 @@ public:
 	UINT maneuverEndTime = 0;
 
 	// 假设最大速度是一个固定值，你可根据实际情况调整
-	const float maxSpeed = 1000.0f;
+	const float maxSpeed = 500.0f;
+
+	// 最大跃迁速度（以AU/s为单位）
+	float maxWarpSpeed = 3.0f;
+
+	// 跃迁加速时间（以tick为单位，可以根据实际游戏帧率等因素调整时间尺度）
+	UINT warpAccelerationTime = 180;
+	double warpAccelerationDistance = 0.0f;
+	double warpAcceleration_t = 0.0f;
+
+	// 跃迁减速时间（以tick为单位）
+	UINT warpDecelerationTime = 300;
+	double warpDecelerationDistance = 0.0f;
+	double warpDeceleration_t = 0.0f;
+
+	UINT warpUniformTime = 0;
+	double warpUniform_t = 0.0f;
+
+
+	// 标记当前是否处于跃迁状态
+	bool isWarping = false;
+
+	// 用于记录跃迁开始的时间（tick数）
+	UINT warpStartTime = 0;
+
+	// 记录起点坐标（假设用三维向量表示飞船在空间中的位置）
+	Pos startPosition = { 0.0f,0.0f,0.0f };
+
+	// 记录终点坐标
+	Pos endPosition = { 0.0f,0.0f,0.0f };
+
+	// 当前位置坐标（用于在跃迁过程中实时更新飞船位置）
+	Pos currentPosition = { 0.0f,0.0f,0.0f };
+
+	Pos warpDirection = { 0.0f,0.0f,0.0f };
+
+
 
 	virtual void Update(UINT tick);
 
@@ -58,6 +102,8 @@ public:
 	// 根据插值参数t对速度进行插值更新
 	void InterpolateVelocity(float t);
 
+	void StartWarp();
+
 	void UpdateTran() {
 		SpaceTran->x += velocity.x / 60.0f;
 		SpaceTran->y += velocity.y / 60.0f;
@@ -77,6 +123,11 @@ public:
 	void reset();
 	void setTargetVelocity(DirectX::XMFLOAT3 v) {
 		target_velocity = v;
+	}
 
+	void setTargetPos(double x, double y, double z) {
+		endPosition.x = x;
+		endPosition.y = y;
+		endPosition.z = z;
 	}
 };

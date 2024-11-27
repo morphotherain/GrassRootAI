@@ -3,6 +3,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <d3d11_1.h>
+#include <vector>
 
 struct PosTexIndex
 {
@@ -11,6 +12,7 @@ struct PosTexIndex
 	float index;
 	static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
 };
+std::vector<PosTexIndex>  GenerateVertices(float x, float y, float delta_x, float delta_y);
 
 struct PointVertexPosColor
 {

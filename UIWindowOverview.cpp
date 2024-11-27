@@ -4,8 +4,7 @@
 #include <sstream>
 #include <iomanip>
 using namespace DirectX; 
-const double AU_TO_METERS = 149597870700.0;
-
+	
 
 
 UIWindowOverview::UIWindowOverview() : UIWindow()

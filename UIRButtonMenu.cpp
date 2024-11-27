@@ -18,9 +18,9 @@ bool UIRButtonMenu::Init()
 	if (Tran != nullptr)
 	{
 		auto sourceTran = source_object->GetComponent<SpaceTransformComponent>();
+		addRow(std::make_shared<OrientRow>());
 		distance = sourceTran->calculateDistance(*Tran);
 		if (distance < 10000000) {
-			addRow(std::make_shared<OrientRow>());
 			addRow(std::make_shared<OrbitRow>());
 			addRow(std::make_shared<MaintainDistanceRow>());
 		}

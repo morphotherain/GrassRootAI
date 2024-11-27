@@ -18,30 +18,6 @@ const D3D11_INPUT_ELEMENT_DESC MainScene::VertexPosColor::inputLayout[3] = {
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-std::vector<PosTexIndex>  GenerateVertices(int n) {
-	std::vector<PosTexIndex> vertices;
-
-	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
-
-	float _x = 0.0f;
-	float _y = 1080.0f;
-	_y = _y / 10.0f;
-	float _deltaX = 1920.0f / 10.0f;
-	float _deltaY = -1080.0f / 10.0f;
-	float TexID = 0.0f;
-
-	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), TexID });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
-
-	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), TexID });
-
-	return vertices;
-}
 
 MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
@@ -187,7 +163,6 @@ void MainScene::DrawScene()
 
 void MainScene::cleanup()
 {
-	fs.close();
 }
 
 bool MainScene::InitResource()
@@ -211,7 +186,7 @@ bool MainScene::InitResource()
 	m_effect = std::make_shared<Effect>();
 
 	m_effect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
-	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(::GenerateVertices(4));
+	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateVertices(0.0f,0.0f,192.0f, 108.0f));
     m_effect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_effect->addConstantBuffer<ConstantMVPIndex>();
 	m_effect->addTextures(textureFileNames);

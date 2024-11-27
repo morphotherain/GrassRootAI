@@ -34,5 +34,14 @@ public:
 
         return distance;
     }
+    double calculateDistance(double x, double y, double z,double radius) {
+        double dx = this->x - x;
+        double dy = this->y - y;
+        double dz = this->z - z;
+        double distance = sqrt(dx * dx + dy * dy + dz * dz) - this->radius - radius;
+        distance = distance >= 0.0f ? distance : 0.0f;
+
+        return distance;
+    }
 
 };

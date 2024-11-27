@@ -9,7 +9,8 @@
 #include "SolarSystemMgr.h"
 #include "invGroupsManager.h"
 #include "eveBracketsManager.h"
-
+#include <iostream>
+#include <sstream>
 using namespace DirectX;
 
 
@@ -255,11 +256,16 @@ void SpaceScene::DrawScene()
 		auto Base = obj->GetComponent<BaseComponent>();
 		auto texIndex = invGroupsManager::getInstance()->getBracketIDByGroupId(Base->groupID);
 		auto distance = Tran->calculateDistance(*TranObj);
+		std::wstringstream wss;
+		wss.precision(1);  // 设置精度为1位小数
+		wss << std::fixed << distance;  // 使用定点表示法
+		std::wstring str = wss.str();
+
 		Vertex3DPosIndex temp = { 
 			(TranObj->x - sector->x),
 			(TranObj->y - sector->y),
 			(TranObj->z - sector->z),
-			static_cast<float>(texIndex),std::to_wstring(distance)};
+			static_cast<float>(texIndex),str };
 		temp.text = std::make_shared<UIText>();
 		temp.text->setText(temp.name);
 		temp.text->Init();
@@ -419,7 +425,7 @@ bool SpaceScene::InitResource()
 	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->SetTarget(XMFLOAT3(331517583.0f, 43610234.0f, -586343669.0f));
-	camera->SetDistance(10000.0f);
+	camera->SetDistance(5000.0f);
 	camera->SetDistanceMinMax(1.0f, 200000000.0f);
 	camera->Approach(-0.00f);
 
@@ -428,7 +434,7 @@ bool SpaceScene::InitResource()
 	Local_camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	Local_camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	Local_camera->SetTarget(XMFLOAT3(331517583.0f, 43610234.0f, -586343669.0f));
-	Local_camera->SetDistance(20000.0f);
+	Local_camera->SetDistance(5000.0f);
 	Local_camera->SetDistanceMinMax(1.0f, 20000000.0f);
 	Local_camera->Approach(-0.00f);
 

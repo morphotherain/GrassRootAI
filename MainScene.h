@@ -43,14 +43,6 @@ public:
 	bool InitResource();
 	bool InitEffect();
 private:
-	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
-	ComPtr<ID3D11ShaderResourceView> button_textureArraySRV;
-	ComPtr<ID3D11InputLayout> button_m_pVertexLayout;	// 顶点输入布局
-	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
-	std::fstream fs;
-
-	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
-
 
 	std::shared_ptr<Effect> m_effect;
 };
