@@ -596,6 +596,8 @@ bool UIWindowMap::InitResource()
 	m_mapPointEffect->addBlendState();
 	m_mapPointEffect->addConstantBuffer<ConstantMVPIndex>();
 	m_mapPointEffect->Init();
+
+	m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 	return true;
 }
 

@@ -150,32 +150,24 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 			cam3st->Approach(-0.2f * (sqrt(cam3st->GetDistance()) / 15.0f));
 			cam3stLocal->Approach(-0.2f * (sqrt(cam3st->GetDistance()) / 15.0f));
 		}
-
-		if (keyState.IsKeyDown(Keyboard::H))
+		auto delta_scroll = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
+		if (delta_scroll > 1.0f)
 		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x + 0.1f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
+			float distance = cam3stLocal->GetDistance();
+			distance *= 0.9f;
+			cam3st->SetDistance(distance);
+			cam3stLocal->SetDistance(distance);
+			cam3st->Approach(0.0f);
+			cam3stLocal->Approach(0.0f);
 		}
-		if (keyState.IsKeyDown(Keyboard::K))
+		if (delta_scroll < -1.0f)
 		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x - 0.1f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
-		}
-
-		if (keyState.IsKeyDown(Keyboard::U))
-		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y + 0.1f, cam3st->GetTargetPosition().z));
-		}
-		if (keyState.IsKeyDown(Keyboard::J))
-		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y - 0.1f, cam3st->GetTargetPosition().z));
-		}
-
-		if (keyState.IsKeyDown(Keyboard::Y))
-		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.1f));
-		}
-		if (keyState.IsKeyDown(Keyboard::I))
-		{
-			cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z - 0.1f));
+			float distance = cam3stLocal->GetDistance();
+			distance *= 1.1f;
+			cam3st->SetDistance(distance);
+			cam3stLocal->SetDistance(distance);
+			cam3st->Approach(0.0f);
+			cam3stLocal->Approach(0.0f);
 		}
 	}
 

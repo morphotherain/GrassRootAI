@@ -8,14 +8,6 @@
 
 using namespace DirectX;
 
-const D3D11_INPUT_ELEMENT_DESC DockScene::VertexPosColor::inputLayout[3] = {
-	// 位置字段
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// 纹理坐标字段
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	// 纹理索引字段
-	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-};
 
 DockScene::DockScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
@@ -69,46 +61,6 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 	auto camPos = cam1st->GetPosition();
 	float factor = 1.0f / sqrt(abs(camPos.z) + 2.0f); //控制鼠标拖曳速度
-
-	if (m_CameraMode == CameraMode::Free)
-	{
-		// ******************
-		// 自由摄像机的操作
-		//
-
-		// 方向移动
-		if (keyState.IsKeyDown(Keyboard::W))
-		{
-			cam1st->MoveY(dt * 6.0f);
-		}
-		if (keyState.IsKeyDown(Keyboard::S))
-		{
-			cam1st->MoveY(dt * -6.0f);
-		}
-		if (keyState.IsKeyDown(Keyboard::A))
-		{
-			cam1st->MoveX(dt * -6.0f);
-		}
-		if (keyState.IsKeyDown(Keyboard::D))
-		{
-			cam1st->MoveX(dt * 6.0f);
-		}
-		// 在鼠标没进入窗口前仍为ABSOLUTE模式
-		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
-		{
-			auto pos = cam1st->GetPosition();
-			auto delta_Y = lastMouseState.y - mouseState.y;
-			auto delta_X = lastMouseState.x - mouseState.x;
-
-			cam1st->MoveY(-delta_Y * dt * factor);
-			cam1st->MoveX(delta_X * dt * factor);
-		}
-		auto delta_scroll = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
-		if (delta_scroll > 1.0f)
-			cam1st->MoveZ(1.0f);
-		if (delta_scroll < -1.0f)
-			cam1st->MoveZ(-1.0f);
-	}
 
 	for (auto& component : uiComponents) {
 		component->UpdateUI(dt, mouse, keyboard, tick);
