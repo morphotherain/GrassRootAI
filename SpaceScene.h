@@ -39,7 +39,6 @@ private:
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
 	
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
-	std::fstream fs;
 
 	std::vector<Pos2Tex> vertices;
 	std::vector<Vertex3DPosIndex> vertices3D;

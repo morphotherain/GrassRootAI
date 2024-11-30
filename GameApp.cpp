@@ -62,7 +62,7 @@ bool GameApp::Init()
 	SolarSystemMgr::getInstance().getCurrentPilot();
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
-	SwitchToScene(std::make_unique<MainScene>(AppInst()));
+	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 
 
 	return true;
@@ -123,7 +123,14 @@ void GameApp::UpdateScene(float dt)
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
 	SolarSystemMgr::getInstance().Update(tick);
 
-	if(tick % 100 == 0)
+
+	auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+	UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
+	UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
+	UINT currentSolarSystemID = SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID();
+	bool needSwitch = solarSystemID != currentSolarSystemID;
+
+	if(tick % 100 == 0 || needSwitch)
 	{
 		while(true)
 		{
@@ -132,9 +139,6 @@ void GameApp::UpdateScene(float dt)
 				break;
 			}
 
-			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
-			UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
-			UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
 
 			if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
 				if (currentSceneID != 4) {
@@ -145,7 +149,7 @@ void GameApp::UpdateScene(float dt)
 				auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
 				if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
 					// 找到了对应的太阳系，获取其值
-					auto nextSolarSystem = it->second;
+					nextSolarSystem = it->second;
 				}
 				else {
 					nextSolarSystem.reset();

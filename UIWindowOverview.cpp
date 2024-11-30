@@ -287,6 +287,8 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 		Rows.clear();
 		auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 		auto currentSector = currentSolarSystem->currentSector;
+		if (currentSector == nullptr)
+			return;
 		auto denormalizes = currentSolarSystem->m_denormalizes;
 		auto spaceObjects = currentSector->space_objects;
 		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;

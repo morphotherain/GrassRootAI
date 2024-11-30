@@ -82,7 +82,7 @@ void StargateLoadingScene::DrawScene()
 	dataPtr->projection = XMMatrixTranspose(projMatrix);
 	dataPtr->TexIndex = 0;
 	m_effect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
-	m_effect->apply();
+	//m_effect->apply();
 
 	for (auto& component : uiComponents) {
 		component->DrawUI();

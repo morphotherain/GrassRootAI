@@ -81,7 +81,7 @@ void StarGate::handleTask(const Task& task)
 		auto target_base = task.target->GetComponent<BaseComponent>();
 		auto tran = task.publisher->GetComponent<SpaceTransformComponent>();
 		auto distance = m_pSpaceTran->calculateDistance(*tran);
-		if (distance < (2500)) {
+		if (distance < (2500) || true) {
 			UINT destID = mapJumpsManager::getInstance()->getDestinationIDByObjectId(target_base->objectID);
 			UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
 			auto pos = mapDenormalizeManager::getInstance()->getPosByObjectID(destID);

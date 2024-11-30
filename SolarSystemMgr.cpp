@@ -14,7 +14,7 @@ void SolarSystemMgr::Init()
 void SolarSystemMgr::Update(UINT tick) {
 	distributeTasksFromTaskMgr();
 
-	if (tick % 100 == 1) {
+	if (tick % 60 == 0) {
 		handleStarGateTransferObjects();
 	}
 

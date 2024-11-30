@@ -325,8 +325,13 @@ void SolarSystem::setCurrentSector()
     if (currentPilot == nullptr)return;
     auto ship = currentPilot->currentShip;
     auto Tran = ship->GetComponent<SpaceTransformComponent>();
-    addObjectToSector(ship);
-    currentSector = getSector(Tran->x, Tran->y, Tran->z);
+    auto sector = getSector(Tran->x, Tran->y, Tran->z);
+    
+    if (sector == nullptr) {
+        currentSector = addSector(Tran->x, Tran->y, Tran->z);
+        return;
+    }
+    currentSector = sector;
 }
 
 void SolarSystem::clearCurrentSector()

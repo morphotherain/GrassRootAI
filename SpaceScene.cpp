@@ -23,7 +23,6 @@ SpaceScene::SpaceScene(HINSTANCE _hInstance) : Scene(_hInstance)
 bool SpaceScene::Init()
 {
 
-	fs.open(L"C:\\Users\\DottogNoggle\\Desktop\\output.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 	
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
@@ -317,6 +316,7 @@ void SpaceScene::DrawScene()
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
+
 		vertex3D.text->setSize((ndcCoord.x + 1.0f)/2.0f * 1920.0f+20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f+3.0f, 350.0f, 350.0f);
 
 		// 将转换后的顶点加入目标顶点数组
@@ -376,6 +376,11 @@ void SpaceScene::DrawScene()
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
+		int texID = 0;
+		if (true) {
+			texID = vertex.texIndex;
+		}
+
 		vertex3D.text->setSize((ndcCoord.x + 1.0f) / 2.0f * 1920.0f + 20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f + 3.0f, 350.0f, 350.0f);
 		vertex3D.text->DrawUI();
 		// 将转换后的顶点加入目标顶点数组
@@ -409,7 +414,6 @@ void SpaceScene::DrawScene()
 
 void SpaceScene::cleanup()
 {
-	fs.close();
 }
 
 bool SpaceScene::InitResource()

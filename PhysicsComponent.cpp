@@ -107,9 +107,6 @@ void PhysicsComponent::Update(UINT tick) {
             double factor = (1.0f - (static_cast<double>(decelerationElapsedTime) / warpDecelerationTime));
             t = pow(factor, 16);
             t = 1.0f - t;
-            if (decelerationElapsedTime == 700) {
-                t = t;
-            }
             t *= warpDeceleration_t;
             t += warpAcceleration_t + warpUniform_t;
         }
@@ -215,6 +212,7 @@ void PhysicsComponent::StartWarp()
     }
     else{
         warpUniformTime = 0;
+        warpUniform_t = 0.0f;
         warpAccelerationTime = static_cast<UINT>max(600.0f * distanceRatio, MIN_ACCELERATION_TIME);
         warpDecelerationTime = static_cast<UINT>max(960.0f * distanceRatio, MIN_DECELERATION_TIME);
         warpDeceleration_t = static_cast<double>(warpDecelerationTime) / static_cast<double>(warpAccelerationTime + warpDecelerationTime);
