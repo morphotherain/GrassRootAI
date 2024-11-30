@@ -77,7 +77,7 @@ void SolarSystem::getDenormalizesBySolarSystemID()
         p_denormalize->typeID = sqlite3_column_int(stmt, 9);
         p_denormalize->celestialIndex = sqlite3_column_int(stmt, 10);
         p_denormalize->orbitIndex = sqlite3_column_int(stmt, 11);
-
+        p_denormalize->fillDisplayName();
         m_denormalizes.push_back(p_denormalize);
 
         objectData.x = p_denormalize->x;
@@ -89,6 +89,7 @@ void SolarSystem::getDenormalizesBySolarSystemID()
         objectData.typeID = p_denormalize->typeID;
         objectData.groupID = sqlite3_column_int(stmt, 12);
         objectData.categoryID = sqlite3_column_int(stmt, 13);
+        objectData.name = p_denormalize->name;
         addGameObject(objectData);
     }
 
@@ -96,7 +97,6 @@ void SolarSystem::getDenormalizesBySolarSystemID()
     sqlite3_finalize(stmt);
 
     for (auto p_denormalize : m_denormalizes) {
-        p_denormalize->name = dbManager->getNameByTypeId(p_denormalize->typeID);
         p_denormalize->groupID = InvTypesManager::getInstance()->getGroupByTypeId(p_denormalize->typeID);
         p_denormalize->bracketID = invGroupsManager::getInstance()->getBracketIDByGroupId(p_denormalize->groupID);
         p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(p_denormalize->bracketID);
@@ -147,6 +147,9 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
         base->solarSystemID = objectData.SolarSystemID;
         base->groupID = objectData.groupID;
         base->categoryID = objectData.categoryID;
+        if (objectData.name != L"") {
+            base->name = objectData.name;
+        }
     }
 }
 

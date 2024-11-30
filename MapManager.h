@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include "DatabaseManager.h"
+#include "mapSolarSystemsManager.h"
+#include "InvTypesManager.h"
 #include <vector>
 
 // 定义用于存储恒星系数据的结构
@@ -46,10 +48,34 @@ public:
 	void getRegionaName();
 };
 
+
+std::wstring intToRoman(int num);
+
 struct DenormalizeData {
 public:
 	DenormalizeData() = default;
 	DenormalizeData(int id);
+
+	void fillDisplayName() {
+		std::wstring solarSystemName = mapSolarSystemsManager::getInstance()->getNameById(solarSystemID);
+		std::wstring typeName = InvTypesManager::getInstance()->getNameByTypeId(typeID);
+		// 获取罗马数字表示的轨道序号
+		std::wstring romanOrbitIndex = intToRoman(celestialIndex);
+
+		name = L"";
+		name += solarSystemName;
+		name += L"";
+		name += romanOrbitIndex;
+		name += L" - ";
+		name += typeName;
+
+		if (orbitIndex != 0) {
+			std::wstring romanOrbitIndex = intToRoman(orbitIndex);
+			name += L" ";
+			name += romanOrbitIndex;
+		}
+
+	};
 
 	std::wstring name = L"";
 	double x = 0;                       //  x 坐标

@@ -291,6 +291,9 @@
     <ClCompile Include="mapJumpsManager.cpp">
       <Filter>数据库\数据表</Filter>
     </ClCompile>
+    <ClCompile Include="mapSolarSystemsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -528,6 +531,9 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="mapJumpsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="mapSolarSystemsManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
   </ItemGroup>

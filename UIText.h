@@ -21,9 +21,13 @@ public:
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setText(std::wstring _Text) { Text = _Text; };
 
+	void setTextFormat();
+
 private:
 	std::fstream fs;
-
+	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
+	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
+	ComPtr<IDWriteTextFormat> m_pTextFormat;
 
 	float x = 10.0f;
 	float y = 30.0f;

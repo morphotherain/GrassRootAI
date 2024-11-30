@@ -1,4 +1,5 @@
 ﻿#include "Ship.h"
+#include "InvTypesManager.h"
 using namespace DirectX;
 
 void Ship::Init()
@@ -10,6 +11,7 @@ void Ship::Init()
 	m_pPhysics = std::make_shared<PhysicsComponent>(objectID);
 	AddComponent<Component>(m_pPhysics);
 	m_pPhysics->SpaceTran = m_pSpaceTran;
+	fillObjectName();
 }
 
 void Ship::Update(UINT tick)
@@ -20,6 +22,11 @@ void Ship::Update(UINT tick)
 		handleWarp(warpTarget.lock());
 	}
 	m_pPhysics->Update(tick);
+}
+
+void Ship::fillObjectName()
+{
+	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
 }
 
 void Ship::handleTask(const Task& task)

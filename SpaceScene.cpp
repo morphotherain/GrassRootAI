@@ -65,7 +65,7 @@ bool SpaceScene::Init()
 	AddUIComponent(window);*/
 
 	auto window_overview = std::make_shared<UIWindowOverview>();
-	window_overview->setSize(1500.0f, 200.0f, 200.0f, 40.0f);
+	window_overview->setSize(1350.0f, 200.0f, 550.0f, 600.0f);
 	AddUIComponent(window_overview);
 
 	/*auto starmap = std::make_shared<UIWindowMap>();
@@ -250,10 +250,12 @@ void SpaceScene::DrawScene()
 		auto TranObj = obj->GetComponent<SpaceTransformComponent>();
 		auto Base = obj->GetComponent<BaseComponent>();
 		auto texIndex = invGroupsManager::getInstance()->getBracketIDByGroupId(Base->groupID);
+
 		auto distance = Tran->calculateDistance(*TranObj);
 		std::wstringstream wss;
+		wss << Base->name << L"\n";
 		wss.precision(1);  // 设置精度为1位小数
-		wss << std::fixed << distance;  // 使用定点表示法
+		wss << std::fixed << distance /1000.0f <<L"km";  // 使用定点表示法
 		std::wstring str = wss.str();
 
 		Vertex3DPosIndex temp = { 

@@ -182,6 +182,7 @@
     <ClCompile Include="mapDenormalizeManager.cpp" />
     <ClCompile Include="mapJumpsManager.cpp" />
     <ClCompile Include="MapManager.cpp" />
+    <ClCompile Include="mapSolarSystemsManager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NPCStation.cpp" />
     <ClCompile Include="StargateLoadingScene.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="mapDenormalizeManager.h" />
     <ClInclude Include="mapJumpsManager.h" />
     <ClInclude Include="MapManager.h" />
+    <ClInclude Include="mapSolarSystemsManager.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NPCStation.h" />
     <ClInclude Include="StargateLoadingScene.h" />

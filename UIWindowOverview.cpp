@@ -141,6 +141,9 @@ bool UIWindowOverview::InitEffect()
 
 void UIWindowOverview::InitWindowComponent()
 {
+	auto width1 = width;
+	auto width2 = UIWindow::width;
+
 	UIWindow::InitWindowComponent();
 	auto Texture = m_windowEffect->getTextures();
 	Texture->addTextureFileName("demoTex\\UI\\Window\\window_line.dds");
@@ -157,21 +160,21 @@ void UIWindowOverview::InitWindowComponent()
 
 	text = std::make_shared<UIText>();
 	text->setSize(x + 20.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
-	text->setText(L"类型");
-	AddUIComponent(text);
-
-	text = std::make_shared<UIText>();
-	text->setSize(x + 80.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
-	text->setText(L"距离");
-	AddUIComponent(text);
-
-	text = std::make_shared<UIText>();
-	text->setSize(x + 200.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"名称");
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 310.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(x + 230.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setText(L"距离");
+	AddUIComponent(text);
+
+	text = std::make_shared<UIText>();
+	text->setSize(x + 350.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setText(L"类型");
+	AddUIComponent(text);
+
+	text = std::make_shared<UIText>();
+	text->setSize(x + 460.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"速度");
 	AddUIComponent(text);
 
@@ -188,26 +191,26 @@ void UIWindowOverview::Row::Init(float x, float y, float TitleHeight)
 {
 	std::shared_ptr<UIText> text = std::make_shared<UIText>();
 	text->setSize(x + 20.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
-	text->setText(typeName);
+	text->setText(Name);
 	texts.push_back(text);
 
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 90.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(x + 240.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
 	std::wstring display_distance = getDisplay();
 	text->setText(display_distance);
 	texts.push_back(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 180.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
-	text->setText(Name);
+	text->setSize(x + 315.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setText(typeName);
 	texts.push_back(text);
 
 
 	std::wstringstream wss;
 	wss << std::fixed << std::setprecision(1) << velocity << L"m/s";
 	text = std::make_shared<UIText>();
-	text->setSize(x + 310.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(x + 490.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(wss.str());
 	texts.push_back(text);
 
@@ -229,10 +232,10 @@ void UIWindowOverview::Row::Draw()
 
 void UIWindowOverview::Row::setIndex(float x, float y, float TitleHeight)
 {
-	texts[0]->setSize(x + 20.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
-	texts[1]->setSize(x + 90.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
-	texts[2]->setSize(x + 180.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
-	texts[3]->setSize(x + 310.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
+	texts[0]->setSize(x + 10.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
+	texts[1]->setSize(x + 220.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
+	texts[2]->setSize(x + 300.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
+	texts[3]->setSize(x + 460.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
 
 }
 
@@ -306,8 +309,8 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 
 			if (base->objectID == currentBase->objectID)continue;
 
-			temp->Name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
-			temp->typeName = invGroupsManager::getInstance()->getNameByGroupId(base->groupID);
+			temp->Name = base->name;
+			temp->typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 			temp->distance = currentTran->calculateDistance(*Tran);
 			if (Physics != nullptr) {
 				temp->velocity = Physics->CalculateSpeedMagnitude();
@@ -328,10 +331,10 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			auto Tran = object->GetComponent<SpaceTransformComponent>();
 			auto Physics = object->GetComponent<PhysicsComponent>();
 
-			if (base->groupID == 7 || base->groupID == 8)continue;
+			if (base->groupID == 7 || base->groupID == 8);
 
-			temp->Name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
-			temp->typeName = invGroupsManager::getInstance()->getNameByGroupId(base->groupID);
+			temp->Name = denormalize->name;
+			temp->typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 			temp->distance = currentTran->calculateDistance(*Tran);
 			if (temp->distance < 10000000)continue;
 			if (Physics != nullptr) {

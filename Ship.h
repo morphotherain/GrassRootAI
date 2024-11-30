@@ -26,6 +26,8 @@ public:
 	std::shared_ptr<PhysicsComponent> m_pPhysics;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 
+	void fillObjectName();
+
 	std::weak_ptr<GameObject> approachTarget;
 	std::weak_ptr<GameObject> warpTarget;
 	std::weak_ptr<GameObject> activeTarget;

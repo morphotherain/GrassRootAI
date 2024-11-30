@@ -18,5 +18,7 @@ public:
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 	std::shared_ptr<StationComponent>m_pStation;
 
+	void fillObjectName();
+
 	virtual void handleTask(const Task& task);
 };

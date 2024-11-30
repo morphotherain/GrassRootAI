@@ -21,6 +21,7 @@ public:
     double qz;
     UINT groupID;
     UINT categoryID;
+    std::wstring name = L"";
 };
 
 class dynGameObjectsManager : public SingletonBase<dynGameObjectsManager> {

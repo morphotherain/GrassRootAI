@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Component.h"
+#include "InvTypesManager.h"
 #include "d3dUtil.h"
 
 class BaseComponent : public Component {

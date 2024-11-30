@@ -17,6 +17,11 @@ void NPCStation::Update(UINT tick)
 	processTasks();
 }
 
+void NPCStation::fillObjectName()
+{
+	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+}
+
 void NPCStation::handleTask(const Task& task)
 {
 	switch (task.taskTypeId) {

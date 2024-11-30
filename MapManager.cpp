@@ -1,6 +1,38 @@
 ﻿#include "MapManager.h"
 
 
+
+std::wstring intToRoman(int num) {
+    // 简单的对应关系示例，处理1-20的情况
+    static std::vector<std::wstring> romanMap = {
+        L"",
+        L"I",
+        L"II",
+        L"III",
+        L"IV",
+        L"V",
+        L"VI",
+        L"VII",
+        L"VIII",
+        L"IX",
+        L"X",
+        L"XI",
+        L"XII",
+        L"XIII",
+        L"XIV",
+        L"XV",
+        L"XVI",
+        L"XVII",
+        L"XVIII",
+        L"XIX",
+        L"XX"
+    };
+    if (num >= 1 && num <= 20) {
+        return romanMap[num];
+    }
+    return L"";  // 如果输入的数字不在处理范围内，返回空字符串，可根据实际需求调整错误处理逻辑
+}
+
 std::vector<SolarSystemData> getSolarSystems()
 {
     std::vector<SolarSystemData> solarSystems;

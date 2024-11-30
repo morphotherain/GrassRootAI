@@ -30,7 +30,6 @@ public:
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 
-	ComPtr<ID2D1RenderTarget> GetD2DRenderTarget() { return m_pd2dRenderTarget; };
 
 	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float TexID);
 
@@ -48,9 +47,6 @@ protected:
 	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
 	ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11交换链
 
-	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
-	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
-	ComPtr<IDWriteTextFormat> m_pTextFormat;
 
 	// 常用资源
 	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // 深度模板缓冲区
