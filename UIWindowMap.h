@@ -74,6 +74,8 @@ private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayoutLines;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBufferLines;		// 顶点缓冲区
 
+	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
+
 	std::fstream fs;
 
 	ComPtr<ID3D11PixelShader> m_pPixelShaderPoints;	// 像素着色器

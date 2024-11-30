@@ -43,9 +43,9 @@ protected:
 	CameraMode m_CameraMode = CameraMode::Free;									// 摄像机模式
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
 
-	ComPtr<ID3D11Device> m_pd3dDevice;
-	ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
-	ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11交换链
+	//ComPtr<ID3D11Device> m_pd3dDevice;
+	//ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
+	//ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11交换链
 
 
 	// 常用资源

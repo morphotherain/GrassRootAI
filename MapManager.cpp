@@ -42,7 +42,7 @@ std::vector<SolarSystemData> getSolarSystems()
     sqlite3* db = dbManager->getDatabase();
 
     // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT x, y, z, solarSystemName, luminosity ,solarSystemID ,constellationID,regionID FROM mapSolarSystems;";
+    std::string sql = "SELECT x, y, z, solarSystemName, luminosity ,solarSystemID ,constellationID,regionID,security FROM mapSolarSystems;";
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
@@ -65,6 +65,7 @@ std::vector<SolarSystemData> getSolarSystems()
         system.solarSystemID = sqlite3_column_int(stmt, 5);
         system.constellationID = sqlite3_column_int(stmt, 6);
         system.regionalID = sqlite3_column_int(stmt, 7);
+        system.security = sqlite3_column_double(stmt, 8);
 
         // 将数据添加到向量中
         solarSystems.push_back(system);
@@ -174,7 +175,7 @@ SolarSystemData::SolarSystemData(int id)
     sqlite3* db = dbManager->getDatabase();
 
     // SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-    std::string sql = "SELECT x, y, z, solarSystemName, luminosity  ,constellationID,regionID FROM mapSolarSystems WHERE solarSystemID = " + std::to_string(id) + ";";
+    std::string sql = "SELECT x, y, z, solarSystemName, luminosity  ,constellationID,regionID,security FROM mapSolarSystems WHERE solarSystemID = " + std::to_string(id) + ";";
 
     sqlite3_stmt* stmt;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
@@ -194,6 +195,7 @@ SolarSystemData::SolarSystemData(int id)
         luminosity = sqlite3_column_double(stmt, 4);
         constellationID = sqlite3_column_int(stmt, 5);
         regionalID = sqlite3_column_int(stmt, 6);
+        security = sqlite3_column_double(stmt, 7);
         solarSystemID = id;
 
     }

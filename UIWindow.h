@@ -22,6 +22,10 @@ public:
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 
+	std::shared_ptr<bool> isCatchingMouse = std::make_shared<bool>();
+	std::shared_ptr<bool> getCatchingMouse() { return isCatchingMouse; }
+
+
 protected:
 	void InitWindowComponent();
 

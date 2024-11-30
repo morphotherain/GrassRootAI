@@ -147,7 +147,7 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
         base->solarSystemID = objectData.SolarSystemID;
         base->groupID = objectData.groupID;
         base->categoryID = objectData.categoryID;
-        if (objectData.name != L"") {
+        if (objectData.name != L"" && base->name == L"") {
             base->name = objectData.name;
         }
     }

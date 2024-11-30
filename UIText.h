@@ -21,7 +21,7 @@ public:
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
 	void setText(std::wstring _Text) { Text = _Text; };
 
-	void setTextFormat();
+	void switchTextFormat(std::string index);
 
 private:
 	std::fstream fs;

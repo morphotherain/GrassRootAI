@@ -2,7 +2,6 @@
 #include "UIButton.h"
 #include "UIShaderTest.h"
 #include "UIWindowInfo.h"
-#include "UIWindowOverview.h"
 #include "UIWindowMap.h"
 #include "RenderComponent.h"
 #include "DatabaseManager.h"
@@ -11,6 +10,7 @@
 #include "eveBracketsManager.h"
 #include <iostream>
 #include <sstream>
+#include <iomanip>	
 using namespace DirectX;
 
 
@@ -43,20 +43,29 @@ bool SpaceScene::Init()
 	}
 
 	auto text = std::make_shared<UIText>();
-	text->setSize(300.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setSize(350.0f, 90.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
 	text->setText(m_pSolarSystem->m_solarSystem.regionName); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
 
 	text = std::make_shared<UIText>();
-	text->setSize(200.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(m_pSolarSystem->m_solarSystem.constellationName + L" < "); // 设置星域名称文本
+	text->setSize(230.0f, 90.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
+	text->setText(std::wstring(L" < ")+m_pSolarSystem->m_solarSystem.constellationName + L" < "); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
+	// 获取security的值
+	double securityValue = m_pSolarSystem->m_solarSystem.security;
+
+	std::wstringstream ss;
+	ss << std::fixed << std::setprecision(1) << securityValue;
+	auto solarSystemName = m_pSolarSystem->m_solarSystem.solarSystemName;
+	solarSystemName += L" ";
+	solarSystemName += ss.str();
 
 	text = std::make_shared<UIText>();
 	text->setSize(100.0f, 80.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(m_pSolarSystem->m_solarSystem.solarSystemName + L" < "); // 设置星域名称文本
+	text->setText(solarSystemName); // 设置星域名称文本
+	text->switchTextFormat("Arial_L");
 	AddUIComponent(text); // 添加 UI 组件
 
 	/*auto window = std::make_shared<UIWindowInfo>();
@@ -64,9 +73,9 @@ bool SpaceScene::Init()
 	window->setTypeID(620);
 	AddUIComponent(window);*/
 
-	auto window_overview = std::make_shared<UIWindowOverview>();
-	window_overview->setSize(1350.0f, 200.0f, 550.0f, 600.0f);
-	AddUIComponent(window_overview);
+	m_WindowOverview = std::make_shared<UIWindowOverview>();
+	m_WindowOverview->setSize(1350.0f, 200.0f, 550.0f, 600.0f);
+	AddUIComponent(m_WindowOverview);
 
 	/*auto starmap = std::make_shared<UIWindowMap>();
 	starmap->setSize(500.0f, 350.0f, 1120.0f, 657.0f);
@@ -151,24 +160,26 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 			cam3st->Approach(-0.2f * (sqrt(cam3st->GetDistance()) / 15.0f));
 			cam3stLocal->Approach(-0.2f * (sqrt(cam3st->GetDistance()) / 15.0f));
 		}
-		auto delta_scroll = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
-		if (delta_scroll > 1.0f)
-		{
-			float distance = cam3stLocal->GetDistance();
-			distance *= 0.9f;
-			cam3st->SetDistance(distance);
-			cam3stLocal->SetDistance(distance);
-			cam3st->Approach(0.0f);
-			cam3stLocal->Approach(0.0f);
-		}
-		if (delta_scroll < -1.0f)
-		{
-			float distance = cam3stLocal->GetDistance();
-			distance *= 1.1f;
-			cam3st->SetDistance(distance);
-			cam3stLocal->SetDistance(distance);
-			cam3st->Approach(0.0f);
-			cam3stLocal->Approach(0.0f);
+		if (!(*(m_WindowOverview->getCatchingMouse()))) {
+			auto delta_scroll = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
+			if (delta_scroll > 1.0f)
+			{
+				float distance = cam3stLocal->GetDistance();
+				distance *= 0.9f;
+				cam3st->SetDistance(distance);
+				cam3stLocal->SetDistance(distance);
+				cam3st->Approach(0.0f);
+				cam3stLocal->Approach(0.0f);
+			}
+			if (delta_scroll < -1.0f)
+			{
+				float distance = cam3stLocal->GetDistance();
+				distance *= 1.1f;
+				cam3st->SetDistance(distance);
+				cam3stLocal->SetDistance(distance);
+				cam3st->Approach(0.0f);
+				cam3stLocal->Approach(0.0f);
+			}
 		}
 	}
 
@@ -378,11 +389,6 @@ void SpaceScene::DrawScene()
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
-		int texID = 0;
-		if (true) {
-			texID = vertex.texIndex;
-		}
-
 		vertex3D.text->setSize((ndcCoord.x + 1.0f) / 2.0f * 1920.0f + 20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f + 3.0f, 350.0f, 350.0f);
 		vertex3D.text->DrawUI();
 		// 将转换后的顶点加入目标顶点数组
@@ -427,7 +433,7 @@ bool SpaceScene::InitResource()
 	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	camera->SetTarget(XMFLOAT3(331517583.0f, 43610234.0f, -586343669.0f));
-	camera->SetDistance(5000.0f);
+	camera->SetDistance(50000.0f);
 	camera->SetDistanceMinMax(1.0f, 200000000.0f);
 	camera->Approach(-0.00f);
 
@@ -436,7 +442,7 @@ bool SpaceScene::InitResource()
 	Local_camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	Local_camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	Local_camera->SetTarget(XMFLOAT3(331517583.0f, 43610234.0f, -586343669.0f));
-	Local_camera->SetDistance(5000.0f);
+	Local_camera->SetDistance(50000.0f);
 	Local_camera->SetDistanceMinMax(1.0f, 20000000.0f);
 	Local_camera->Approach(-0.00f);
 

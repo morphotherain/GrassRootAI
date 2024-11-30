@@ -10,6 +10,7 @@
 #include <dwrite.h>
 #include <DirectXMath.h>
 #include "DXTrace.h"
+#include <map>
 
 
 template <typename T>
@@ -39,9 +40,13 @@ public:
         m_pColorBrush = pColorBrush;
         m_pTextFormat = pTextFormat;
     }
+    void addTextFormat(IDWriteTextFormat* pTextFormat, std::string index) {
+        m_textFormats[index] = pTextFormat;
+    }
     ID2D1RenderTarget* GetD2DRenderTarget() { return m_pd2dRenderTarget.Get(); }
     ID2D1SolidColorBrush* GetColorBrush() { return m_pColorBrush.Get(); }
     IDWriteTextFormat* GetTextFormat() { return m_pTextFormat.Get(); }
+    IDWriteTextFormat* GetTextFormat(std::string index) { return (m_textFormats[index]).Get(); }
 
 
 
@@ -87,7 +92,8 @@ private:
 
     ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
     ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
-    ComPtr<IDWriteTextFormat> m_pTextFormat;
+    ComPtr<IDWriteTextFormat> m_pTextFormat; //默认字体
+    std::map<std::string, ComPtr<IDWriteTextFormat>> m_textFormats;
 
     UINT width = 800;
     UINT height = 600;

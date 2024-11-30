@@ -43,6 +43,7 @@ public:
 	int solarSystemID;
 	int constellationID;
 	int regionalID;
+	double security;
 
 	void getConstellationName();
 	void getRegionaName();

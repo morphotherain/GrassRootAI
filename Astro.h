@@ -78,6 +78,7 @@ public:
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 	std::shared_ptr<WarpGateComponent>m_pWarpGate;
+	void fillObjectName();
 
 
 	virtual void handleTask(const Task& task);

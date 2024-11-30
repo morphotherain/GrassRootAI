@@ -1,6 +1,7 @@
 ﻿#include "Astro.h"
 #include "mapJumpsManager.h"
 #include "mapDenormalizeManager.h"
+#include "mapSolarSystemsManager.h"
 
 std::shared_ptr<GameObject> Astro::ConvertBasedOnGroupID(UINT groupID)
 {
@@ -65,11 +66,21 @@ void StarGate::Init()
 	AddComponent<Component>(m_pSpaceTran);
 	m_pWarpGate = std::make_shared<WarpGateComponent>(objectID);
 	AddComponent<Component>(m_pWarpGate);
+	fillObjectName();
 }
 
 void StarGate::Update(UINT tick)
 {
 	processTasks();
+}
+
+void StarGate::fillObjectName()
+{
+	UINT destID = mapJumpsManager::getInstance()->getDestinationIDByObjectId(m_pBase->objectID);
+	UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
+	std::wstring solarSystemName = mapSolarSystemsManager::getInstance()->getNameById(solarSystemID);
+	m_pBase->name = solarSystemName + L"（星门）";
+
 }
 
 void StarGate::handleTask(const Task& task)

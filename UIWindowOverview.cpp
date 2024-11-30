@@ -52,10 +52,9 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
-
+	*isCatchingMouse = false;
 	if (mouseState.x > x && mouseState.x < (x + width) && mouseState.y > y && mouseState.y < (y + height)) {
-
-
+		*isCatchingMouse = true;
 
 		// 新增代码，处理鼠标滚轮滚动事件来改变index值
 		m_RowMgr->next_index = m_RowMgr->index;
@@ -86,7 +85,7 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 			int index = static_cast<int>((mouseState.y - y - 35) / TitleHeight - 2);
 			if(m_RowMgr->Rows.size()>index)
 			{
-				UINT targetID = m_RowMgr->Rows[index]->objectID;
+				UINT targetID = m_RowMgr->Rows[index + m_RowMgr->next_index]->objectID;
 				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
 				m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 				m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
@@ -333,7 +332,7 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 
 			if (base->groupID == 7 || base->groupID == 8);
 
-			temp->Name = denormalize->name;
+			temp->Name = base->name;
 			temp->typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 			temp->distance = currentTran->calculateDistance(*Tran);
 			if (temp->distance < 10000000)continue;

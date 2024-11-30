@@ -5,6 +5,7 @@
 #include "SolarSystem.h"
 #include "UIText.h"
 #include "UISkyBox.h"
+#include "UIWindowOverview.h"
 #include "UIRButtonMenu.h"
 
 
@@ -37,6 +38,7 @@ public:
 private:
 	std::shared_ptr<Effect> m_pBracketEffect;
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
+	std::shared_ptr<UIWindowOverview> m_WindowOverview;
 	
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 

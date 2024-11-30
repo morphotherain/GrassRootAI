@@ -9,7 +9,8 @@ bool UIText::Init()
 
 	m_pd2dRenderTarget = D3DManager::getInstance().GetD2DRenderTarget();
 	m_pColorBrush = D3DManager::getInstance().GetColorBrush();
-	m_pTextFormat = D3DManager::getInstance().GetTextFormat();
+	if(m_pTextFormat == nullptr)
+		m_pTextFormat = D3DManager::getInstance().GetTextFormat();
 
 	if (!InitEffect())
 		return false;
@@ -61,4 +62,10 @@ bool UIText::InitEffect()
 {
 
 	return true;
+}
+
+
+void UIText::switchTextFormat(std::string index)
+{
+	m_pTextFormat = D3DManager::getInstance().GetTextFormat(index);
 }
