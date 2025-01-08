@@ -6,6 +6,7 @@
 #include "dynGameObjectsManager.h"
 #include "mapDenormalizeManager.h"
 #include "InvTypesManager.h"
+#include "AttributesComponent.h"
 
 
 using namespace DirectX;
@@ -58,9 +59,13 @@ bool GameApp::Init()
 	m_pMouse->SetWindow(m_hMainWnd);
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
+	AttributeMgr::getInstance().Init();
+
 	SolarSystemMgr::getInstance().Init();
 	SolarSystemMgr::getInstance().getCurrentPilot();
 	SolarSystemMgr::getInstance().setCurrentPilot();
+
+
 
 	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 

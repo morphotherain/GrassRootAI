@@ -5,6 +5,8 @@ void SolarSystemMgr::Init()
 	p_mapObject = std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>();
 	p_starGateTransferObjects = std::make_shared < std::vector<std::shared_ptr<GameObject>>>();
 	auto IDs = dynGameObjectsManager::getInstance()->getSolarSystemIDHasPilot();
+	InitPilots();
+
 	for (auto id : IDs) {
 		loadSolarSystem(id);
 	}
@@ -16,6 +18,9 @@ void SolarSystemMgr::Update(UINT tick) {
 
 	if (tick % 60 == 0) {
 		handleStarGateTransferObjects();
+	}
+	for (const auto& pilot : Pilots) {
+		pilot->Update(tick);
 	}
 
 	for (const auto& pair : SolarSystems) {
@@ -75,6 +80,33 @@ void SolarSystemMgr::handleStarGateTransferObjects()
 	(*p_starGateTransferObjects).clear();
 }
 
+void SolarSystemMgr::InitPilots()
+{
+	auto p_PilotsData = dynGameObjectsManager::getInstance()->getPilots();
+	for (auto& p : *p_PilotsData) {
+		auto object = std::make_shared<Pilot>(p.objectID, p.OwnerID);
+		object->Init();
+		(*p_mapObject)[p.objectID] = (object);
+		object->objectID = p.objectID;
+		Pilots.push_back(std::dynamic_pointer_cast<Pilot>(object));
+
+		if (object->GetComponent<BaseComponent>() != nullptr) {
+			auto base = object->GetComponent<BaseComponent>();
+			base->objectID = p.objectID;
+			base->typeID = p.typeID;
+			base->ownerID = p.OwnerID;
+			base->containerID = p.ContainerID;
+			base->solarSystemID = p.SolarSystemID;
+			base->groupID = p.groupID;
+			base->categoryID = p.categoryID;
+			if (p.name != L"" && base->name == L"") {
+				base->name = p.name;
+			}
+		}
+	}
+}
+
+
 void SolarSystemMgr::getCurrentPilot()
 {
 	for (auto p : Pilots) {
@@ -82,7 +114,7 @@ void SolarSystemMgr::getCurrentPilot()
 		{
 			currentPilot = p;
 			auto Base = currentPilot->GetComponent<BaseComponent>();
-			currentSolarSystem = SolarSystems[Base->solarSystemID];
+			currentSolarSystem = SolarSystems[currentPilot->currentSolarSystemID];
 			UINT shipID = currentPilot->GetComponent<BaseComponent>()->containerID;
 			currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>((*p_mapObject)[shipID]);
 		}

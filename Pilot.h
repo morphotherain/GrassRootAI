@@ -5,10 +5,11 @@ class Pilot : public GameObject
 {
 public:
 	Pilot() = default;
-	Pilot(UINT _objectID, UINT _PilotID) :PilotObjectID(_objectID),PilotID(_PilotID)  {};
+	Pilot(UINT _objectID, UINT _PilotID);
 	~Pilot() = default;
 
 	virtual void Init();
+	virtual void Update(UINT tick);
 
 	UINT PilotID;
 	UINT currentShipID = 0;	
@@ -16,6 +17,5 @@ public:
 	UINT PilotObjectID;
 	std::shared_ptr<Ship> currentShip;
 	std::shared_ptr<BaseComponent> m_pBase;
-
 };
 

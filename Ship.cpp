@@ -6,6 +6,8 @@ void Ship::Init()
 {
 	m_pBase = std::make_shared<BaseComponent>(objectID);
 	AddComponent<Component>(m_pBase);
+	m_pAttribute = std::make_shared<AttributesComponent>(objectID);
+	AddComponent<Component>(m_pAttribute);
 	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
 	AddComponent<Component>(m_pSpaceTran);
 	m_pPhysics = std::make_shared<PhysicsComponent>(objectID);
@@ -16,10 +18,21 @@ void Ship::Init()
 
 void Ship::Update(UINT tick)
 {
+	
 	processTasks();
 	if (tick % 30 == 0) {
 		handleApproach(approachTarget.lock());
 		handleWarp(warpTarget.lock());
+	}
+	m_pSpaceTran->needStore = true;
+	//m_pBase->needStore = true;
+	if (tick % 60 == 0) {
+		if (m_pSpaceTran->needStore) {
+			m_pSpaceTran->store();
+		}
+		/*if (m_pBase->needStore) {
+			m_pBase->store();
+		}*/
 	}
 	m_pPhysics->Update(tick);
 }

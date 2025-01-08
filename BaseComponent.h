@@ -11,6 +11,10 @@ public:
 	~BaseComponent() = default;
 
 	virtual void Update(UINT tick) {};
+	void store();
+	void setSolarSystemID(UINT solarSystemID);
+	void setContainerID(UINT containerID);
+	bool needStore = false;
 
 	UINT objectID;
 	UINT typeID;

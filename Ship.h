@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
+#include "AttributesComponent.h"
 #include <DirectXMath.h>
 #include "PhysicsComponent.h"
 
@@ -23,6 +24,7 @@ public:
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
+	std::shared_ptr<AttributesComponent> m_pAttribute;
 	std::shared_ptr<PhysicsComponent> m_pPhysics;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 

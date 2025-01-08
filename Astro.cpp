@@ -96,8 +96,8 @@ void StarGate::handleTask(const Task& task)
 			UINT destID = mapJumpsManager::getInstance()->getDestinationIDByObjectId(target_base->objectID);
 			UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
 			auto pos = mapDenormalizeManager::getInstance()->getPosByObjectID(destID);
-			base->solarSystemID = solarSystemID;
-			base->containerID = solarSystemID;
+			base->setSolarSystemID(solarSystemID);
+			base->setContainerID(solarSystemID);
 			tran->x = pos[0] + 12000.0f;
 			tran->y = pos[1];
 			tran->z = pos[2];

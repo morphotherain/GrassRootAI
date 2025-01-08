@@ -106,6 +106,11 @@ void SolarSystem::getDenormalizesBySolarSystemID()
 
 void SolarSystem::addGameObject(dynGameObject& objectData)
 {
+    auto it = p_mapObject->find(objectData.objectID);
+    if (it != p_mapObject->end()) {
+        return;
+    }
+
     std::shared_ptr<GameObject> object;
     switch (objectData.categoryID) {
     case 2: {    //天体
@@ -117,9 +122,10 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
         break;
     }
     case 5: {    //附件(克隆人飞行员)
-        object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
+        return;
+        /*object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
         other_objects.push_back(object);
-        Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));
+        Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));*/
         break;
     }
     case 6: {    //舰船(含太空舱
@@ -288,9 +294,6 @@ void SolarSystem::checkObjectsInSector()
                     auto Base = object->GetComponent<BaseComponent>();
 
                     if (Base->solarSystemID != getSolarSystemID()) {
-                        sector->space_objects.erase(sector->space_objects.begin() + i);
-                        // 由于删除了一个元素，索引需要减1，以确保下一次循环能正确检查当前位置的元素
-                        // 从another_space_objects中查找并删除对应的元素，通过比较智能指针
                         for (auto it = space_objects.begin(); it != space_objects.end(); ) {
                             if (*it == object) {
                                 space_objects.erase(it);
@@ -302,6 +305,10 @@ void SolarSystem::checkObjectsInSector()
                             }
                         }
 
+                        sector->space_objects.erase(sector->space_objects.begin() + i);
+                        // 由于删除了一个元素，索引需要减1，以确保下一次循环能正确检查当前位置的元素
+                        // 从another_space_objects中查找并删除对应的元素，通过比较智能指针
+                        
                         i--;
                         size--;
                         continue;
@@ -350,6 +357,7 @@ std::vector<std::shared_ptr<Pilot>> SolarSystem::getPilots()
 void SolarSystem::setCurrentPilots(std::shared_ptr<Pilot> _Pilot)
 {
     currentPilot = _Pilot;
+    currentPilot->GetComponent<BaseComponent>()->solarSystemID = getSolarSystemID();
     return;
 }
 

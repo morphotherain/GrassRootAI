@@ -8,6 +8,9 @@ std::wstring DatabaseManager::sqlite3_column_wstring(sqlite3_stmt* stmt, int col
 {
     const char* text = (const char*)(sqlite3_column_text(stmt, column_index));
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+    if (text == nullptr) {
+        return std::wstring();
+    }
     return converter.from_bytes(text);
 }
 

@@ -58,6 +58,9 @@
     <Filter Include="Task">
       <UniqueIdentifier>{46cf3438-c16e-46c6-9fdf-48de1a2641db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="宏定义">
+      <UniqueIdentifier>{893980c8-483b-4a4c-a743-0c990d0ccae5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -292,6 +295,27 @@
       <Filter>数据库\数据表</Filter>
     </ClCompile>
     <ClCompile Include="mapSolarSystemsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipmentComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributesComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="StorageComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeMacro.h">
+      <Filter>宏定义</Filter>
+    </ClCompile>
+    <ClCompile Include="dogmaTypeAttributesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="dogmaAttributesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="dynObjectAttributesManager.cpp">
       <Filter>数据库\数据表</Filter>
     </ClCompile>
   </ItemGroup>
@@ -534,6 +558,24 @@
       <Filter>数据库\数据表</Filter>
     </ClInclude>
     <ClInclude Include="mapSolarSystemsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipmentComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributesComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="StorageComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="dogmaTypeAttributesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="dogmaAttributesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="dynObjectAttributesManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,8 @@ public:
 
 
     virtual void Update(UINT tick) {};
-
+    void store();
+    bool needStore = false;
 
     double x = 0.0f;
     double y = 0.0f;

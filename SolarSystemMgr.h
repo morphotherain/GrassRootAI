@@ -42,5 +42,7 @@ public :
 	void distributeTasksFromTaskMgr();
 	void handleStarGateTransferObjects();
 
+	void InitPilots();
+
 private:
 };

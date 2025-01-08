@@ -148,6 +148,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Astro.cpp" />
+    <ClCompile Include="AttributeMacro.h" />
+    <ClCompile Include="AttributesComponent.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BlendStateComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -163,10 +165,14 @@
     <ClCompile Include="demoScene.cpp" />
     <ClCompile Include="DepthStencilStateComponent.cpp" />
     <ClCompile Include="DockScene.cpp" />
+    <ClCompile Include="dogmaAttributesManager.cpp" />
+    <ClCompile Include="dogmaTypeAttributesManager.cpp" />
     <ClCompile Include="DXTrace.cpp" />
     <ClCompile Include="dynGameObjectsManager.cpp" />
+    <ClCompile Include="dynObjectAttributesManager.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
+    <ClCompile Include="EquipmentComponent.cpp" />
     <ClCompile Include="eveBracketsManager.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -202,6 +208,7 @@
     <ClCompile Include="SpaceScene.cpp" />
     <ClCompile Include="SpaceTransformComponent.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="StorageComponent.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="taskDatabaseManager.cpp" />
     <ClCompile Include="TaskMgr.cpp" />
@@ -227,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astro.h" />
+    <ClInclude Include="AttributesComponent.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BlendStateComponent.h" />
     <ClInclude Include="Camera.h" />
@@ -244,10 +252,14 @@
     <ClInclude Include="demoScene.h" />
     <ClInclude Include="DepthStencilStateComponent.h" />
     <ClInclude Include="DockScene.h" />
+    <ClInclude Include="dogmaAttributesManager.h" />
+    <ClInclude Include="dogmaTypeAttributesManager.h" />
     <ClInclude Include="DXTrace.h" />
     <ClInclude Include="dynGameObjectsManager.h" />
+    <ClInclude Include="dynObjectAttributesManager.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectComponent.h" />
+    <ClInclude Include="EquipmentComponent.h" />
     <ClInclude Include="eveBracketsManager.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="GameObject.h" />
@@ -284,6 +296,7 @@
     <ClInclude Include="SpaceTransformComponent.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sqlite3ext.h" />
+    <ClInclude Include="StorageComponent.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="taskDatabaseManager.h" />
     <ClInclude Include="TaskMgr.h" />

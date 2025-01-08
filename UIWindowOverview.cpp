@@ -330,7 +330,7 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			auto Tran = object->GetComponent<SpaceTransformComponent>();
 			auto Physics = object->GetComponent<PhysicsComponent>();
 
-			if (base->groupID == 7 || base->groupID == 8);
+			if (base->groupID == 7 || base->groupID == 8)continue;
 
 			temp->Name = base->name;
 			temp->typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);

@@ -39,11 +39,14 @@ public:
     unsigned int getSolarSystemIdByObjectID(int object_id);
     unsigned int getOwnerIdByObjectID(int object_id);
     unsigned int getContainerIdByObjectID(int object_id);
+    int updateRelatedIdsByObjectID(int object_id, unsigned int solarSystemId, unsigned int ownerId, unsigned int containerId);
     std::vector<double> getPosByObjectID(int object_id);
+    int updatePosByObjectID(int object_id, const std::vector<double>& pos);
     std::vector<double> getQuaternionByObjectID(int object_id);
     unsigned int getPilotObjectIDByPilotID(int pilot_id);
 
     std::shared_ptr<std::vector<dynGameObject>> getGameObjectBySolarSystemID(UINT solarSystemID);
+    std::shared_ptr<std::vector<dynGameObject>> getPilots();
 
     int updateContainerIDByObjectID(int object_id, int newValue);
 
