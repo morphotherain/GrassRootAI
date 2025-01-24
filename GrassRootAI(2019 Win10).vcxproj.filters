@@ -318,6 +318,12 @@
     <ClCompile Include="dynObjectAttributesManager.cpp">
       <Filter>数据库\数据表</Filter>
     </ClCompile>
+    <ClCompile Include="dynContainersManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="StorageMacro.h">
+      <Filter>宏定义</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -576,6 +582,9 @@
       <Filter>数据库\数据表</Filter>
     </ClInclude>
     <ClInclude Include="dynObjectAttributesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="dynContainersManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "AttributesComponent.h"
 #include <DirectXMath.h>
 #include "PhysicsComponent.h"
+#include "StorageComponent.h"
 
 enum class ShipWarpState
 {
@@ -17,7 +18,9 @@ class Ship : public GameObject{
 public:
 	Ship() = default;
 	Ship(UINT _objectID) { objectID = (_objectID); }
-	~Ship() {};
+	~Ship() {
+		objectID = 1;
+	};
 	
 	virtual void Init();
 	virtual void Update(UINT tick);
@@ -27,6 +30,10 @@ public:
 	std::shared_ptr<AttributesComponent> m_pAttribute;
 	std::shared_ptr<PhysicsComponent> m_pPhysics;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
+
+	std::shared_ptr<PilotStorageComponent> m_pPilotStorage;
+	std::shared_ptr<CargoContainerComponent> m_pCargoStorage;
+
 
 	void fillObjectName();
 

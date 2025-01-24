@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "SingletonBase.h"
+#include "d3dUtil.h"
 
 class DatabaseManager : public SingletonBase<DatabaseManager> {
 private:

@@ -123,9 +123,6 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
     }
     case 5: {    //附件(克隆人飞行员)
         return;
-        /*object = std::make_shared<Pilot>(objectData.objectID, objectData.OwnerID);
-        other_objects.push_back(object);
-        Pilot_objects.push_back(std::dynamic_pointer_cast<Pilot>(object));*/
         break;
     }
     case 6: {    //舰船(含太空舱

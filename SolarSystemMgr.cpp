@@ -1,4 +1,5 @@
 ﻿#include "SolarSystemMgr.h"
+#include "dynContainersManager.h"
 
 void SolarSystemMgr::Init()
 {
@@ -115,7 +116,8 @@ void SolarSystemMgr::getCurrentPilot()
 			currentPilot = p;
 			auto Base = currentPilot->GetComponent<BaseComponent>();
 			currentSolarSystem = SolarSystems[currentPilot->currentSolarSystemID];
-			UINT shipID = currentPilot->GetComponent<BaseComponent>()->containerID;
+			UINT PilotContainerID = currentPilot->GetComponent<BaseComponent>()->containerID;
+			UINT shipID = dynContainersManager::getInstance()->getObjectIDByContainerID(PilotContainerID);
 			currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>((*p_mapObject)[shipID]);
 		}
 	}

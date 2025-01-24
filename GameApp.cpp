@@ -182,23 +182,14 @@ void GameApp::UpdateScene(float dt)
 				break;
 			}
 
-			if (ContainerID >= 30000000 && ContainerID < 40000000) {
+			if (ContainerID == 0) {
 				if (currentSceneID != 3)
 					switchScene = 3;
 				break;
 			}
-			if (ContainerID > 40000000) {
-				UINT ContainerTypeID = mapDenormalizeManager::getInstance()->getTypeIDByContainerId(ContainerID);
-				UINT ContainerGroupID = InvTypesManager::getInstance()->getGroupByTypeId(ContainerTypeID);
-				if (ContainerGroupID == 6) //当前处于恒星系空间
-				{
-					if (currentSceneID != 3)
-						switchScene = 3;
-				}
-				else {
-					if (currentSceneID != 2)
-						switchScene = 2;
-				}
+			if (ContainerID != 0) {
+				if (currentSceneID != 2)
+					switchScene = 2;
 				break;
 			}
 			break;

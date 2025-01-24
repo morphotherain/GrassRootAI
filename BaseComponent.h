@@ -8,9 +8,9 @@ class BaseComponent : public Component {
 public:
 	BaseComponent() = default;
 	BaseComponent(UINT objectID);
-	~BaseComponent() = default;
+	~BaseComponent();
 
-	virtual void Update(UINT tick) {};
+	virtual void Update(UINT tick);
 	void store();
 	void setSolarSystemID(UINT solarSystemID);
 	void setContainerID(UINT containerID);

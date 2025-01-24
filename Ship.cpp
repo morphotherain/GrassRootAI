@@ -13,6 +13,11 @@ void Ship::Init()
 	m_pPhysics = std::make_shared<PhysicsComponent>(objectID);
 	AddComponent<Component>(m_pPhysics);
 	m_pPhysics->SpaceTran = m_pSpaceTran;
+	m_pPilotStorage = std::make_shared<PilotStorageComponent>(objectID);
+	AddComponent<Component>(m_pPilotStorage);
+	m_pCargoStorage = std::make_shared<CargoContainerComponent>(objectID);
+	AddComponent<Component>(m_pCargoStorage);
+
 	fillObjectName();
 }
 
@@ -35,6 +40,7 @@ void Ship::Update(UINT tick)
 		}*/
 	}
 	m_pPhysics->Update(tick);
+	m_pBase->Update(tick);
 }
 
 void Ship::fillObjectName()

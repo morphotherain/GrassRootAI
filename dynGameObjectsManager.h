@@ -46,7 +46,10 @@ public:
     unsigned int getPilotObjectIDByPilotID(int pilot_id);
 
     std::shared_ptr<std::vector<dynGameObject>> getGameObjectBySolarSystemID(UINT solarSystemID);
+    dynGameObject getGameObjectByObjectID(int object_id);
     std::shared_ptr<std::vector<dynGameObject>> getPilots();
+
+    std::vector<int> getItemsByContainerID(UINT containerID);
 
     int updateContainerIDByObjectID(int object_id, int newValue);
 

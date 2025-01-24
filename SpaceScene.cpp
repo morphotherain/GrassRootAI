@@ -78,7 +78,7 @@ bool SpaceScene::Init()
 	AddUIComponent(m_WindowOverview);
 
 	/*auto starmap = std::make_shared<UIWindowMap>();
-	starmap->setSize(500.0f, 350.0f, 1120.0f, 657.0f);
+	starmap->setSize(300.0f, 50.0f, 1500.0f, 950.0f);
 	AddUIComponent(starmap);*/
 
 	m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);

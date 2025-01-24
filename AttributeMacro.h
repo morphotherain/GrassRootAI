@@ -1,4 +1,5 @@
-﻿#define ATTR_ID_ITEM_DMG 3  // 物品损坏
+﻿#pragma once
+#define ATTR_ID_ITEM_DMG 3  // 物品损坏
 #define ATTR_ID_ITEM_MASS 4  // 质量
 #define ATTR_ID_STRUCTURE_VALUE 9  // 结构值
 #define ATTR_ID_POWER_OUTPUT 11  // 能量栅格输出

@@ -1,5 +1,6 @@
 ﻿
 #include "dynGameObjectsManager.h"
+#include "dynContainersManager.h"
 #include <unordered_set>
 
 unsigned int dynGameObjectsManager::getTypeIdByObjectID(int object_id)
@@ -183,6 +184,43 @@ int dynGameObjectsManager::updateContainerIDByObjectID(int object_id, int newVal
     return 0;
 }
 
+
+dynGameObject dynGameObjectsManager::getGameObjectByObjectID(int object_id)
+{
+    dynGameObject result;
+    // 修正后的SQL查询语句，根据传入的solarSystemID动态查询
+    std::string query = "SELECT dynGameObjects.*, invtypes.groupID, invGroups.categoryID FROM dynGameObjects JOIN invtypes ON dynGameObjects.typeID = invtypes.typeID JOIN invGroups ON invtypes.groupID = invGroups.groupID WHERE dynGameObjects.ObjectID =?;";
+    int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    if (rc == SQLITE_OK) {
+        // 将传入的solarSystemID绑定到查询语句中的参数占位符
+        sqlite3_bind_int(stmt, 1, object_id);
+
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            dynGameObject temp;
+            // 根据实际列索引正确读取数据
+            result.objectID = sqlite3_column_int(stmt, 0);
+            result.typeID = sqlite3_column_int(stmt, 1);
+            result.x = sqlite3_column_double(stmt, 2);
+            result.y = sqlite3_column_double(stmt, 3);
+            result.z = sqlite3_column_double(stmt, 4);
+            result.SolarSystemID = sqlite3_column_int(stmt, 5);
+            result.OwnerID = sqlite3_column_int(stmt, 6);
+            result.ContainerID = sqlite3_column_int(stmt, 7);
+            result.qw = sqlite3_column_double(stmt, 9);
+            result.qx = sqlite3_column_double(stmt, 10);
+            result.qy = sqlite3_column_double(stmt, 11);
+            result.qz = sqlite3_column_double(stmt, 12);
+            result.groupID = sqlite3_column_int(stmt, 13);
+            result.categoryID = sqlite3_column_int(stmt, 14);
+        }
+
+        // 解除绑定
+        sqlite3_bind_null(stmt, 1);
+    }
+    sqlite3_finalize(stmt);
+    return result;
+}
+
 unsigned int dynGameObjectsManager::getPilotObjectIDByPilotID(int pilot_id)
 {
     unsigned int id = 0;
@@ -289,6 +327,27 @@ std::shared_ptr<std::vector<dynGameObject>> dynGameObjectsManager::getPilots()
 }
 
 
+std::vector<int> dynGameObjectsManager::getItemsByContainerID(UINT containerID)
+{
+    auto result = std::vector<int>();
+    // 修正后的SQL查询语句，根据传入的solarSystemID动态查询
+    std::string query = "SELECT ObjectID FROM dynGameObjects WHERE ContainerID = ?;";
+    int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    if (rc == SQLITE_OK) {
+        // 将传入的solarSystemID绑定到查询语句中的参数占位符
+        sqlite3_bind_int(stmt, 1, containerID);
+
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            result.push_back(sqlite3_column_int(stmt, 0));
+        }
+
+        // 解除绑定
+        sqlite3_bind_null(stmt, 1);
+    }
+    sqlite3_finalize(stmt);
+    return result;
+}
+
 std::vector<int> dynGameObjectsManager::getSolarSystemIDHasPilot()
 {
     std::vector<int> result;
@@ -300,20 +359,28 @@ std::vector<int> dynGameObjectsManager::getSolarSystemIDHasPilot()
     int rcFirstStep = sqlite3_prepare_v2(db, queryFirstStep.c_str(), -1, &stmtFirstStep, nullptr);
     if (rcFirstStep == SQLITE_OK) {
         std::vector<int> containerIDs;
+        std::vector<int> objectIDs;
         while (sqlite3_step(stmtFirstStep) == SQLITE_ROW) {
             int containerID = sqlite3_column_int(stmtFirstStep, 0);
             containerIDs.push_back(containerID);
         }
         sqlite3_finalize(stmtFirstStep);
 
-        // 再根据获取到的containerID去查找对应的SolarSystemID
+
+        for (int containerID : containerIDs) {
+            int objectID = dynContainersManager::getInstance()->getObjectIDByContainerID(containerID);
+            objectIDs.push_back(objectID);
+        }
+
+
+        // 再根据获取到的objectID去查找对应的SolarSystemID
         std::string querySecondStepTemplate = "SELECT dynGameObjects.SolarSystemID FROM dynGameObjects WHERE dynGameObjects.objectID =?";
         sqlite3_stmt* stmtSecondStep;
         rcFirstStep = sqlite3_prepare_v2(db, querySecondStepTemplate.c_str(), -1, &stmtSecondStep, nullptr);
         if (rcFirstStep == SQLITE_OK) {
-            for (int containerID : containerIDs) {
+            for (int objectID : objectIDs) {
                 sqlite3_reset(stmtSecondStep);
-                sqlite3_bind_int(stmtSecondStep, 1, containerID);
+                sqlite3_bind_int(stmtSecondStep, 1, objectID);
                 while (sqlite3_step(stmtSecondStep) == SQLITE_ROW) {
                     int solarSystemID = sqlite3_column_int(stmtSecondStep, 0);
                     // 检查当前SolarSystemID是否已经存在于uniqueIDs中，如果不存在则添加到result并记录到uniqueIDs中
