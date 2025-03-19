@@ -1,4 +1,4 @@
-#include "dynContainersManager.h"
+ï»¿#include "dynContainersManager.h"
 
 bool dynContainersManager::createContainerRecord(int objectID, int containerTypeID) {
     std::string query = "INSERT INTO dynContainers (objectID, containerType) VALUES (?,?)";
@@ -23,7 +23,7 @@ bool dynContainersManager::createContainerRecord(int objectID, int containerType
     }
 }
 
-// ¸ù¾İ objectID ºÍ containerType ²éÑ¯ containerID 
+// æ ¹æ® objectID å’Œ containerType æŸ¥è¯¢ containerID 
 int  dynContainersManager::getContainerID(int objectID, int containerTypeID) {
     UINT containerID = -1;
     std::string query = "SELECT containerID FROM dynContainers WHERE objectID =? AND containerType =?";

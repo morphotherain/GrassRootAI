@@ -11,6 +11,7 @@
 #include <DirectXMath.h>
 #include "DXTrace.h"
 #include <map>
+#include "log_management.h"
 
 
 template <typename T>

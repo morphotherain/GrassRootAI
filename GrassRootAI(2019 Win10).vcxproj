@@ -94,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -107,6 +108,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -139,6 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -173,6 +177,7 @@
     <ClCompile Include="dynObjectAttributesManager.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectComponent.cpp" />
+    <ClCompile Include="Equipment.cpp" />
     <ClCompile Include="EquipmentComponent.cpp" />
     <ClCompile Include="eveBracketsManager.cpp" />
     <ClCompile Include="GameApp.cpp" />
@@ -184,6 +189,9 @@
     <ClCompile Include="invGroupsManager.cpp" />
     <ClCompile Include="InvTypesManager.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="LockComponenet.cpp" />
+    <ClCompile Include="log_management.cpp" />
+    <ClCompile Include="log_management.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="mapDenormalizeManager.cpp" />
@@ -262,6 +270,7 @@
     <ClInclude Include="dynObjectAttributesManager.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectComponent.h" />
+    <ClInclude Include="Equipment.h" />
     <ClInclude Include="EquipmentComponent.h" />
     <ClInclude Include="eveBracketsManager.h" />
     <ClInclude Include="GameApp.h" />

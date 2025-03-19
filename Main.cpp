@@ -12,14 +12,45 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance,
 	// 允许在Debug版本进行运行时内存分配和泄漏检测
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	
+	// 创建控制台窗口
+	AllocConsole();
+	FILE* fp;
+	if (freopen_s(&fp, "CONOUT$", "w", stdout) != 0) {
+		std::cerr << "Failed to redirect stdout to console." << std::endl;
+	}
+	if (freopen_s(&fp, "CONOUT$", "w", stderr) != 0) {
+		std::cerr << "Failed to redirect stderr to console." << std::endl;
+	}
+	// 设置控制台输出为 UTF-8 编码
+	SetConsoleOutputCP(65001);
 #endif
+
+
+	
+
+	initLogging();
+
+	// 记录不同级别的日志
+	/*spdlog::trace("这是一条跟踪级别的日志信息");
+	spdlog::debug("这是一条调试级别的日志信息");
+	spdlog::info("这是一条信息级别的日志信息");
+	spdlog::warn("这是一条警告级别的日志信息");
+	spdlog::error("这是一条错误级别的日志信息");
+	spdlog::critical("这是一条严重级别的日志信息");*/
 
 	GameApp theApp(hInstance);
 	
 	if( !theApp.Init() )
 		return 0;
-	
-	return theApp.Run();
+
+	theApp.Run();
+
+	shutdownLogging();
+	// 释放控制台窗口
+	FreeConsole();
+
+	return 0;
 }
 
 

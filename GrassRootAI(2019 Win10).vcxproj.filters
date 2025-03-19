@@ -61,6 +61,9 @@
     <Filter Include="宏定义">
       <UniqueIdentifier>{893980c8-483b-4a4c-a743-0c990d0ccae5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{79603e1a-1250-404f-bd05-fe482f429684}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -324,6 +327,18 @@
     <ClCompile Include="StorageMacro.h">
       <Filter>宏定义</Filter>
     </ClCompile>
+    <ClCompile Include="LockComponenet.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="Equipment.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="log_management.h">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log_management.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -586,6 +601,9 @@
     </ClInclude>
     <ClInclude Include="dynContainersManager.h">
       <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="Equipment.h">
+      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
