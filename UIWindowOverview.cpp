@@ -9,7 +9,7 @@ using namespace DirectX;
 
 UIWindowOverview::UIWindowOverview() : UIWindow()
 {
-
+	UIWindow::UIWindow();
 }
 
 bool UIWindowOverview::Init()
@@ -102,10 +102,13 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 
 void UIWindowOverview::DrawUI()
 {
-	DirectX::XMMATRIX viewMatrix = m_pWindowCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pWindowCamera->GetProjXM();
+	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
+
+	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
+
 	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->model = XMMatrixTranspose(windowModel);
 	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 	dataPtr->projection = XMMatrixTranspose(projMatrix);
 	dataPtr->TexIndex = 0;
@@ -138,10 +141,15 @@ bool UIWindowOverview::InitEffect()
 	return true;
 }
 
+
+void UIWindowOverview::setSize(const float _x, const float _y, const float _deltaX, const float _deltaY)
+{
+	UIWindow::setSize(_x, _y, _deltaX, _deltaY); 
+}
+
 void UIWindowOverview::InitWindowComponent()
 {
-	auto width1 = width;
-	auto width2 = UIWindow::width;
+	//UIWindow::setSize(0.0f, 0.0f, 600.0f, 800.0f);
 
 	UIWindow::InitWindowComponent();
 	auto Texture = m_windowEffect->getTextures();

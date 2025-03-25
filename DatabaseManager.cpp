@@ -4,14 +4,40 @@
 
 
 
+//std::wstring DatabaseManager::sqlite3_column_wstring(sqlite3_stmt* stmt, int column_index)
+//{
+//    const char* text = (const char*)(sqlite3_column_text(stmt, column_index));
+//    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+//    if (text == nullptr) {
+//        return std::wstring();
+//    }
+//    return converter.from_bytes(text);
+//}
 std::wstring DatabaseManager::sqlite3_column_wstring(sqlite3_stmt* stmt, int column_index)
 {
     const char* text = (const char*)(sqlite3_column_text(stmt, column_index));
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     if (text == nullptr) {
         return std::wstring();
     }
-    return converter.from_bytes(text);
+
+    // 计算所需的宽字符缓冲区大小
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, text, -1, NULL, 0);
+    if (size_needed == 0) {
+        return std::wstring();
+    }
+
+    // 分配宽字符缓冲区
+    std::wstring wide_text(size_needed, 0);
+
+    // 进行转换
+    if (MultiByteToWideChar(CP_UTF8, 0, text, -1, &wide_text[0], size_needed) == 0) {
+        return std::wstring();
+    }
+
+    // 移除末尾的空字符
+    wide_text.resize(wide_text.size() - 1);
+
+    return wide_text;
 }
 
 std::string DatabaseManager::sqlite3_column_string(sqlite3_stmt* stmt, int column_index)

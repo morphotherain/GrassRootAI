@@ -11,6 +11,9 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>	
+
+#include "WindowManager.h"
+
 using namespace DirectX;
 
 
@@ -22,9 +25,10 @@ SpaceScene::SpaceScene(HINSTANCE _hInstance) : Scene(_hInstance)
 
 bool SpaceScene::Init()
 {
-
 	
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+
+	WindowManager::GetInstance().Initialize(m_ClientWidth, m_ClientHeight, m_pCamera);
 
 	if (!InitEffect())
 		return false;
@@ -97,6 +101,8 @@ bool SpaceScene::Init()
 	m_skybox->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 	m_skybox->Init();
 
+	DEBUG_("Space Scene 初始化完成");
+
 	return true;
 }
 
@@ -106,6 +112,8 @@ void SpaceScene::OnResize()
 
 void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	WindowManager::GetInstance().Update(dt, mouse, keyboard, tick);
+
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
 	// 更新鼠标事件，获取相对偏移量
@@ -414,6 +422,9 @@ void SpaceScene::DrawScene()
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
+
+	WindowManager::GetInstance().Draw();
+
 	/*if(m_RButtonMenu != nullptr)
 		m_RButtonMenu->DrawUI();*/
 

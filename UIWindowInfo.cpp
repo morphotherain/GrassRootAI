@@ -8,9 +8,7 @@
 void testQueryAndWriteToFile(int typeID);
 
 std::wstring sqlite3_column_wstring(sqlite3_stmt* stmt, int column_index) {
-	const char* text = (const char*)(sqlite3_column_text(stmt, column_index));
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-	return converter.from_bytes(text);
+	return DatabaseManager::getInstance()->sqlite3_column_wstring(stmt, column_index);
 }
 std::string sqlite3_column_string(sqlite3_stmt* stmt, int column_index) {
 	const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, column_index));
@@ -58,6 +56,7 @@ using namespace DirectX;
 
 UIWindowInfo::UIWindowInfo() : UIWindow()
 {
+	UIWindow::UIWindow();
 }
 
 bool UIWindowInfo::Init()
@@ -91,30 +90,30 @@ bool UIWindowInfo::Init()
 	sqlite3_finalize(stmt2);
 
 	auto text = std::make_shared<UIText>();
-	text->setSize(x + 170.0f, y + 50.0f, 350.0f, 350.0f);
+	text->setSize(170.0f, 50.0f, 350.0f, 350.0f);
 	text->setText(testItem.Name);
 	AddUIComponent(text);
 
 	std::wstring Description = L"描述";
 	text = std::make_shared<UIText>();
-	text->setSize(x + 30.0f, y + 164.0f, 350.0f, 350.0f);
+	text->setSize(30.0f, 164.0f, 350.0f, 350.0f);
 	text->setText(Description);
 	AddUIComponent(text);
 
 	Description = L"属性";
 	text = std::make_shared<UIText>();
-	text->setSize(x + 80.0f, y + 164.0f, 350.0f, 350.0f);
+	text->setSize(80.0f, 164.0f, 350.0f, 350.0f);
 	text->setText(Description);
 	AddUIComponent(text);
 
 	Description = L"物品:详情";
 	text = std::make_shared<UIText>();
-	text->setSize(x + 3.0f, y + 5.0f, 350.0f, 350.0f);
+	text->setSize(3.0f, 5.0f, 350.0f, 350.0f);
 	text->setText(Description);
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 25.0f, y + 200.0f, 350.0f, 350.0f);
+	text->setSize(25.0f, 200.0f, 350.0f, 350.0f);
 	text->setText(testItem.Description);
 	AddUIComponent(text);
 
@@ -127,14 +126,13 @@ bool UIWindowInfo::Init()
 	Texture->addTextureFileName("demoTex\\UI\\Window\\window_line.dds");
 
 	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
-	GenerateRectVertex(vertices, x + 20.0f, y + 160.f, 379.0f, 1.0f, 5.0f);
-	GenerateRectVertex(vertices, x + 20.0f, y + 160.f, 379.0f, 1.0f, 5.0f);
+	GenerateRectVertex(vertices, 20.0f, 160.f, 379.0f, 1.0f, 5.0f);
 	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
 	m_windowEffect->Init();
 
 	m_itemImgEffect = std::make_shared<Effect>();
 	std::vector<PosTexIndex> vertexsImg = {};
-	GenerateRectVertex(vertexsImg, x + 20.0f, y + 30.0f, 128.0f, 128.0f, 6.0f);
+	GenerateRectVertex(vertexsImg, 20.0f, 30.0f, 128.0f, 128.0f, 6.0f);
 	m_itemImgEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
 	m_itemImgEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsImg);
 	m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
@@ -162,17 +160,27 @@ void UIWindowInfo::OnResize()
 
 void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
+	for (auto& component : childComponents) {
+		component->setDelta(x, y);
+	}
+	if (!IsActive()) {
+		return;
+	}
 }
 
 void UIWindowInfo::DrawUI()
 {
 
 	// 假设 camera 是当前场景中的摄影机对象
-	DirectX::XMMATRIX viewMatrix = m_pWindowCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pWindowCamera->GetProjXM();
+	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
+
+
+	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 
 	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->model = XMMatrixTranspose(windowModel);
 	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 	dataPtr->projection = XMMatrixTranspose(projMatrix);
 	dataPtr->TexIndex = 0;
@@ -181,7 +189,7 @@ void UIWindowInfo::DrawUI()
 
 
 	ConstantMVPIndex* dataPtrImg = m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtrImg->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtrImg->model = XMMatrixTranspose(windowModel);
 	dataPtrImg->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
 	dataPtrImg->projection = XMMatrixTranspose(projMatrix);
 	dataPtrImg->TexIndex = 0;
@@ -195,6 +203,17 @@ void UIWindowInfo::DrawUI()
 
 void UIWindowInfo::cleanup()
 {
+}
+
+void UIWindowInfo::ParseParameters(std::unordered_map<std::string, std::any> paras)
+{
+	typeID = getParameter<int>(paras, "typeID", -1);
+	x = getParameter<float>(paras, "x", -1);
+	SetZOrder(getParameter<int>(paras, "z_order", -1));
+
+	y = 400;
+	width = 400;
+	height = 600;
 }
 
 bool UIWindowInfo::InitResource()

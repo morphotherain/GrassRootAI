@@ -25,9 +25,6 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{abd1a52f-ee07-4ef6-973b-90851a621f80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject">
-      <UniqueIdentifier>{755ec50c-6617-424f-8a2d-616e81fe63fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Component">
       <UniqueIdentifier>{b2195ec0-e693-4346-94ac-f163fedbd1f5}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,9 @@
     </Filter>
     <Filter Include="log">
       <UniqueIdentifier>{79603e1a-1250-404f-bd05-fe482f429684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object框架">
+      <UniqueIdentifier>{755ec50c-6617-424f-8a2d-616e81fe63fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +115,7 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>Component</Filter>
@@ -127,7 +127,7 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="GamePlayer.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="UIShaderTest.cpp">
       <Filter>UI</Filter>
@@ -148,7 +148,7 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="SolarSystem.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="SpaceScene.cpp">
       <Filter>Scene</Filter>
@@ -238,10 +238,10 @@
       <Filter>UI\window</Filter>
     </ClCompile>
     <ClCompile Include="Pilot.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="SolarSystemMgr.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="dynGameObjectsManager.cpp">
       <Filter>数据库\数据表</Filter>
@@ -256,7 +256,7 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="Ship.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="mapDenormalizeManager.cpp">
       <Filter>数据库\数据表</Filter>
@@ -265,16 +265,16 @@
       <Filter>数据库</Filter>
     </ClCompile>
     <ClCompile Include="NPCStation.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="Sector.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="MapManager.cpp">
       <Filter>数据库\数据表</Filter>
     </ClCompile>
     <ClCompile Include="Astro.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
     <ClCompile Include="UIRButtonMenu.cpp">
       <Filter>UI</Filter>
@@ -331,13 +331,16 @@
       <Filter>d3d架构</Filter>
     </ClCompile>
     <ClCompile Include="Equipment.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClCompile>
-    <ClCompile Include="log_management.h">
+    <ClCompile Include="logger_manager.cpp">
       <Filter>log</Filter>
     </ClCompile>
-    <ClCompile Include="log_management.cpp">
-      <Filter>log</Filter>
+    <ClCompile Include="WindowManager.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>输入</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -390,7 +393,7 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>Component</Filter>
@@ -402,7 +405,7 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="GamePlayer.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="UIShaderTest.h">
       <Filter>UI</Filter>
@@ -423,7 +426,7 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="SolarSystem.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="SpaceScene.h">
       <Filter>Scene</Filter>
@@ -519,10 +522,10 @@
       <Filter>UI\window</Filter>
     </ClInclude>
     <ClInclude Include="Pilot.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="SolarSystemMgr.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="dynGameObjectsManager.h">
       <Filter>数据库\数据表</Filter>
@@ -534,7 +537,7 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="Ship.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="mapDenormalizeManager.h">
       <Filter>数据库\数据表</Filter>
@@ -543,10 +546,10 @@
       <Filter>数据库</Filter>
     </ClInclude>
     <ClInclude Include="NPCStation.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="Sector.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="MapManager.h">
       <Filter>数据库\数据表</Filter>
@@ -555,7 +558,7 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="Astro.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
     </ClInclude>
     <ClInclude Include="UIRButtonMenu.h">
       <Filter>UI</Filter>
@@ -603,7 +606,22 @@
       <Filter>数据库\数据表</Filter>
     </ClInclude>
     <ClInclude Include="Equipment.h">
-      <Filter>GameObject</Filter>
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="version.h">
+      <Filter>游戏架构</Filter>
+    </ClInclude>
+    <ClInclude Include="logger_manager.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowManager.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowMessagingSystem.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>输入</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

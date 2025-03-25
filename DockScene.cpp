@@ -66,20 +66,38 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		component->UpdateUI(dt, mouse, keyboard, tick);
 	}
 
-	if (*m_button->getClickFlag()) {
+	static int cooldown = 0;
+    if (cooldown > 0) cooldown--;
+	if(cooldown > 0)*(m_button->getClickFlag()) = false;
+	if (*m_button->getClickFlag() && cooldown == 0) {
+		DEBUG_("click");
 		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
 		auto currentStationID = currentShip->GetComponent<BaseComponent>()->containerID;
-		auto currentStation = (*SolarSystemMgr::getInstance().p_mapObject)[currentStationID];
+		auto it = SolarSystemMgr::getInstance().p_mapObject->find(currentStationID);
+		std::shared_ptr<GameObject> currentStation;
+		if (it != SolarSystemMgr::getInstance().p_mapObject->end()) {
+			currentStation = it->second;
+		}
+		else {
+			DEBUG_("Object with ID 30000083 not found in p_mapObject");
+		}
 		std::shared_ptr<Task> task = std::make_shared<Task>();
 		task->isInnerTask = true;
 		task->taskID = -1;
 		task->publisher = currentShip;
 		task->target = currentStation;
 		task->taskTypeId = 1;
+		DEBUG_("currentStationID :{}", currentStationID);
+		DEBUG_("currentStation :{}", currentStation == nullptr);
+		//输出所有p_mapObject
+		for (auto& pair : *SolarSystemMgr::getInstance().p_mapObject) {
+			DEBUG_("Object ID: {}", pair.first);
+		}
 		if (currentStation != nullptr)
 			currentStation->addTask(task);
 
 		*(m_button->getClickFlag()) = false;
+		cooldown = 60;
 	}
 	// ******************
 	// 更新摄像机

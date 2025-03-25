@@ -148,5 +148,30 @@ private:
 	float m_MinDist = 0.0f, m_MaxDist = 0.0f;
 };
 
+class OrthographicCamera
+{
+public:
+	OrthographicCamera() = default;
+	~OrthographicCamera() = default;
+
+	// 设置正交投影参数
+	void SetOrthographic(float left, float right, float bottom, float top, float nearZ, float farZ);
+
+	// 重写获取投影矩阵的方法
+	DirectX::XMMATRIX GetProjXM() const;
+
+	// 重写获取视图矩阵的方法
+	DirectX::XMMATRIX GetViewXM() const;
+
+private:
+	float m_Left = 0.0f;
+	float m_Right = 0.0f;
+	float m_Bottom = 0.0f;
+	float m_Top = 0.0f;
+	float m_NearZ = 0.0f;
+	float m_FarZ = 0.0f;
+};
+
+
 
 #endif

@@ -18,7 +18,8 @@ public:
 
 	bool InitResource();
 	bool InitEffect();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
+	void setSize(const float _x, const float _y, const float _width, const float _height)
+		{ x = _x, y = _y, width = _width, height = _height; }
 	void setText(std::wstring _Text) { Text = _Text; };
 
 	void switchTextFormat(std::string index);
@@ -31,8 +32,8 @@ private:
 
 	float x = 10.0f;
 	float y = 30.0f;
-	float deltaX = 20.0f;
-	float deltaY = 4.0f;
+	float width = 20.0f;
+	float height = 4.0f;
 	std::wstring Text;
 
 };

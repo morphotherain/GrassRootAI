@@ -46,30 +46,47 @@ void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
 
 bool GameApp::Init()
 {
+	INFO_("初始化 GameApp");
+
+	INFO_("初始化 D3DApp");
 	if (!D3DApp::Init())
+	{
+		ERROR_("D3DApp 初始化失败");
 		return false;
+	}
 
+	INFO_("初始化 InitEffect");
 	if (!InitEffect())
+	{
+		ERROR_("InitEffect 初始化失败");
 		return false;
+	}
 
+	INFO_("初始化 InitResource");
 	if (!InitResource())
+	{
+		ERROR_("InitResource 初始化失败");
 		return false;
+	}
 
 	// 初始化鼠标，键盘不需要
 	m_pMouse->SetWindow(m_hMainWnd);
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 
+	INFO_("初始化 AttributeMgr");
 	AttributeMgr::getInstance().Init();
 
+	INFO_("初始化 SolarSystemMgr");
 	SolarSystemMgr::getInstance().Init();
+
 	SolarSystemMgr::getInstance().getCurrentPilot();
+
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
-
-
+	INFO_("切换到主界面");
 	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 
-
+	INFO_("GameApp 初始化完成");
 	return true;
 }
 

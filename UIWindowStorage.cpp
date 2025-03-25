@@ -61,8 +61,8 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 
 void UIWindowStorage::DrawUI()
 {
-	DirectX::XMMATRIX viewMatrix = m_pWindowCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pWindowCamera->GetProjXM();
+	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
 	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
 	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望

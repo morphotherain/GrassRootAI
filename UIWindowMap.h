@@ -52,6 +52,8 @@ public:
 	virtual void DrawUI();
 	virtual void cleanup();
 
+	virtual void ParseParameters(std::unordered_map<std::string, std::any> paras);
+
 	bool InitResource();
 	bool InitEffect();
 	bool InitMap();

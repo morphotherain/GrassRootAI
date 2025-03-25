@@ -18,11 +18,11 @@ void UIBase::setcameraResource(int ClientWidth, int ClientHeight, std::shared_pt
 
 std::vector<PosTexIndex> UIBase::GenerateRectVertex(std::vector<PosTexIndex>& vertices ,float _x, float _y, float _deltaX, float _deltaY, float TexID)
 {
-    _x = _x / 10.0f;
+    /*_x = _x / 10.0f;
     _y = 1080.0f - _y;
     _y = _y / 10.0f;
     _deltaX = _deltaX / 10.0f;
-    _deltaY = -_deltaY / 10.0f;
+    _deltaY = -_deltaY / 10.0f;*/
 
     // 第一个三角形
     vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), TexID });
@@ -37,3 +37,5 @@ std::vector<PosTexIndex> UIBase::GenerateRectVertex(std::vector<PosTexIndex>& ve
 
     return vertices;
 }
+
+

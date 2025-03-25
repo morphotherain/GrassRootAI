@@ -80,6 +80,10 @@ void UIWindowMap::OnResize()
 
 void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
+	for (auto& component : childComponents) {
+		component->setDelta(x, y);
+	}
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -160,10 +164,11 @@ void UIWindowMap::DrawUI()
 {
 
 
-	DirectX::XMMATRIX viewMatrixWindow = m_pWindowCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrixWindow = m_pWindowCamera->GetProjXM();
+	DirectX::XMMATRIX viewMatrixWindow = m_pUICamera->GetViewXM();
+	DirectX::XMMATRIX projMatrixWindow = m_pUICamera->GetProjXM();
+	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 	ConstantMVPIndex* dataPtr = m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
+	dataPtr->model = XMMatrixTranspose(windowModel);
 	dataPtr->view = XMMatrixTranspose(viewMatrixWindow); // 转置矩阵以匹配HLSL的期望
 	dataPtr->projection = XMMatrixTranspose(projMatrixWindow);
 	dataPtr->TexIndex = 0;
@@ -183,8 +188,8 @@ void UIWindowMap::DrawUI()
 	D3D11_VIEWPORT adjustedViewport = originalViewport;
 	adjustedViewport.TopLeftX = x;
 	adjustedViewport.TopLeftY = y + TitleHeight;
-	adjustedViewport.Width = deltaX;
-	adjustedViewport.Height = deltaY - TitleHeight;
+	adjustedViewport.Width = width;
+	adjustedViewport.Height = height - TitleHeight;
 	m_pd3dImmediateContext->RSSetViewports(1, &adjustedViewport);
 
 	// 假设 camera 是当前场景中的摄影机对象
@@ -213,13 +218,13 @@ void UIWindowMap::DrawUI()
 
 		// 将归一化设备坐标映射到屏幕坐标
 		DirectX::XMFLOAT2 screenPos;
-		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width + adjustedViewport.TopLeftX;  // 假设 m_screenWidth 是屏幕宽度
+		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width;// 假设 m_screenWidth 是屏幕宽度
 
-		if (screenPos.x < adjustedViewport.TopLeftX || screenPos.x > adjustedViewport.TopLeftX + adjustedViewport.Width) screenPos.x = -10000.0f;
+		if (screenPos.x < adjustedViewport.TopLeftX || screenPos.x > adjustedViewport.TopLeftX ) screenPos.x = -10000.0f;
 
-		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height + adjustedViewport.TopLeftY; // 假设 m_screenHeight 是屏幕高度
+		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height;//假设 m_screenHeight 是屏幕高度
 
-		if (screenPos.y < adjustedViewport.TopLeftY || screenPos.y > adjustedViewport.TopLeftY + adjustedViewport.Height) screenPos.y = -10000.0f;
+		if (screenPos.y < adjustedViewport.TopLeftY || screenPos.y > adjustedViewport.TopLeftY ) screenPos.y = -10000.0f;
 
 		// 更新文本位置
 		regionTexts[i]->setSize(screenPos.x, screenPos.y , 350.0f, 350.0f);
@@ -252,6 +257,18 @@ void UIWindowMap::DrawUI()
 
 void UIWindowMap::cleanup()
 {
+}
+
+void UIWindowMap::ParseParameters(std::unordered_map<std::string, std::any> paras)
+{
+	x = 300;
+	y = 50;
+	deltaX = 1500;
+	deltaY = 950;
+	UIWindow::setSize(x, y, deltaX, deltaY);
+
+
+	SetZOrder(getParameter<int>(paras, "z_order", -1));
 }
 
 

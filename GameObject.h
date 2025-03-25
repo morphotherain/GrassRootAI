@@ -65,6 +65,7 @@ public:
     // 添加任务的方法
     void addTask(const std::shared_ptr<Task>& task) {
         tasks.push_back(task);
+        spdlog::info("任务挂载: {}", task->to_string_abstract());
     }
 
     // 获取该GameObject的所有任务的方法

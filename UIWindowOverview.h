@@ -23,7 +23,7 @@ public:
 
 	bool InitResource();
 	bool InitEffect();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, width = _deltaX, height = _deltaY; }
+	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY);
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 	struct Row {

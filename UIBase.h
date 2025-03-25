@@ -3,6 +3,7 @@
 #include "DXTrace.h"
 #include <vector>
 #include <DirectXMath.h>
+#include <any>
 #include "Camera.h"
 #include "ddsLoader.h"
 #include "RenderProxy.h"
@@ -25,7 +26,11 @@ public:
 	virtual void DrawUI() = 0;
 	virtual void cleanup() = 0;
 
+	virtual void ParseParameters(std::unordered_map<std::string, std::any> paras) {};
+
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
+	void setDelta(const float _deltaX, const float _deltaY) 
+		{ deltaX = _deltaX; deltaY = _deltaY;};
 
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
@@ -42,11 +47,7 @@ protected:
 
 	CameraMode m_CameraMode = CameraMode::Free;									// 摄像机模式
 	std::shared_ptr<Camera> m_pCamera;						    // 摄像机
-
-	//ComPtr<ID3D11Device> m_pd3dDevice;
-	//ComPtr<ID3D11DeviceContext> m_pd3dImmediateContext;   // D3D11设备上下文
-	//ComPtr<IDXGISwapChain> m_pSwapChain;                  // D3D11交换链
-
+	std::shared_ptr<OrthographicCamera> m_pUICamera;
 
 	// 常用资源
 	ComPtr<ID3D11Texture2D> m_pDepthStencilBuffer;        // 深度模板缓冲区
@@ -56,6 +57,10 @@ protected:
 
 	int m_ClientWidth = 800;                                    // 视口宽度
 	int m_ClientHeight = 600;                                   // 视口高度
+
+	float deltaX = 0.0f;
+	float deltaY = 0.0f;
+
 
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
@@ -74,3 +79,19 @@ protected:
 	std::vector<std::shared_ptr<UIBase>> childComponents;
 };
 
+// 辅助函数，用于从 std::unordered_map<std::string, std::any> 中获取指定类型的参数
+template<typename T>
+T getParameter(const std::unordered_map<std::string, std::any>& paras, const std::string& key, T defaultValue) {
+	auto it = paras.find(key);
+	if (it != paras.end()) {
+		try {
+			return std::any_cast<T>(it->second);
+		}
+		catch (const std::bad_any_cast&) {
+			// 类型不匹配，返回默认值
+			return defaultValue;
+		}
+	}
+	// 参数不存在，返回默认值
+	return defaultValue;
+}

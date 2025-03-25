@@ -1,7 +1,11 @@
 ﻿
 #pragma once
 #include <fstream>
+#include "InputHandler.h"
 #include "UIWindow.h"
+
+#define WINDOW_INFO_ID_TYPE 0
+#define WINDOW_INFO_ID_OBJECT 1
 
 
 class UIWindowInfo : public UIWindow
@@ -35,6 +39,8 @@ public:
 	virtual void DrawUI();
 	virtual void cleanup();
 
+	virtual void  ParseParameters(std::unordered_map<std::string, std::any> paras);
+
 	bool InitResource();
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
@@ -51,21 +57,7 @@ private:
 	std::wstring windowTitle;
 
 	int typeID = 0;
-	std::string TitleTexPath;
-	std::string CloseTexPath;
-	std::string MaxTexPath;
-	std::string MinTexPath;
-	std::string BodyTexPath;
 
 	std::shared_ptr<Effect> m_itemImgEffect;
-
-	// 窗口标志变量
-	bool isVisible = true;
-	bool isResizable = false; //是否可调整大小
-	bool isMaximized = false;
-	bool isMinimized = false;
-
-
-
 };
 

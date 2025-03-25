@@ -273,3 +273,26 @@ void ThirdPersonCamera::SetDistanceMinMax(float minDist, float maxDist)
 	m_MaxDist = maxDist;
 }
 
+// 设置正交投影参数
+void OrthographicCamera::SetOrthographic(float left, float right, float bottom, float top, float nearZ, float farZ)
+{
+	m_Left = left;
+	m_Right = right;
+	m_Bottom = bottom;
+	m_Top = top;
+	m_NearZ = nearZ;
+	m_FarZ = farZ;
+}
+
+// 重写获取投影矩阵的方法
+DirectX::XMMATRIX OrthographicCamera::GetProjXM() const
+{
+	return DirectX::XMMatrixOrthographicOffCenterLH(m_Left, m_Right, m_Bottom, m_Top, m_NearZ, m_FarZ);
+}
+
+// 重写获取视图矩阵的方法
+DirectX::XMMATRIX OrthographicCamera::GetViewXM() const
+{
+	// 对于 UI 摄像机，通常视图矩阵为单位矩阵
+	return DirectX::XMMatrixIdentity();
+}

@@ -3,11 +3,6 @@
 using namespace DirectX;
 
 std::vector<PosTexIndex> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
-	_x = _x / 10.0f;
-	_y = 1080.0f - _y;
-	_y = _y / 10.0f;
-	_deltaX = _deltaX / 10.0f;
-	_deltaY = -_deltaY / 10.0f;
 
 	std::vector<PosTexIndex> vertices;
 
@@ -69,6 +64,19 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 
 void UIButton::DrawUI()
 {
+	// 假设 camera 是当前场景中的摄影机对象
+	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
+	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
+
+
+	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
+
+	ConstantMVPIndex* dataPtr = m_effect->getConstantBuffer<ConstantMVPIndex>()->Map();
+	dataPtr->model = XMMatrixTranspose(windowModel);
+	dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+	dataPtr->projection = XMMatrixTranspose(projMatrix);
+	dataPtr->TexIndex = 0;
+	m_effect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 
 	m_effect->apply();
 	if (text != nullptr) {
@@ -92,10 +100,23 @@ bool UIButton::InitResource()
 	m_effect = std::make_shared<Effect>();
 
 	m_effect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
-	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateButtonVertices(x, y, deltaX, deltaY));
+	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateButtonVertices(0, 0, deltaX, deltaY));
 	m_effect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_effect->addTextures(textureButtonFileNames);
+	m_effect->addConstantBuffer<ConstantMVPIndex>();
 	m_effect->Init();
+
+	auto UIcamera = std::make_shared<OrthographicCamera>();
+	m_pUICamera = UIcamera;
+
+	// 设置正交投影参数
+	float left = 0.0f;
+	float right = static_cast<float>(m_ClientWidth);
+	float bottom = static_cast<float>(m_ClientHeight);
+	float top = 0.0f;
+	float nearZ = 0.0f;
+	float farZ = 1.0f;
+	UIcamera->SetOrthographic(left, right, bottom, top, nearZ, farZ);
 
 	return true;
 }

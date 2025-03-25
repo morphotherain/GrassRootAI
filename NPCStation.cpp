@@ -43,7 +43,7 @@ void NPCStation::handleTask(const Task& task)
 		auto base = task.publisher->GetComponent<BaseComponent>();
 		auto tran = task.publisher->GetComponent<SpaceTransformComponent>();
 		auto physics = task.publisher->GetComponent<PhysicsComponent>();
-		base->containerID = m_pBase->containerID;
+		base->containerID = 0;
 		tran->x = m_pSpaceTran->x + 10000.0f;
 		tran->y = m_pSpaceTran->y;
 		tran->z = m_pSpaceTran->z;

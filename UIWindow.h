@@ -2,6 +2,8 @@
 #pragma once
 #include <fstream>
 #include "UIBase.h"
+#include "InputHandler.h"
+
 class UIWindow : public UIBase
 {
 public:
@@ -16,9 +18,14 @@ public:
 	virtual void DrawUI();
 	virtual void cleanup();
 
+	virtual void  ParseParameters(std::unordered_map<std::string, std::any> paras) {};
+
 	bool InitResource();
 	bool InitEffect();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY, width = _deltaX, height = _deltaY; }
+	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { 
+		x = _x, y = _y, width = _deltaX, height = _deltaY; 
+		DEBUG_("width:{} height:{}", width, height);
+	}
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 
@@ -26,12 +33,35 @@ public:
 	std::shared_ptr<bool> getCatchingMouse() { return isCatchingMouse; }
 
 
+	bool IsActive() const { return isActive; }
+	bool IsVisible() const { return isVisible; }
+	bool IsResizable() const { return isResizable; }
+	bool IsMaximized() const { return isMaximized; }
+	bool IsMinimized() const { return isMinimized; }
+	bool ShouldClose() const { return isClosed; }
+	void SetVisible(bool visible) { isVisible = visible; }
+	void SetResizable(bool resizable) { isResizable = resizable; }
+	void SetMaximized(bool maximized) { isMaximized = maximized; }
+	void SetMinimized(bool minimized) { isMinimized = minimized; }
+	void SetActive(bool active) { isActive = active; }
+	void SetClosed(bool closed) { isClosed = closed; }
+
+
+	int GetZOrder() const { return m_zOrder; }
+	void SetZOrder(int zOrder) { m_zOrder = zOrder; }
+
+	bool isDragging = false;
+	InputHandler m_inputHandler;
+
+	void HandleMouseEvent(float dt, DirectX::Mouse& mouse);
+
+
 protected:
 	void InitWindowComponent();
 
 	float x = 0.0f;
 	float y = 0.0f;
-	float width = 400.0f;
+	float width = 600.0f;
 	float height = 600.0f;
 	float deltaX = 30.0f;
 	float deltaY = 20.0f;
@@ -43,7 +73,7 @@ protected:
 	std::vector<std::string> textureWindowFileNames;
 	std::vector<PosTexIndex> vertices;
 
-	std::shared_ptr<Camera> m_pWindowCamera;						    // 摄像机
+	std::shared_ptr<OrthographicCamera> m_pUICamera;
 
 
 private:
@@ -70,6 +100,10 @@ private:
 	bool isResizable = false; //是否可调整大小
 	bool isMaximized = false;
 	bool isMinimized = false;
+	bool isActive = true;
+	bool isClosed = false;
+
+	int m_zOrder = 0;
 
 
 };

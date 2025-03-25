@@ -46,15 +46,16 @@ void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
+	HandleMouseEvent(dt, mouse);
 
-
-
-	// 在鼠标没进入窗口前仍为ABSOLUTE模式
-	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
-	{
-		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
-			x;
+	if (!IsActive()) {
+		return;
 	}
+
+	for (auto& component : childComponents) {
+		component->setDelta(x, y);
+	}
+
 
 
 }
@@ -87,6 +88,39 @@ bool UIWindow::InitEffect()
 	return true;
 }
 
+void UIWindow::HandleMouseEvent(float dt, DirectX::Mouse& mouse)
+{
+	m_inputHandler.Update(dt, mouse.GetState());
+	if (!IsActive())
+	{
+		m_inputHandler.SetDetectionArea(x, y, width, height);
+		bool active = m_inputHandler.IsMousePressedInArea();
+		SetActive(active);
+	}
+	if (!IsActive()) {
+		return;
+	}
+
+	m_inputHandler.SetDetectionArea(x + width - TitleHeight, y, TitleHeight, TitleHeight);
+	
+	bool should_closed = m_inputHandler.IsMousePressedInArea();
+	if(should_closed){
+		SetClosed(true);
+		return;
+	}
+
+	m_inputHandler.SetDetectionArea(x, y, width, TitleHeight);
+
+	if (m_inputHandler.IsMouseDragging()) {
+		int dx, dy;
+		m_inputHandler.GetDragDelta(dx, dy);
+		x += dx;
+		y += dy;
+	}
+
+
+}
+
 void UIWindow::InitWindowComponent()
 {
 	textureWindowFileNames = {
@@ -97,11 +131,12 @@ void UIWindow::InitWindowComponent()
 		"demoTex\\UI\\Window\\window_close.dds"
 	};
 
-	GenerateRectVertex(vertices, x, y, width, height, 0.0f);
-	GenerateRectVertex(vertices, x, y, width, TitleHeight, 1.0f);
-	GenerateRectVertex(vertices, x + width - 3 * TitleHeight, y, TitleHeight, TitleHeight, 2.0f);
-	GenerateRectVertex(vertices, x + width - 2 * TitleHeight, y, TitleHeight, TitleHeight, 3.0f);
-	GenerateRectVertex(vertices, x + width - 1 * TitleHeight, y, TitleHeight, TitleHeight, 4.0f);
+	DEBUG_("width:{} height:{}",  width, height);
+	GenerateRectVertex(vertices, 0.0f, 0.0f, width, height, 0.0f);
+	GenerateRectVertex(vertices, 0.0f, 0.0f, width, TitleHeight, 1.0f);
+	GenerateRectVertex(vertices, width - 3 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 2.0f);
+	GenerateRectVertex(vertices, width - 2 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 3.0f);
+	GenerateRectVertex(vertices, width - 1 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 4.0f);
 
 	m_windowEffect = std::make_shared<Effect>();
 	m_windowEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
@@ -112,16 +147,22 @@ void UIWindow::InitWindowComponent()
 
 	if (windowTitle != L"") {
 		auto text = std::make_shared<UIText>();
-		text->setSize(x + 3.0f, y + 5.0f, 350.0f, 350.0f);
+		text->setSize(3.0f, 5.0f, 350.0f, 350.0f);
 		text->setText(windowTitle);
 		AddUIComponent(text);
 	}
+	
 
-	auto camera = std::shared_ptr<FirstPersonCamera>(new FirstPersonCamera);
-	m_pWindowCamera = camera;
-	camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
-	camera->SetPosition(XMFLOAT3(100.0f, 100.0f, 10.0f));
-	camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
-	camera->LookTo(XMFLOAT3(0.0f, 0.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, +0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f));
-	camera->SetPosition(XMFLOAT3(96.8f, 52.05f, -96.85f));
+	auto UIcamera = std::make_shared<OrthographicCamera>();
+	m_pUICamera = UIcamera;
+
+	// 设置正交投影参数
+	float left = 0.0f;
+	float right = static_cast<float>(m_ClientWidth);
+	float bottom = static_cast<float>(m_ClientHeight);
+	float top = 0.0f;
+	float nearZ = 0.0f;
+	float farZ = 1.0f;
+	UIcamera->SetOrthographic(left, right, bottom, top, nearZ, farZ);
+
 }
