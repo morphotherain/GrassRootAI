@@ -71,7 +71,7 @@ protected:
 
 	std::shared_ptr<Effect> m_windowEffect;
 	std::vector<std::string> textureWindowFileNames;
-	std::vector<PosTexIndex> vertices;
+	std::vector<PosTexIndex> vertices = {};
 
 	std::shared_ptr<OrthographicCamera> m_pUICamera;
 

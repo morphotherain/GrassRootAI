@@ -220,11 +220,11 @@ void UIWindowMap::DrawUI()
 		DirectX::XMFLOAT2 screenPos;
 		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width;// 假设 m_screenWidth 是屏幕宽度
 
-		if (screenPos.x < adjustedViewport.TopLeftX || screenPos.x > adjustedViewport.TopLeftX ) screenPos.x = -10000.0f;
+		if (screenPos.x < 0 || screenPos.x >  adjustedViewport.Width) screenPos.x = -10000.0f;
 
 		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height;//假设 m_screenHeight 是屏幕高度
 
-		if (screenPos.y < adjustedViewport.TopLeftY || screenPos.y > adjustedViewport.TopLeftY ) screenPos.y = -10000.0f;
+		if (screenPos.y < 0 || screenPos.y > adjustedViewport.Height) screenPos.y = -10000.0f;
 
 		// 更新文本位置
 		regionTexts[i]->setSize(screenPos.x, screenPos.y , 350.0f, 350.0f);

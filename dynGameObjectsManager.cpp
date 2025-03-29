@@ -184,6 +184,39 @@ int dynGameObjectsManager::updateContainerIDByObjectID(int object_id, int newVal
     return 0;
 }
 
+bool dynGameObjectsManager::queryObjectsByContainerID(int containerID, std::vector<std::pair<int, int>>& result)
+{
+    sqlite3_stmt* stmt;
+    // 准备 SQL 查询语句
+    std::string query = "SELECT objectID, typeID FROM dynGameObjects WHERE ContainerID =?;";
+    int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        std::cerr << "SQL prepare error: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    // 将传入的 containerID 绑定到查询语句中的参数占位符
+    sqlite3_bind_int(stmt, 1, containerID);
+
+    // 执行查询并处理结果
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        int objectID = sqlite3_column_int(stmt, 0);
+        int typeID = sqlite3_column_int(stmt, 1);
+        result.emplace_back(objectID, typeID);
+    }
+
+    if (rc != SQLITE_DONE) {
+        std::cerr << "SQL step error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    // 解除绑定并释放资源
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+
 
 dynGameObject dynGameObjectsManager::getGameObjectByObjectID(int object_id)
 {

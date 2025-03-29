@@ -14,7 +14,6 @@ public:
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 
 };
 
@@ -32,7 +31,6 @@ public:
 	UINT objectID;
 
 	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 
 };
 

@@ -128,7 +128,10 @@ void UIWindow::InitWindowComponent()
 		"demoTex\\UI\\Window\\window_title.dds",
 		"demoTex\\UI\\Window\\window_min.dds",
 		"demoTex\\UI\\Window\\window_max.dds",
-		"demoTex\\UI\\Window\\window_close.dds"
+		"demoTex\\UI\\Window\\window_close.dds",
+		"demoTex\\UI\\Window\\window_deepblue.dds",
+		"demoTex\\UI\\Window\\window_select.dds",
+		"demoTex\\UI\\Window\\window_line.dds"
 	};
 
 	DEBUG_("width:{} height:{}",  width, height);
@@ -145,14 +148,6 @@ void UIWindow::InitWindowComponent()
 	m_windowEffect->addTextures(textureWindowFileNames);
 	m_windowEffect->addConstantBuffer<ConstantMVPIndex>();
 
-	if (windowTitle != L"") {
-		auto text = std::make_shared<UIText>();
-		text->setSize(3.0f, 5.0f, 350.0f, 350.0f);
-		text->setText(windowTitle);
-		AddUIComponent(text);
-	}
-	
-
 	auto UIcamera = std::make_shared<OrthographicCamera>();
 	m_pUICamera = UIcamera;
 
@@ -165,4 +160,10 @@ void UIWindow::InitWindowComponent()
 	float farZ = 1.0f;
 	UIcamera->SetOrthographic(left, right, bottom, top, nearZ, farZ);
 
+	if (windowTitle != L"") {
+		auto text = std::make_shared<UIText>();
+		text->setSize(3.0f, 5.0f, 350.0f, 350.0f);
+		text->setText(windowTitle);
+		AddUIComponent(text);
+	}
 }

@@ -5,7 +5,7 @@
 
 #include "UIWindowInfo.h"
 #include "UIWindowMap.h"
-
+#include "UIWindowStorage.h"
 
 using namespace DirectX;
 
@@ -27,6 +27,7 @@ void WindowManager::Initialize(int width, int height, std::shared_ptr<Camera> ca
 
     RegisterWindowTypeT<UIWindowInfo>("info");
     RegisterWindowTypeT<UIWindowMap>("map");
+    RegisterWindowTypeT<UIWindowStorage>("cargo");
     DEBUG_("WindowManager初始化完成");
 }
 
@@ -55,6 +56,15 @@ void WindowManager::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
         // 触发打开窗口
         WindowMessage msg;
         msg.windowType = "map";
+        msg.parameters["z_order"] = (m_maxWindowZOrder++);
+        WindowMessagingSystem::GetInstance().Enqueue(msg);
+    }
+    // 检测 C 键按下
+    if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::C)) {
+        DEBUG_("打开cargo窗口");
+        // 触发打开窗口
+        WindowMessage msg;
+        msg.windowType = "cargo";
         msg.parameters["z_order"] = (m_maxWindowZOrder++);
         WindowMessagingSystem::GetInstance().Enqueue(msg);
     }

@@ -15,3 +15,4 @@ public:
     int getGroupByTypeId(int type_id);
 };
 
+std::string getIconPathByTypeID(int typeID);

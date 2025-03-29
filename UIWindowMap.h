@@ -62,7 +62,6 @@ public:
 		UIWindow::setSize(_x, _y, _deltaX, _deltaY); 
 	}
 
-	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 
 private:
@@ -91,21 +90,6 @@ private:
 	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
 
 	std::wstring windowTitle;
-
-	std::string TexPath;
-	std::string TitleTexPath;
-	std::string CloseTexPath;
-	std::string MaxTexPath;
-	std::string MinTexPath;
-	std::string BodyTexPath;
-
-
-
-	// 窗口标志变量
-	bool isVisible = true;
-	bool isResizable = false; //是否可调整大小
-	bool isMaximized = false;
-	bool isMinimized = false;
 
 	UINT numPoint = 0;
 	UINT numLinePoint = 0;

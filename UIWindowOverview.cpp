@@ -42,6 +42,11 @@ void UIWindowOverview::OnResize()
 
 void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
+	for (auto& component : childComponents) {
+		component->setDelta(x, y);
+	}
+
 	if (m_RButtonMenu != nullptr)
 		m_RButtonMenu->UpdateUI(dt, mouse, keyboard, tick);
 	// 更新鼠标事件，获取相对偏移量
@@ -149,49 +154,40 @@ void UIWindowOverview::setSize(const float _x, const float _y, const float _delt
 
 void UIWindowOverview::InitWindowComponent()
 {
-	//UIWindow::setSize(0.0f, 0.0f, 600.0f, 800.0f);
 
 	UIWindow::InitWindowComponent();
 	auto Texture = m_windowEffect->getTextures();
-	Texture->addTextureFileName("demoTex\\UI\\Window\\window_line.dds");
 
 	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
-	GenerateRectVertex(vertices, x + 0.0f, y + TitleHeight, 50.0f, 30.0f, 5.0f);
+	GenerateRectVertex(vertices, 0.0f, TitleHeight, 50.0f, 30.0f, 7.0f);
 	m_windowEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertices);
 	m_windowEffect->Init();
 
 	auto text = std::make_shared<UIText>();
-	text->setSize(x + 11.0f,  y + TitleHeight+5.0f, 350.0f, 350.0f);
+	text->setSize(11.0f,  TitleHeight+5.0f, 350.0f, 350.0f);
 	text->setText(L"默认");
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 20.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(20.0f, TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"名称");
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 230.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(230.0f, TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"距离");
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 350.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(350.0f, TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"类型");
 	AddUIComponent(text);
 
 	text = std::make_shared<UIText>();
-	text->setSize(x + 460.0f, y + TitleHeight + 35.0f, 350.0f, 350.0f);
+	text->setSize(460.0f, TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"速度");
 	AddUIComponent(text);
 
-
-	if (windowTitle != L"") {
-		auto text = std::make_shared<UIText>();
-		text->setSize(x + 3.0f, y + 5.0f, 350.0f, 350.0f);
-		text->setText(windowTitle);
-		AddUIComponent(text);
-	}
 }
 
 void UIWindowOverview::Row::Init(float x, float y, float TitleHeight)

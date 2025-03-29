@@ -30,3 +30,10 @@ int InvTypesManager::getGroupByTypeId(int type_id)
     return groupID;
 }
 
+std::string getIconPathByTypeID(int typeID)
+{
+    std::string IconPath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Types\\Types\\dds\\";
+    IconPath += std::to_string(typeID);
+    IconPath += "_64.dds";
+    return IconPath;
+}

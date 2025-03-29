@@ -24,7 +24,6 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY);
-	void setTex(std::string _Tex) { TexPath = _Tex; };
 
 	struct Row {
 		Row() = default;
@@ -66,23 +65,8 @@ protected:
 
 private:
 
-	std::wstring windowTitle;
-
-	std::string TexPath;
-	std::string TitleTexPath;
-	std::string CloseTexPath;
-	std::string MaxTexPath;
-	std::string MinTexPath;
-	std::string BodyTexPath;
-
 
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
-
-	// 窗口标志变量
-	bool isVisible = true;
-	bool isResizable = false; //是否可调整大小
-	bool isMaximized = false;
-	bool isMinimized = false;
 
 };
 

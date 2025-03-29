@@ -10,6 +10,7 @@
 #include "Pilot.h"
 #include "Ship.h"
 #include "Astro.h"
+#include "Equipment.h"
 #include "NPCStation.h"
 #include "Sector.h"
 
