@@ -172,6 +172,10 @@ private:
 	float m_FarZ = 0.0f;
 };
 
+// 将三维坐标转换为标准化设备坐标(NDC)范围的函数
+DirectX::XMFLOAT2 Convert3DToNDC(const DirectX::XMFLOAT3& worldPos, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projMatrix);
 
+// 将NDC坐标转换为屏幕实际坐标的函数
+DirectX::XMFLOAT2 ConvertNDCToScreen(const DirectX::XMFLOAT2& ndcPos, int screenWidth, int screenHeight);
 
 #endif

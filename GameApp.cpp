@@ -123,22 +123,32 @@ void GameApp::OnResize()
 		HR(m_pd2dRenderTarget->CreateSolidColorBrush(
 			D2D1::ColorF(D2D1::ColorF::White),
 			m_pColorBrush.GetAddressOf()));
+
+		HR(m_pdwriteFactory->CreateTextFormat(L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
+			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 12, L"zh-cn",
+			m_pTextFormat.GetAddressOf()));
+		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_XS");
+
 		HR(m_pdwriteFactory->CreateTextFormat(L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 30, L"zh-cn",
 			m_pTextFormat.GetAddressOf()));
 		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_XL");
+
 		HR(m_pdwriteFactory->CreateTextFormat(L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 25, L"zh-cn",
 			m_pTextFormat.GetAddressOf()));
 		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_L");
+
 		HR(m_pdwriteFactory->CreateTextFormat(L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20, L"zh-cn",
 			m_pTextFormat.GetAddressOf()));
 		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_M");
+
 		HR(m_pdwriteFactory->CreateTextFormat(L"宋体", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn",
 			m_pTextFormat.GetAddressOf()));
-		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(),"Arial_S");
+		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_S");
+
 	}
 	else
 	{

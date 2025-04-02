@@ -37,6 +37,7 @@ public:
 
 
 	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float TexID);
+	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float angle, float TexID);
 
 protected:
 
@@ -95,3 +96,6 @@ T getParameter(const std::unordered_map<std::string, std::any>& paras, const std
 	// 参数不存在，返回默认值
 	return defaultValue;
 }
+
+// 封装的方法，用于创建绕组件中心旋转的变换矩阵
+DirectX::XMMATRIX CreateRotatedWindowModel(float x, float y, float width, float height, float rotationAngle);

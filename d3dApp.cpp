@@ -73,6 +73,8 @@ int D3DApp::Run()
 	MSG msg = { 0 };
 
 	m_Timer.Reset();
+	const float targetFrameTime = 0.014; // 目标每帧时间（秒）
+	float accumulatedTime = 0.0f;
 
 	while (msg.message != WM_QUIT)
 	{
@@ -84,12 +86,34 @@ int D3DApp::Run()
 		else
 		{
 			m_Timer.Tick();
+			float deltaTime = m_Timer.DeltaTime();
 
 			if (!m_AppPaused)
 			{
-				CalculateFrameStats();
-				UpdateScene(m_Timer.DeltaTime());
-				DrawScene();
+				accumulatedTime += deltaTime;
+
+				// 当累积时间超过目标帧时间时更新
+				if (accumulatedTime >= targetFrameTime)
+				{
+					CalculateFrameStats();
+					UpdateScene(targetFrameTime); // 使用固定帧时间更新逻辑
+					DrawScene();
+					accumulatedTime = 0.0f; // 重置累积时间
+
+					// 精确等待剩余时间（需高精度等待）
+					LARGE_INTEGER freq, start, end;
+					QueryPerformanceFrequency(&freq);
+					QueryPerformanceCounter(&start);
+					double waitTime = targetFrameTime - deltaTime;
+					while (true)
+					{
+						QueryPerformanceCounter(&end);
+						double elapsed = (end.QuadPart - start.QuadPart) / (double)freq.QuadPart;
+						if (elapsed >= waitTime)
+							break;
+						Sleep(0); // 释放时间片，减少CPU占用
+					}
+				}
 			}
 			else
 			{
@@ -594,6 +618,7 @@ void D3DApp::CalculateFrameStats()
 	static float timeElapsed = 0.0f;
 
 	frameCnt++;
+	//DEBUG_("frameCnt:{},timeElapsed: {},m_Timer.TotalTime(): {}", frameCnt, timeElapsed,m_Timer.TotalTime());
 
 	if ((m_Timer.TotalTime() - timeElapsed) >= 1.0f)
 	{
@@ -606,6 +631,7 @@ void D3DApp::CalculateFrameStats()
 			<< L"FPS: " << fps << L"    "
 			<< L"Frame Time: " << mspf << L" (ms)";
 		SetWindowText(m_hMainWnd, outs.str().c_str());
+		DEBUG_("fps:{},Frame Time: {}",fps,mspf);
 
 		// Reset for next average.
 		frameCnt = 0;

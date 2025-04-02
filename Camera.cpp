@@ -296,3 +296,41 @@ DirectX::XMMATRIX OrthographicCamera::GetViewXM() const
 	// 对于 UI 摄像机，通常视图矩阵为单位矩阵
 	return DirectX::XMMatrixIdentity();
 }
+
+// 将三维坐标转换为标准化设备坐标(NDC)范围的函数
+DirectX::XMFLOAT2 Convert3DToNDC(const DirectX::XMFLOAT3& worldPos, const DirectX::XMMATRIX& viewMatrix, const DirectX::XMMATRIX& projMatrix)
+{
+	// 将三维世界坐标转换为裁剪空间
+	DirectX::XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
+	DirectX::XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
+
+	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
+	DirectX::XMFLOAT4  clipPos;
+	XMStoreFloat4(&clipPos, clipPosition);
+
+	if (clipPos.w < 0.0f)
+	{
+		return DirectX::XMFLOAT2(FLT_MAX, FLT_MAX);
+	}
+
+	// 手动透视除法
+	float x_ndc = clipPos.x / clipPos.w;
+	float y_ndc = clipPos.y / clipPos.w;
+
+	// 返回的ndcPos.x 和 ndcPos.y 直接是 NDC 范围 [-1, 1]
+	return DirectX::XMFLOAT2(x_ndc, y_ndc);
+}
+
+// 将NDC坐标转换为屏幕实际坐标的函数
+DirectX::XMFLOAT2 ConvertNDCToScreen(const DirectX::XMFLOAT2& ndcPos, int screenWidth, int screenHeight)
+{
+	// NDC坐标范围是 [-1, 1]，转换到 [0, 1] 范围
+	float x_screenNormalized = (ndcPos.x + 1.0f) / 2.0f;
+	float y_screenNormalized = (1.0f - (ndcPos.y + 1.0f) / 2.0f);
+
+	// 转换到屏幕像素坐标
+	float x_screen = x_screenNormalized * screenWidth;
+	float y_screen = y_screenNormalized * screenHeight;
+
+	return DirectX::XMFLOAT2(x_screen, y_screen);
+}

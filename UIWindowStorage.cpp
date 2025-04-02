@@ -99,12 +99,14 @@ void UIWindowStorage::DrawUI()
 	m_itemBackEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_itemBackEffect->apply();
 
-	ConstantMVPIndex* dataPtritemImg = m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtritemImg->model = XMMatrixTranspose(windowModel);
-	dataPtritemImg->view = XMMatrixTranspose(viewMatrix);
-	dataPtritemImg->projection = XMMatrixTranspose(projMatrix);
-	m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
-	m_itemImgEffect->apply();
+	for (auto itemImgEffect : m_itemImgEffects) {
+		ConstantMVPIndex* dataPtritemImg = itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+		dataPtritemImg->model = XMMatrixTranspose(windowModel);
+		dataPtritemImg->view = XMMatrixTranspose(viewMatrix);
+		dataPtritemImg->projection = XMMatrixTranspose(projMatrix);
+		itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+		itemImgEffect->apply();
+	}
 
 	ConstantMVPIndex* dataPtritemNumBack = m_itemNumBackEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtritemNumBack->model = XMMatrixTranspose(windowModel);
@@ -145,13 +147,9 @@ bool UIWindowStorage::InitEffect()
 
 bool UIWindowStorage::InitItemImgEffect()
 {
-	std::vector<PosTexIndex> vertexsImg = {};
 	std::vector<PosTexIndex> vertexsBack = {};
 	std::vector<PosTexIndex> vertexsNumBack = {};
 
-	m_itemImgEffect = std::make_shared<Effect>();
-	m_itemImgEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
-	m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 
 	m_itemBackEffect = std::make_shared<Effect>();
 	m_itemBackEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
@@ -164,35 +162,48 @@ bool UIWindowStorage::InitItemImgEffect()
 	m_itemNumBackEffect->addTextures({ "demoTex\\UI\\Window\\window_black.dds" });
 
 	float index = 0.0f;
-	std::vector<std::string> IconPaths = {};
 
 	for (const auto& pair : m_itemsPair) {
+		m_itemImgEffect = std::make_shared<Effect>();
+		m_itemImgEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
+		m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
+
 		std::string IconPath = getIconPathByTypeID(pair.second);
 		std::wstring name = InvTypesManager::getInstance()->getNameByTypeId(pair.second);
+		std::wstring processedName = L"";
+		for (size_t i = 0; i < name.length(); ++i) {
+			if (i > 0 && i % 5 == 0) {
+				processedName += L'\n';
+			}
+			processedName += name[i];
+		}
 		DEBUG_("ObjectID: {}, TypeID: {}, IconPath:{}", pair.first, pair.second, IconPath);
-		IconPaths.push_back(IconPath);
 
-		GenerateRectVertex(vertexsImg, 220.0f + 76.0f * index, 100.0f, 64.0f, 64.0f, index);
+		std::vector<PosTexIndex> vertexsImg = {};
+		GenerateRectVertex(vertexsImg, 220.0f + 76.0f * index, 100.0f, 64.0f, 64.0f, 0);
 		GenerateRectVertex(vertexsBack, 220.0f + 76.0f * index, 100.0f, 64.0f, 64.0f, 0.0f);
 		GenerateRectVertex(vertexsNumBack, 256.0f + 76.0f * index, 150.0f, 30.0f, 16.0f, 0.0f);
 
 		auto textName = std::make_unique<UIText>();
 		textName->setSize(220.0f + 76.0f * index, 170.0f, 350.0f,350.0f);
-		textName->setText(name);
+		textName->setText(processedName);
+		textName->switchTextFormat("Arial_XS");
 		m_itemsTexts.push_back(std::move(textName));
 
 		auto textNum = std::make_unique<UIText>();
-		textNum->setSize(256.0f + 76.0f * index, 150.0f, 350.0f, 350.0f);
+		textNum->setSize(260.0f + 76.0f * index, 147.0f, 350.0f, 350.0f);
 		textNum->setText(L"1");
 		m_itemsTexts.push_back(std::move(textNum));
 
 
 		index += 1.0f;
+
+		m_itemImgEffect->addTextures({ IconPath });
+		m_itemImgEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsImg);
+		m_itemImgEffect->addConstantBuffer<ConstantMVPIndex>();
+		m_itemImgEffect->Init();
+		m_itemImgEffects.push_back(m_itemImgEffect);
 	}
-	m_itemImgEffect->addTextures( IconPaths );
-	m_itemImgEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsImg);
-	m_itemImgEffect->addConstantBuffer<ConstantMVPIndex>();
-	m_itemImgEffect->Init();
 	m_itemBackEffect->getVertexBuffer<PosTexIndex>()->setVertices(vertexsBack);
 	m_itemBackEffect->addConstantBuffer<ConstantMVPIndex>();
 	m_itemBackEffect->Init();
@@ -221,7 +232,7 @@ void UIWindowStorage::InitWindowComponent()
 	UIWindow::InitWindowComponent();
 
 	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
-	GenerateRectVertex(vertexs, 200.0f , TitleHeight, 5.0f, 600.0f - TitleHeight, 5.0f);
+	GenerateRectVertex(vertexs, 200.0f , TitleHeight, 5.0f, 600.0f - TitleHeight -1.0f, 5.0f);
 	GenerateRectVertex(vertexs, 200.0f, TitleHeight + 25.0f, 600.0f, 3.0f, 5.0f);
 	GenerateRectVertex(vertexs, 200.0f, TitleHeight + 50.0f, 600.0f, 3.0f, 5.0f);
 	GenerateRectVertex(vertexs, 3.0f, TitleHeight + 30.0f, 195.0f, 20.0f, 6.0f);

@@ -342,6 +342,9 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>输入</Filter>
     </ClCompile>
+    <ClCompile Include="UIShip.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -623,6 +626,9 @@
     <ClInclude Include="InputHandler.h">
       <Filter>输入</Filter>
     </ClInclude>
+    <ClInclude Include="UIShip.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Triangle_PS.hlsl">
@@ -664,6 +670,14 @@
     <FxCompile Include="HLSL\Sky\Sky_VS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\UI\Gauge_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\UI\Gauge_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\UI\GaugeTarget_PS.hlsl" />
+    <FxCompile Include="HLSL\UI\GaugeTarget_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
@@ -679,6 +693,9 @@
       <Filter>着色器</Filter>
     </None>
     <None Include="HLSL\Sky\Sky.hlsli">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="HLSL\UI\Gauge.hlsli">
       <Filter>着色器</Filter>
     </None>
   </ItemGroup>

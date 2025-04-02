@@ -7,6 +7,7 @@
 #include "UISkyBox.h"
 #include "UIWindowOverview.h"
 #include "UIRButtonMenu.h"
+#include "UIShip.h"
 
 
 class SpaceScene : public Scene

@@ -140,6 +140,10 @@ void UIWindow::InitWindowComponent()
 	GenerateRectVertex(vertices, width - 3 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 2.0f);
 	GenerateRectVertex(vertices, width - 2 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 3.0f);
 	GenerateRectVertex(vertices, width - 1 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 4.0f);
+	GenerateRectVertex(vertices, 0.0f, 0.0f, width, 1.0f, 7.0f);
+	GenerateRectVertex(vertices, 0.0f, height - 1.0f, width, 1.0f, 7.0f);
+	GenerateRectVertex(vertices, 0.0f, 0.0f, 1.0f, height, 7.0f);
+	GenerateRectVertex(vertices, width-1.0f, 0.0f, 1.0f, height, 7.0f);
 
 	m_windowEffect = std::make_shared<Effect>();
 	m_windowEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
@@ -163,6 +167,7 @@ void UIWindow::InitWindowComponent()
 	if (windowTitle != L"") {
 		auto text = std::make_shared<UIText>();
 		text->setSize(3.0f, 5.0f, 350.0f, 350.0f);
+		text->switchTextFormat("Arial_XS");
 		text->setText(windowTitle);
 		AddUIComponent(text);
 	}

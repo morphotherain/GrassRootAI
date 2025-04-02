@@ -81,9 +81,12 @@ bool SpaceScene::Init()
 	m_WindowOverview->setSize(1350.0f, 200.0f, 550.0f, 600.0f);
 	AddUIComponent(m_WindowOverview);
 
-	/*auto starmap = std::make_shared<UIWindowMap>();
-	starmap->setSize(300.0f, 50.0f, 1500.0f, 950.0f);
-	AddUIComponent(starmap);*/
+
+	auto shipUI = std::make_shared<UIShip>();
+	shipUI->setSize(750.0f, 900.0f, 0.0f, 0.0f);
+	shipUI->setLocalCamera(m_pLocalCamera);
+	AddUIComponent(shipUI);
+
 
 	m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);
 	m_RButtonMenu->setSize(100.0f, 100.0f);
@@ -217,29 +220,29 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
 }
 
-// 将三维坐标转换为标准化设备坐标(NDC)范围的函数
-XMFLOAT2 Convert3DToNDC(const XMFLOAT3& worldPos, const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
-{
-	// 将三维世界坐标转换为裁剪空间
-	XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
-	XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
-	
-	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
-	XMFLOAT4  clipPos;
-	XMStoreFloat4(&clipPos, clipPosition);
-
-	if (clipPos.w <0.0f)
-	{
-		return XMFLOAT2(FLT_MAX, FLT_MAX);
-	}
-
-	// 手动透视除法
-	float x_ndc = clipPos.x / clipPos.w;
-	float y_ndc = clipPos.y / clipPos.w;
-
-	// 返回的ndcPos.x 和 ndcPos.y 直接是 NDC 范围 [-1, 1]
-	return XMFLOAT2(x_ndc, y_ndc);
-}
+//// 将三维坐标转换为标准化设备坐标(NDC)范围的函数
+//XMFLOAT2 Convert3DToNDC(const XMFLOAT3& worldPos, const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
+//{
+//	// 将三维世界坐标转换为裁剪空间
+//	XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
+//	XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
+//	
+//	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
+//	XMFLOAT4  clipPos;
+//	XMStoreFloat4(&clipPos, clipPosition);
+//
+//	if (clipPos.w <0.0f)
+//	{
+//		return XMFLOAT2(FLT_MAX, FLT_MAX);
+//	}
+//
+//	// 手动透视除法
+//	float x_ndc = clipPos.x / clipPos.w;
+//	float y_ndc = clipPos.y / clipPos.w;
+//
+//	// 返回的ndcPos.x 和 ndcPos.y 直接是 NDC 范围 [-1, 1]
+//	return XMFLOAT2(x_ndc, y_ndc);
+//}
 
 
 void SpaceScene::DrawScene()

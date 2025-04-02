@@ -64,6 +64,7 @@ private:
 
 
 	std::shared_ptr<Effect> m_itemImgEffect;
+	std::vector<std::shared_ptr<Effect>> m_itemImgEffects;
 	std::shared_ptr<Effect> m_itemBackEffect;
 	std::shared_ptr<Effect> m_itemNumBackEffect;
 

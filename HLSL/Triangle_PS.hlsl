@@ -8,6 +8,5 @@ float4 PS(PSInput input) : SV_Target
 {
     uint texIndex = (uint)input.texIndex; // 将浮点数转换为整数
     return TexArray.Sample(samLinear, float3(input.texCoord, texIndex));  
-    //return TexArray.Sample(samLinear, float3(0.5f,0.5f,0));
 }
 

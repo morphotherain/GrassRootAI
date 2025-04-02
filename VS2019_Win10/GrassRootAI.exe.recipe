@@ -7,6 +7,27 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\GaugeTarget_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\GaugeTarget_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\Gauge_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\Gauge_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\test_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\Sky\Sky_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
@@ -35,15 +56,6 @@
     </ContentFile>
     <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\StarMap\StarMapPoint_VS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>D:\EVELab\GrassRootAI\HLSL\test_PS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_PS.cso</FullPath>
-    </ContentFile>
-    <ContentFile>
-      <FullPath>D:\EVELab\GrassRootAI\HLSL\Triangle_VS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
