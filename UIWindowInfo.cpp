@@ -171,11 +171,9 @@ void UIWindowInfo::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 
 void UIWindowInfo::DrawUI()
 {
-
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
-
 
 	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 
@@ -186,7 +184,6 @@ void UIWindowInfo::DrawUI()
 	dataPtr->TexIndex = 0;
 	m_windowEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_windowEffect->apply();
-
 
 	ConstantMVPIndex* dataPtrImg = m_itemImgEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtrImg->model = XMMatrixTranspose(windowModel);

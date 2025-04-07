@@ -14,8 +14,6 @@
 #include "NPCStation.h"
 #include "Sector.h"
 
-
-
 struct SolarSystem {
 	SolarSystem() = default;
 	SolarSystem(int id) :m_solarSystem(id) { };
@@ -56,4 +54,3 @@ struct SolarSystem {
 	void setCurrentPilots(std::shared_ptr<Pilot> _Pilot);
 	void clearCurrentPilots();
 };
-

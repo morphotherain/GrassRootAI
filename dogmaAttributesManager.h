@@ -23,13 +23,12 @@ public:
 
 class dogmaAttributesManager : public SingletonBase<dogmaAttributesManager> {
 private:
-    sqlite3_stmt* stmt = nullptr;
-    sqlite3* db;
+	sqlite3_stmt* stmt = nullptr;
+	sqlite3* db;
 
 public:
-    dogmaAttributesManager() { db = DatabaseManager::getInstance()->getDatabase(); };
+	dogmaAttributesManager() { db = DatabaseManager::getInstance()->getDatabase(); };
 
-    // 假设在 invtypes 表中根据 type_id 查找 name 列
+	// 假设在 invtypes 表中根据 type_id 查找 name 列
 	std::shared_ptr<std::unordered_map<int, AttributeInfo>> getAttributes();
 };
-

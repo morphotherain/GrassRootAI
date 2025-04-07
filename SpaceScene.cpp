@@ -10,22 +10,18 @@
 #include "eveBracketsManager.h"
 #include <iostream>
 #include <sstream>
-#include <iomanip>	
+#include <iomanip>
 
 #include "WindowManager.h"
 
 using namespace DirectX;
 
-
-
 SpaceScene::SpaceScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
-
 }
 
 bool SpaceScene::Init()
 {
-	
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
 	WindowManager::GetInstance().Initialize(m_ClientWidth, m_ClientHeight, m_pCamera);
@@ -51,10 +47,9 @@ bool SpaceScene::Init()
 	text->setText(m_pSolarSystem->m_solarSystem.regionName); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
-
 	text = std::make_shared<UIText>();
 	text->setSize(230.0f, 90.0f, 350.0f, 350.0f); // 设置文本位置和尺寸
-	text->setText(std::wstring(L" < ")+m_pSolarSystem->m_solarSystem.constellationName + L" < "); // 设置星域名称文本
+	text->setText(std::wstring(L" < ") + m_pSolarSystem->m_solarSystem.constellationName + L" < "); // 设置星域名称文本
 	AddUIComponent(text); // 添加 UI 组件
 
 	// 获取security的值
@@ -81,18 +76,15 @@ bool SpaceScene::Init()
 	m_WindowOverview->setSize(1350.0f, 200.0f, 550.0f, 600.0f);
 	AddUIComponent(m_WindowOverview);
 
-
 	auto shipUI = std::make_shared<UIShip>();
 	shipUI->setSize(750.0f, 900.0f, 0.0f, 0.0f);
 	shipUI->setLocalCamera(m_pLocalCamera);
 	AddUIComponent(shipUI);
 
-
 	m_RButtonMenu = std::make_shared<UIRButtonMenu>(2, 60012526);
 	m_RButtonMenu->setSize(100.0f, 100.0f);
 	m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 	m_RButtonMenu->Init();
-
 
 	for (auto& component : uiComponents) {
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
@@ -197,7 +189,6 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
-
 		m_RButtonMenu = nullptr;
 	}
 
@@ -214,7 +205,6 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 		component->UpdateUI(dt, mouse, keyboard, tick);
 	}
 
-
 	// 退出程序，这里应向窗口发送销毁信息
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
 		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
@@ -226,7 +216,7 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 //	// 将三维世界坐标转换为裁剪空间
 //	XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
 //	XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
-//	
+//
 //	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
 //	XMFLOAT4  clipPos;
 //	XMStoreFloat4(&clipPos, clipPosition);
@@ -244,12 +234,10 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 //	return XMFLOAT2(x_ndc, y_ndc);
 //}
 
-
 void SpaceScene::DrawScene()
 {
 	assert(m_pd3dImmediateContext);
 	assert(m_pSwapChain);
-
 
 	float blendFactor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	m_pd3dImmediateContext->OMSetBlendState(m_pBlendState.Get(), blendFactor, 0xffffffff);
@@ -277,10 +265,10 @@ void SpaceScene::DrawScene()
 		std::wstringstream wss;
 		wss << Base->name << L"\n";
 		wss.precision(1);  // 设置精度为1位小数
-		wss << std::fixed << distance /1000.0f <<L"km";  // 使用定点表示法
+		wss << std::fixed << distance / 1000.0f << L"km";  // 使用定点表示法
 		std::wstring str = wss.str();
 
-		Vertex3DPosIndex temp = { 
+		Vertex3DPosIndex temp = {
 			(TranObj->x - sector->x),
 			(TranObj->y - sector->y),
 			(TranObj->z - sector->z),
@@ -295,7 +283,7 @@ void SpaceScene::DrawScene()
 
 	auto ThirdCamera = std::reinterpret_pointer_cast<ThirdPersonCamera>(m_pCamera);
 	ThirdCamera->SetTarget(
-		{	static_cast<float>(Tran->x), 
+		{ static_cast<float>(Tran->x),
 			static_cast<float>(Tran->y),
 			static_cast<float>(Tran->z) });
 	ThirdCamera->Approach(-0.00f);
@@ -304,7 +292,6 @@ void SpaceScene::DrawScene()
 	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
 
-
 	// 映射常量缓冲区
 	auto p_constantBufferData = m_pBracketEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	p_constantBufferData->model = XMMatrixTranspose(XMMatrixIdentity());
@@ -312,7 +299,6 @@ void SpaceScene::DrawScene()
 	p_constantBufferData->projection = XMMatrixTranspose(projMatrix);
 	p_constantBufferData->TexIndex = 0;
 	m_pBracketEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
-
 
 	vertices.clear();
 
@@ -324,24 +310,23 @@ void SpaceScene::DrawScene()
 		auto distance = std::sqrt(dx * dx + dy * dy + dz * dz);
 		if (distance < 10000000)
 		{
-			vertex3D.text->setSize(-100.0f, 0.0f,0.0f,0.0f);
+			vertex3D.text->setSize(-100.0f, 0.0f, 0.0f, 0.0f);
 			continue;
 		}
 		std::wstring temp;
 		// 将每个三维坐标转换为 NDC 坐标
-		XMFLOAT2 ndcCoord = Convert3DToNDC({ 
+		XMFLOAT2 ndcCoord = Convert3DToNDC({
 			static_cast<float>(vertex3D.x),
 			static_cast<float>(vertex3D.y),
 			static_cast<float>(vertex3D.z) }
-			, viewMatrix, projMatrix);
+		, viewMatrix, projMatrix);
 
 		// 创建新的顶点，设置其位置为 NDC 坐标，并保持纹理索引
 		Pos2Tex vertex;
 		vertex.position = XMFLOAT2(ndcCoord.x, ndcCoord.y); // 将 NDC 坐标设置为顶点位置
 		vertex.texIndex = vertex3D.texIndex;   // 保留原始的纹理索引
 
-
-		vertex3D.text->setSize((ndcCoord.x + 1.0f)/2.0f * 1920.0f+20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f+3.0f, 350.0f, 350.0f);
+		vertex3D.text->setSize((ndcCoord.x + 1.0f) / 2.0f * 1920.0f + 20.0f, (-ndcCoord.y + 1.0f) / 2.0f * 1080.0f + 3.0f, 350.0f, 350.0f);
 
 		// 将转换后的顶点加入目标顶点数组
 		vertices.push_back(vertex);
@@ -365,17 +350,15 @@ void SpaceScene::DrawScene()
 	//-------------------------
 	// 假设 camera 是当前场景中的摄影机对象
 
-
 	auto ThirdCameraLocal = std::reinterpret_pointer_cast<ThirdPersonCamera>(m_pLocalCamera);
 	ThirdCameraLocal->SetTarget({
 			static_cast<float>(Tran->x - sector->x),
 			static_cast<float>(Tran->y - sector->y),
-			static_cast<float>(Tran->z - sector->z)} );
+			static_cast<float>(Tran->z - sector->z) });
 	ThirdCameraLocal->Approach(-0.00f);
 
 	DirectX::XMMATRIX viewMatrixLocal = m_pLocalCamera->GetViewXM();
 	DirectX::XMMATRIX projMatrixLocal = m_pLocalCamera->GetProjXM();
-
 
 	// 映射常量缓冲区
 	auto p_constantBufferDataLocal = m_pBracketEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
@@ -421,7 +404,6 @@ void SpaceScene::DrawScene()
 	m_pBracketEffect->apply();
 	m_pBracketEffect->clearShader();
 
-
 	for (auto& component : uiComponents) {
 		component->DrawUI();
 	}
@@ -452,7 +434,7 @@ bool SpaceScene::InitResource()
 	camera->Approach(-0.00f);
 
 	auto Local_camera = std::shared_ptr<ThirdPersonCamera>(new ThirdPersonCamera);
-	m_pLocalCamera= Local_camera;
+	m_pLocalCamera = Local_camera;
 	Local_camera->SetViewPort(0.0f, 0.0f, (float)m_ClientWidth, (float)m_ClientHeight);
 	Local_camera->SetFrustum(XM_PI / 3, AspectRatio(), 1.0f, 1000.0f);
 	Local_camera->SetTarget(XMFLOAT3(331517583.0f, 43610234.0f, -586343669.0f));
@@ -461,7 +443,6 @@ bool SpaceScene::InitResource()
 	Local_camera->Approach(-0.00f);
 
 	std::vector<std::string> textureFileNames = eveBracketsManager::getInstance()->getAllDdsPaths();
-
 
 	for (auto p_denormalize : m_pSolarSystem->m_denormalizes) {
 		auto groupID = p_denormalize->groupID;
@@ -478,10 +459,9 @@ bool SpaceScene::InitResource()
 
 	vertices.resize(vertices3D.size());
 
-
 	m_pBracketEffect = std::make_shared<Effect>();
 
-	m_pBracketEffect->addVertexShaderBuffer<Pos2Tex>(L"HLSL\\Space\\Billboard_VS.hlsl",L"HLSL\\Space\\Billboard_VS.cso");
+	m_pBracketEffect->addVertexShaderBuffer<Pos2Tex>(L"HLSL\\Space\\Billboard_VS.hlsl", L"HLSL\\Space\\Billboard_VS.cso");
 	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVertices(vertices);
 	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setVerticesNumMax(100);
 	m_pBracketEffect->getVertexBuffer<Pos2Tex>()->setUsage(D3D11_USAGE_DYNAMIC);
@@ -489,7 +469,7 @@ bool SpaceScene::InitResource()
 	m_pBracketEffect->getVertexShader<Pos2Tex>()->setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	m_pBracketEffect->addConstantBuffer<ConstantMVPIndex>();
 	m_pBracketEffect->addPixelShader(L"HLSL\\Space\\Billboard_PS.hlsl", L"HLSL\\Space\\Billboard_PS.cso");
-    m_pBracketEffect->addGeometryShader(L"HLSL\\Space\\Billboard_GS.hlsl", L"HLSL\\Space\\Billboard_GS.cso");
+	m_pBracketEffect->addGeometryShader(L"HLSL\\Space\\Billboard_GS.hlsl", L"HLSL\\Space\\Billboard_GS.cso");
 	m_pBracketEffect->addTextures(textureFileNames);
 	m_pBracketEffect->addBlendState();
 	m_pBracketEffect->addSamplerState();

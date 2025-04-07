@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
 class UIText : public UIBase
@@ -8,7 +7,6 @@ public:
 	UIText() = default;
 	UIText(HINSTANCE _hInstance) :UIBase(_hInstance) {}
 	~UIText() = default;
-
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -19,7 +17,9 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _width, const float _height)
-		{ x = _x, y = _y, width = _width, height = _height; }
+	{
+		x = _x, y = _y, width = _width, height = _height;
+	}
 	void setText(std::wstring _Text) { Text = _Text; };
 
 	void switchTextFormat(std::string index);
@@ -35,6 +35,4 @@ private:
 	float width = 20.0f;
 	float height = 4.0f;
 	std::wstring Text;
-
 };
-

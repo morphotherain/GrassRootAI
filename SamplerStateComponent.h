@@ -4,15 +4,12 @@
 class SamplerStateComponent : public EffectComponent
 {
 public:
-    SamplerStateComponent() {};
-    ~SamplerStateComponent() {};
+	SamplerStateComponent() {};
+	~SamplerStateComponent() {};
 
-    virtual void Init();
+	virtual void Init();
 
-    virtual void apply();
+	virtual void apply();
 
-
-    ComPtr<ID3D11SamplerState> pSamplerState;
-
+	ComPtr<ID3D11SamplerState> pSamplerState;
 };
-

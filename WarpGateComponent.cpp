@@ -4,5 +4,4 @@
 WarpGateComponent::WarpGateComponent(UINT _objectID)
 {
 	objectID = _objectID;
-
 }

@@ -9,7 +9,6 @@ void PSEffectComponent::Init()
 	HR(m_pd3dDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pPixelShader.GetAddressOf()));
 }
 
-
 void PSEffectComponent::apply()
 {
 	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();

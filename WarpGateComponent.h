@@ -13,6 +13,4 @@ public:
 
 	UINT objectID;
 	std::wstring name;
-
-
 };

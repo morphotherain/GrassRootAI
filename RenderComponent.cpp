@@ -10,20 +10,17 @@ const D3D11_INPUT_ELEMENT_DESC RenderComponent::VertexPosColor::inputLayout[3] =
 	{ "TEXINDEX", 0, DXGI_FORMAT_R32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
 
-
 struct MapVertexPosColor {
 	XMFLOAT3 position;
 	XMFLOAT2 texCoord;
 	float texIndex;    // 纹理索引，作为浮点数存储
 };
 
-
 std::vector<MapVertexPosColor> GenerateRegion() {
 	float f_n = 2.0f;
 	std::vector<MapVertexPosColor> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
-
 
 	// 左下角的点坐标
 	float x = -0.5f;
@@ -42,39 +39,34 @@ std::vector<MapVertexPosColor> GenerateRegion() {
 	vertices.push_back({ XMFLOAT3(x, y + 1.0f, 0.0f),       XMFLOAT2(0.0f, 0.0f), indexTex });
 	vertices.push_back({ XMFLOAT3(x + 1.0f, y + 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f), indexTex });
 
-
 	return vertices;
 }
 
-
-
 RenderComponent::RenderComponent(HINSTANCE _hInstance) :
-    hInstance(_hInstance),
-    m_CameraMode(CameraMode::Free)
+	hInstance(_hInstance),
+	m_CameraMode(CameraMode::Free)
 {
 }
 
 void RenderComponent::setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, IDXGISwapChain* pSwapChain, HWND hMainWnd, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* pDepthStencilView)
 {
-    m_pd3dDevice = pd3dDevice;
-    m_pd3dImmediateContext = pd3dImmediateContext;
-    m_pSwapChain = pSwapChain;
-    m_hMainWnd = hMainWnd;
-    m_pRenderTargetView = pRenderTargetView;
-    m_pDepthStencilView = pDepthStencilView;
+	m_pd3dDevice = pd3dDevice;
+	m_pd3dImmediateContext = pd3dImmediateContext;
+	m_pSwapChain = pSwapChain;
+	m_hMainWnd = hMainWnd;
+	m_pRenderTargetView = pRenderTargetView;
+	m_pDepthStencilView = pDepthStencilView;
 }
 
 void RenderComponent::setcameraResource(int ClientWidth, int ClientHeight, std::shared_ptr<Camera> pCamera)
 {
-    m_ClientWidth = ClientWidth;
-    m_ClientHeight = ClientHeight;
-    m_pCamera = pCamera;
+	m_ClientWidth = ClientWidth;
+	m_ClientHeight = ClientHeight;
+	m_pCamera = pCamera;
 }
-
 
 bool RenderComponent::Init()
 {
-
 	if (!InitEffect())
 		return false;
 
@@ -106,7 +98,6 @@ void RenderComponent::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	{
 		left = false;
 	}
-	
 
 	tick++;
 }
@@ -132,14 +123,12 @@ void RenderComponent::Draw()
 		dataPtr->projection = XMMatrixTranspose(projMatrix);
 		dataPtr->TexIndex = static_cast<float>(left ? (((tick / 60) % 2)) : (((tick / 60) % 2) + 2));
 
-
 		// 取消映射常量缓冲区
 		m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
 		// 将常量缓冲区绑定到顶点着色器
 		m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
 	}
-
 
 	// 输入装配阶段的顶点缓冲区设置
 	UINT stride = sizeof(VertexPosColor);	// 跨越字节数
@@ -152,18 +141,14 @@ void RenderComponent::Draw()
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 	m_pd3dImmediateContext->Draw(6, 0);
-
 }
 
 void RenderComponent::cleanup()
 {
 }
 
-
-
 bool RenderComponent::InitResource()
 {
-
 	m_ddsLoader.Init(*m_pd3dDevice.GetAddressOf(), *m_pd3dImmediateContext.GetAddressOf());
 
 	std::vector<std::string> textureButtonFileNames = {
@@ -174,7 +159,6 @@ bool RenderComponent::InitResource()
 	};
 
 	m_ddsLoader.InitTex32ArrayFromFiles(textureButtonFileNames, textureArraySRV);
-
 
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	ZeroMemory(&matrixBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -203,12 +187,10 @@ bool RenderComponent::InitResource()
 	dataPtr->projection = XMMatrixTranspose(cam1st->GetProjXM());
 	dataPtr->TexIndex = 0;
 
-
 	m_pd3dImmediateContext->Unmap(matrixBuffer.Get(), 0);
 
 	// 设置顶点着色器中的常量缓冲区
 	m_pd3dImmediateContext->VSSetConstantBuffers(0, 1, matrixBuffer.GetAddressOf());
-
 
 	std::vector<MapVertexPosColor> button_vertices = GenerateRegion();
 	// 设置顶点缓冲区描述
@@ -224,13 +206,10 @@ bool RenderComponent::InitResource()
 	InitData.pSysMem = button_vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
 
-
 	return true;
 }
 
 bool RenderComponent::InitEffect()
 {
-
-
 	return true;
 }

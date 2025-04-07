@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "Scene.h"
 
-
 class StargateLoadingScene : public Scene
 {
 public:

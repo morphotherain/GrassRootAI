@@ -73,14 +73,14 @@
 //
 //
 //
-//		
+//
 //	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 //	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 //	{
 //		if ((x * 10) < mouseState.x && ((x + deltaX) * 10) > mouseState.x && (1080 - y * 10 - deltaY * 10) < mouseState.y && (1080 - y * 10) > mouseState.y)
 //			switchScene = 2;
 //	}
-//	
+//
 //
 //}
 //
@@ -167,7 +167,7 @@
 //}
 //
 //bool UIShaderTest::InitEffect()
-//{	
+//{
 //
 //
 //	// Load and create the second pixel shader

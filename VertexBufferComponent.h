@@ -4,37 +4,34 @@
 template <typename VertexDataType>
 class VertexBufferComponent : public EffectComponent {
 public:
-    VertexBufferComponent();
-    ~VertexBufferComponent();
+	VertexBufferComponent();
+	~VertexBufferComponent();
 
-
-    virtual void Init();
-    virtual void apply();
+	virtual void Init();
+	virtual void apply();
 
 	VertexDataType* Map();
 
 	void Unmap();
 
-    void setVertices(const std::vector<VertexDataType>& _vertices) { m_vertices = _vertices; }
+	void setVertices(const std::vector<VertexDataType>& _vertices) { m_vertices = _vertices; }
 	std::vector<VertexDataType> getVertices() { return m_vertices; }
-    UINT getVerticesCount() { return verticsNum>0? verticsNum : (UINT)m_vertices.size(); }
+	UINT getVerticesCount() { return verticsNum > 0 ? verticsNum : (UINT)m_vertices.size(); }
 	UINT getVerticesCountMax() { return verticsMax > 0 ? verticsMax : (UINT)m_vertices.size(); }
 	void setCPUAccessFlags(D3D11_CPU_ACCESS_FLAG _CPUAccessFlags) { CPUAccessFlags = _CPUAccessFlags; }
-    void setUsage(D3D11_USAGE _usage) { usage = _usage; }
+	void setUsage(D3D11_USAGE _usage) { usage = _usage; }
 	void setVerticesNum(UINT num) { verticsNum = num; }
 	void setVerticesNumMax(UINT num) { verticsMax = num; }
 private:
 
-    ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
-    std::vector<VertexDataType> m_vertices;			// 顶点数据
+	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
+	std::vector<VertexDataType> m_vertices;			// 顶点数据
 
 	D3D11_CPU_ACCESS_FLAG CPUAccessFlags = static_cast<D3D11_CPU_ACCESS_FLAG>(0);
 	D3D11_USAGE usage = D3D11_USAGE_IMMUTABLE;
 	UINT verticsNum = 0;
 	UINT verticsMax = 0;
 };
-
-
 
 template <typename VertexDataType>
 VertexBufferComponent<VertexDataType>::VertexBufferComponent() : EffectComponent() {}
@@ -58,7 +55,6 @@ void VertexBufferComponent<VertexDataType>::Init() {
 	ZeroMemory(&InitData, sizeof(InitData));
 	InitData.pSysMem = m_vertices.data();
 	HR(m_pd3dDevice->CreateBuffer(&vbd, &InitData, m_pVertexBuffer.GetAddressOf()));
-
 }
 
 template <typename VertexDataType>
@@ -69,7 +65,6 @@ void VertexBufferComponent<VertexDataType>::apply() {
 	m_pd3dImmediateContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
 	m_pd3dImmediateContext->Draw(getVerticesCount(), 0);
 }
-
 
 template<typename VertexDataType>
 VertexDataType* VertexBufferComponent<VertexDataType>::Map()
@@ -86,4 +81,3 @@ void VertexBufferComponent<VertexDataType>::Unmap()
 	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 	m_pd3dImmediateContext->Unmap(m_pVertexBuffer.Get(), 0);
 }
-

@@ -7,7 +7,6 @@ void GSEffectComponent::Init()
 
 	HR(CreateShaderFromFile(m_csoFileName.c_str(), m_gsFileName.c_str(), "GS", "gs_5_0", blob.ReleaseAndGetAddressOf()));
 	HR(m_pd3dDevice->CreateGeometryShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pGeometryShader.GetAddressOf()));
-
 }
 
 void GSEffectComponent::apply()

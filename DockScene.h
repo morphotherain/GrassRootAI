@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "UIButton.h"
 
-
 class DockScene : public Scene
 {
 public:
@@ -23,5 +22,4 @@ private:
 
 	std::shared_ptr<Effect> m_effect;
 	std::shared_ptr<UIButton> m_button;
-
 };

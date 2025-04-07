@@ -19,7 +19,7 @@ public:
 
 	virtual bool Init() = 0;
 	virtual void OnResize() = 0;
-	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard ,UINT tick) = 0;
+	virtual void UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick) = 0;
 	virtual void DrawScene() = 0;
 	virtual void cleanup() = 0;
 	virtual void AddUIComponent(std::shared_ptr<UIBase> component) {
@@ -40,8 +40,8 @@ public:
 	void setd2dResource(ID2D1RenderTarget* pd2dRenderTarget, ID2D1SolidColorBrush* pColorBrush, IDWriteTextFormat* pTextFormat);
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
 
-	enum class CameraMode { FirstPerson, ThirdPerson, Free }; 
-	float AspectRatio()const{	return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
+	enum class CameraMode { FirstPerson, ThirdPerson, Free };
+	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 
 protected:
 
@@ -78,13 +78,11 @@ protected:
 
 	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
 
-
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
 
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
-
 
 	std::vector<std::shared_ptr<UIBase>> uiComponents; // UI组件列表
 
@@ -92,4 +90,3 @@ protected:
 
 	int tick;
 };
-

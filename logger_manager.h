@@ -35,5 +35,4 @@ void initLogging();
 // 关闭日志系统
 void shutdownLogging();
 
-
 #endif // LOGGING_H

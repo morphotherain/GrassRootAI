@@ -15,9 +15,7 @@ public:
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-
 };
-
 
 class Planet : public GameObject
 {
@@ -31,7 +29,6 @@ public:
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-
 };
 
 class Moon : public GameObject
@@ -46,7 +43,6 @@ public:
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-
 };
 
 class AsteroidBelt : public GameObject
@@ -61,7 +57,6 @@ public:
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-
 };
 
 class StarGate : public GameObject
@@ -80,17 +75,14 @@ public:
 	std::shared_ptr<WarpGateComponent>m_pWarpGate;
 	void fillObjectName();
 
-
 	virtual void handleTask(const Task& task);
-
 };
-
 
 class Astro : public GameObject
 {
 public:
 	Astro() = default;
-	Astro(UINT _objectID) :objectID(_objectID){};
+	Astro(UINT _objectID) :objectID(_objectID) {};
 	~Astro() = default;
 
 	virtual void Init() {};
@@ -100,6 +92,4 @@ public:
 
 	std::shared_ptr<BaseComponent> m_pBase;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-
 };
-

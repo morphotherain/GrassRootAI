@@ -3,10 +3,8 @@
 #include "UIText.h"
 using namespace DirectX;
 
-
 UIWindow::UIWindow() : UIBase()
 {
-
 }
 
 bool UIWindow::Init()
@@ -14,8 +12,6 @@ bool UIWindow::Init()
 	windowTitle = L"窗口";
 
 	InitWindowComponent();
-
-
 
 	if (!InitEffect())
 		return false;
@@ -27,7 +23,6 @@ bool UIWindow::Init()
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
-
 
 	return false;
 }
@@ -55,36 +50,27 @@ void UIWindow::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	for (auto& component : childComponents) {
 		component->setDelta(x, y);
 	}
-
-
-
 }
 
 void UIWindow::DrawUI()
 {
-
 	for (auto& component : childComponents) {
 		component->DrawUI();
 	}
 	m_windowEffect->apply();
-
 }
 
 void UIWindow::cleanup()
 {
 }
 
-
-
 bool UIWindow::InitResource()
 {
-
 	return true;
 }
 
 bool UIWindow::InitEffect()
 {
-
 	return true;
 }
 
@@ -102,9 +88,9 @@ void UIWindow::HandleMouseEvent(float dt, DirectX::Mouse& mouse)
 	}
 
 	m_inputHandler.SetDetectionArea(x + width - TitleHeight, y, TitleHeight, TitleHeight);
-	
+
 	bool should_closed = m_inputHandler.IsMousePressedInArea();
-	if(should_closed){
+	if (should_closed) {
 		SetClosed(true);
 		return;
 	}
@@ -117,8 +103,6 @@ void UIWindow::HandleMouseEvent(float dt, DirectX::Mouse& mouse)
 		x += dx;
 		y += dy;
 	}
-
-
 }
 
 void UIWindow::InitWindowComponent()
@@ -134,7 +118,7 @@ void UIWindow::InitWindowComponent()
 		"demoTex\\UI\\Window\\window_line.dds"
 	};
 
-	DEBUG_("width:{} height:{}",  width, height);
+	DEBUG_("width:{} height:{}", width, height);
 	GenerateRectVertex(vertices, 0.0f, 0.0f, width, height, 0.0f);
 	GenerateRectVertex(vertices, 0.0f, 0.0f, width, TitleHeight, 1.0f);
 	GenerateRectVertex(vertices, width - 3 * TitleHeight, 0.0f, TitleHeight, TitleHeight, 2.0f);
@@ -143,7 +127,7 @@ void UIWindow::InitWindowComponent()
 	GenerateRectVertex(vertices, 0.0f, 0.0f, width, 1.0f, 7.0f);
 	GenerateRectVertex(vertices, 0.0f, height - 1.0f, width, 1.0f, 7.0f);
 	GenerateRectVertex(vertices, 0.0f, 0.0f, 1.0f, height, 7.0f);
-	GenerateRectVertex(vertices, width-1.0f, 0.0f, 1.0f, height, 7.0f);
+	GenerateRectVertex(vertices, width - 1.0f, 0.0f, 1.0f, height, 7.0f);
 
 	m_windowEffect = std::make_shared<Effect>();
 	m_windowEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");

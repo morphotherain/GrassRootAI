@@ -5,7 +5,7 @@
 SpaceTransformComponent::SpaceTransformComponent(UINT _objectID)
 {
 	orientation = { 0.0f, 0.0f, 0.0f, 0.0f };
-	if(_objectID<40000000)
+	if (_objectID < 40000000)
 	{
 		auto pos = dynGameObjectsManager::getInstance()->getPosByObjectID(_objectID);
 		auto q = dynGameObjectsManager::getInstance()->getQuaternionByObjectID(_objectID);
@@ -25,7 +25,6 @@ SpaceTransformComponent::SpaceTransformComponent(UINT _objectID)
 		z = pos[2];
 		objectID = _objectID;
 	}
-
 }
 
 void SpaceTransformComponent::store()

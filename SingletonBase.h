@@ -4,11 +4,11 @@
 template<typename T>
 struct SingletonBase {
 public:
-    SingletonBase() {}
-    ~SingletonBase() {}
+	SingletonBase() {}
+	~SingletonBase() {}
 
-    static T* getInstance() {
-        static T instance;
-        return &instance;
-    }
+	static T* getInstance() {
+		static T instance;
+		return &instance;
+	}
 };

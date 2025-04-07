@@ -4,11 +4,10 @@
 class RasterizerStateComponent : public EffectComponent
 {
 public:
-    RasterizerStateComponent();
-    ~RasterizerStateComponent();
+	RasterizerStateComponent();
+	~RasterizerStateComponent();
 
+	virtual void Init();
 
-    virtual void Init();
-
-    virtual void apply();
+	virtual void apply();
 };

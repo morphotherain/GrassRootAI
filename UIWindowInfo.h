@@ -1,12 +1,10 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "InputHandler.h"
 #include "UIWindow.h"
 
 #define WINDOW_INFO_ID_TYPE 0
 #define WINDOW_INFO_ID_OBJECT 1
-
 
 class UIWindowInfo : public UIWindow
 {
@@ -32,7 +30,6 @@ public:
 		float padding[3]; // 添加padding以确保结构体的大小为16的倍数
 	};
 
-
 	virtual bool Init();
 	virtual void OnResize();
 	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
@@ -44,7 +41,7 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { x = _x, y = _y, deltaX = _deltaX, deltaY = _deltaY; }
-	void setTypeID(int _typeID ) { typeID = _typeID; };
+	void setTypeID(int _typeID) { typeID = _typeID; };
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> window_textureArraySRV;
@@ -60,4 +57,3 @@ private:
 
 	std::shared_ptr<Effect> m_itemImgEffect;
 };
-

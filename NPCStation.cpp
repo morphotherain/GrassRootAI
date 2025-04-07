@@ -9,7 +9,6 @@ void NPCStation::Init()
 	AddComponent<Component>(m_pSpaceTran);
 	m_pStation = std::make_shared<StationComponent>(objectID);
 	AddComponent<Component>(m_pStation);
-
 }
 
 void NPCStation::Update(UINT tick)
@@ -48,9 +47,8 @@ void NPCStation::handleTask(const Task& task)
 		tran->y = m_pSpaceTran->y;
 		tran->z = m_pSpaceTran->z;
 		physics->reset();
-		physics->velocity = {100.0f, 0.0f, 0.0f};
+		physics->velocity = { 100.0f, 0.0f, 0.0f };
 		physics->target_velocity = { 100.0f, 0.0f, 0.0f };
-
 
 		break;
 	}

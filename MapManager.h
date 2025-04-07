@@ -49,7 +49,6 @@ public:
 	void getRegionaName();
 };
 
-
 std::wstring intToRoman(int num);
 
 struct DenormalizeData {
@@ -75,7 +74,6 @@ public:
 			name += L" ";
 			name += romanOrbitIndex;
 		}
-
 	};
 
 	std::wstring name = L"";
@@ -98,12 +96,11 @@ public:
 
 class MapManager : public SingletonBase<MapManager> {
 private:
-    sqlite3_stmt* stmt = nullptr;
-    sqlite3* db;
+	sqlite3_stmt* stmt = nullptr;
+	sqlite3* db;
 
 public:
-    MapManager() { db = DatabaseManager::getInstance()->getDatabase(); };
-
+	MapManager() { db = DatabaseManager::getInstance()->getDatabase(); };
 };
 
 // 从数据库中获取所有恒星系数据的函数

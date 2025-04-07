@@ -6,8 +6,8 @@ class GameObject; // 前向声明
 
 class Component {
 public:
-    GameObject* owner;
-    Component() :owner(nullptr) {}
-    virtual ~Component() {}
-    virtual void Update(UINT tick) = 0;
+	GameObject* owner;
+	Component() :owner(nullptr) {}
+	virtual ~Component() {}
+	virtual void Update(UINT tick) = 0;
 };

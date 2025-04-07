@@ -4,9 +4,8 @@
 class TexturesComponent : public EffectComponent
 {
 public:
-	TexturesComponent(std::vector<std::string> textureFileNames): textureFileNames(textureFileNames) {}
+	TexturesComponent(std::vector<std::string> textureFileNames) : textureFileNames(textureFileNames) {}
 	~TexturesComponent() {};
-
 
 	virtual void Init();
 

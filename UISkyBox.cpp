@@ -80,7 +80,6 @@ void UISkyBox::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 
 void UISkyBox::DrawUI()
 {
-
 	auto m_pd3dDevice = D3DManager::getInstance().getDevice();
 	auto m_pd3dImmediateContext = D3DManager::getInstance().getDeviceContext();
 
@@ -129,7 +128,7 @@ void UISkyBox::cleanup()
 bool UISkyBox::InitResource()
 {
 	auto m_pd3dDevice = D3DManager::getInstance().getDevice();
-	
+
 	// 加载立方体纹理
 	ComPtr<ID3D11Resource> pTextureCube;
 	HR(DirectX::CreateDDSTextureFromFile(m_pd3dDevice, L"Texture\\demoTex\\SpaceScene\\skybox.dds", &pTextureCube, &textureArraySRV));
@@ -145,7 +144,7 @@ bool UISkyBox::InitResource()
 	HR(m_pd3dDevice->CreateShaderResourceView(pTextureCube.Get(), &srvDesc, &textureArraySRV));
 
 	std::vector<VertexPos> button_vertices = GenerateButtonVertices();
-	
+
 	m_skyboxEffect = std::make_shared<Effect>();
 
 	m_skyboxEffect->addVertexShaderBuffer<VertexPos>(L"HLSL\\Sky\\Sky_VS.hlsl", L"HLSL\\Sky\\Sky_VS.cso");

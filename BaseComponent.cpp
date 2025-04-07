@@ -13,7 +13,6 @@ BaseComponent::BaseComponent(UINT _objectID)
 	containerID = data.ContainerID;
 	categoryID = data.categoryID;
 	name = data.name;
-
 }
 BaseComponent::~BaseComponent()
 {
@@ -61,4 +60,3 @@ void BaseComponent::setContainerID(UINT _containerID)
 	containerID = _containerID;
 	store();
 }
-

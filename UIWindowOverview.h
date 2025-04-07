@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIWindow.h"
 
@@ -13,7 +12,6 @@ public:
 	UIWindowOverview();
 	UIWindowOverview(HINSTANCE _hInstance) :UIWindow(_hInstance) {}
 	~UIWindowOverview() = default;
-
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -35,16 +33,15 @@ public:
 		std::wstring Name;
 		std::vector<std::shared_ptr<UIText>> texts;
 
-		void Init(float x,float y, float Height);
+		void Init(float x, float y, float Height);
 		void Update();
 		void Draw();
 		void setIndex(float x, float y, float TitleHeight);
 
 		std::wstring getDisplay();
-		
 	};
 	struct RowMgr {
-		RowMgr(float _x,float _y, float _Height) :x(_x), y(_y), Height(_Height) {}
+		RowMgr(float _x, float _y, float _Height) :x(_x), y(_y), Height(_Height) {}
 		float x;
 		float y;
 		float Height;
@@ -62,11 +59,7 @@ public:
 protected:
 	void InitWindowComponent();
 
-
 private:
 
-
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
-
 };
-

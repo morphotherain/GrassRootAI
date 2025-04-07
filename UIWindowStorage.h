@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIWindow.h"
 #include "UIText.h"
@@ -18,7 +17,6 @@ public:
 
 		int objectID;
 		std::shared_ptr<UIButton> currentSelectBox;
-
 	};
 
 	struct Container {
@@ -52,9 +50,8 @@ public:
 protected:
 	void InitWindowComponent();
 
-
 private:
-	std::unordered_map<int,std::shared_ptr<Container>> m_mapOpenContainers;
+	std::unordered_map<int, std::shared_ptr<Container>> m_mapOpenContainers;
 	std::shared_ptr<Container> shipCargo;
 	std::shared_ptr<Container> stationShipHangar;
 	std::shared_ptr<Container> stationCargo;
@@ -62,20 +59,13 @@ private:
 	std::vector<std::pair<int, int>> m_itemsPair;
 	std::vector<std::unique_ptr<UIText>> m_itemsTexts;
 
-
 	std::shared_ptr<Effect> m_itemImgEffect;
 	std::vector<std::shared_ptr<Effect>> m_itemImgEffects;
 	std::shared_ptr<Effect> m_itemBackEffect;
 	std::shared_ptr<Effect> m_itemNumBackEffect;
 
-
 	std::shared_ptr<UIButton> currentContainerBox;
 	std::shared_ptr<UIText> currentContainerTitle;
 	std::shared_ptr<UIText> currentContainerUsed;
 	int currentContainerID = 0;
-
-
-
-
 };
-

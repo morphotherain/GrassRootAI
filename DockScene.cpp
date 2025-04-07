@@ -8,7 +8,6 @@
 
 using namespace DirectX;
 
-
 DockScene::DockScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
 }
@@ -67,8 +66,8 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	}
 
 	static int cooldown = 0;
-    if (cooldown > 0) cooldown--;
-	if(cooldown > 0)*(m_button->getClickFlag()) = false;
+	if (cooldown > 0) cooldown--;
+	if (cooldown > 0)*(m_button->getClickFlag()) = false;
 	if (*m_button->getClickFlag() && cooldown == 0) {
 		DEBUG_("click");
 		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;

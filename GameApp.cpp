@@ -8,9 +8,7 @@
 #include "InvTypesManager.h"
 #include "AttributesComponent.h"
 
-
 using namespace DirectX;
-
 
 GameApp::GameApp(HINSTANCE hInstance)
 	: D3DApp(hInstance),
@@ -23,7 +21,6 @@ GameApp::~GameApp()
 }
 
 void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
-
 	if (currentScene) {
 		currentScene->cleanup();
 	}
@@ -31,9 +28,9 @@ void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
 	currentScene = std::move(newScene);
 	if (currentScene) {
 		currentScene->setd3dResource(
-			*m_pd3dDevice1.GetAddressOf(), 
-			*m_pd3dImmediateContext1.GetAddressOf(), 
-			*m_pSwapChain1.GetAddressOf(), 
+			*m_pd3dDevice1.GetAddressOf(),
+			*m_pd3dImmediateContext1.GetAddressOf(),
+			*m_pSwapChain1.GetAddressOf(),
 			MainWnd(),
 			*m_pRenderTargetView.GetAddressOf(),
 			*m_pDepthStencilView.GetAddressOf()
@@ -148,7 +145,6 @@ void GameApp::OnResize()
 			DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 15, L"zh-cn",
 			m_pTextFormat.GetAddressOf()));
 		D3DManager::getInstance().addTextFormat(m_pTextFormat.Get(), "Arial_S");
-
 	}
 	else
 	{
@@ -157,17 +153,14 @@ void GameApp::OnResize()
 	}
 
 	D3DManager::getInstance().setd2dResource(m_pd2dRenderTarget.Get(), m_pColorBrush.Get(), m_pTextFormat.Get());
-
 }
 
 void GameApp::UpdateScene(float dt)
 {
-
 	tick++;
 	int switchScene = 0;
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
 	SolarSystemMgr::getInstance().Update(tick);
-
 
 	auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
 	UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
@@ -175,15 +168,14 @@ void GameApp::UpdateScene(float dt)
 	UINT currentSolarSystemID = SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID();
 	bool needSwitch = solarSystemID != currentSolarSystemID;
 
-	if(tick % 100 == 0 || needSwitch)
+	if (tick % 100 == 0 || needSwitch)
 	{
-		while(true)
+		while (true)
 		{
 			if (currentSceneID == 4) {
 				switchScene = 3;
 				break;
 			}
-
 
 			if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
 				if (currentSceneID != 4) {
@@ -204,7 +196,6 @@ void GameApp::UpdateScene(float dt)
 				SolarSystemMgr::getInstance().setCurrentPilot();
 				currentSolarSystem->clearCurrentPilots();
 				currentSolarSystem->clearCurrentSector();
-				
 
 				break;
 			}
@@ -252,23 +243,18 @@ void GameApp::UpdateScene(float dt)
 	default:;
 	}
 	return;
-	
 }
-
 
 void GameApp::DrawScene()
 {
 	currentScene->DrawScene();
 	return;
-	
 }
-
 
 bool GameApp::InitEffect()
 {
 	return true;
 }
-
 
 bool GameApp::InitResource()
 {

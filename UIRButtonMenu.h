@@ -6,8 +6,8 @@ class UIRButtonMenu : public UIBase
 {
 public:
 	UIRButtonMenu() = default;
-	UIRButtonMenu(UINT _source_id,UINT _target_id ) :
-		source_object_id(_source_id), target_object_id(_target_id),m_button(){}
+	UIRButtonMenu(UINT _source_id, UINT _target_id) :
+		source_object_id(_source_id), target_object_id(_target_id), m_button() {}
 	~UIRButtonMenu() = default;
 
 	// 虚基类Row，表示菜单项对应的按钮行相关信息
@@ -79,7 +79,7 @@ public:
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
 		}
 	};
-	// 表示“保持距离”菜单项对应的行类
+	// 表示“停靠”菜单项对应的行类
 	class DockRow : public Row {
 	public:
 		DockRow() {
@@ -89,7 +89,7 @@ public:
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
 			std::shared_ptr<Task> task = std::make_shared<Task>();
 			task->isInnerTask = true;
-			task->taskID = -1; 
+			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 0;
@@ -133,6 +133,42 @@ public:
 			return;
 		}
 	};
+	// 表示“锁定”菜单项对应的行类
+	class LockRow : public Row {
+	public:
+		LockRow() {
+			setText(L"锁定");
+		}
+
+		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			std::shared_ptr<Task> task = std::make_shared<Task>();
+			task->isInnerTask = true;
+			task->taskID = -1;
+			task->publisher = sourceObject;
+			task->target = targetObject;
+			task->taskTypeId = 3;
+			sourceObject->addTask(task);
+			return;
+		}
+	};
+	// 表示“解除锁定”菜单项对应的行类
+	class UnlockRow : public Row {
+	public:
+		UnlockRow() {
+			setText(L"解除锁定");
+		}
+
+		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			std::shared_ptr<Task> task = std::make_shared<Task>();
+			task->isInnerTask = true;
+			task->taskID = -1;
+			task->publisher = sourceObject;
+			task->target = targetObject;
+			task->taskTypeId = 4;
+			sourceObject->addTask(task);
+			return;
+		}
+	};
 
 	std::vector<std::shared_ptr<Row>> m_Rows;
 
@@ -156,7 +192,4 @@ private:
 
 	float x = 10.0f;
 	float y = 30.0f;
-
-
 };
-

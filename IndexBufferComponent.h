@@ -4,11 +4,10 @@
 class IndexBufferComponent : public EffectComponent
 {
 public:
-    IndexBufferComponent();
-    ~IndexBufferComponent();
+	IndexBufferComponent();
+	~IndexBufferComponent();
 
+	virtual void Init();
 
-    virtual void Init();
-
-    virtual void apply();
+	virtual void apply();
 };

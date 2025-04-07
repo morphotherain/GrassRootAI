@@ -1,5 +1,5 @@
 ﻿#include "UIRButtonMenu.h"
-using namespace DirectX; 
+using namespace DirectX;
 
 bool UIRButtonMenu::Init()
 {
@@ -8,7 +8,7 @@ bool UIRButtonMenu::Init()
 	auto source_object = (*SolarSystemMgr::getInstance().p_mapObject)[source_object_id];
 	auto target_object = (*SolarSystemMgr::getInstance().p_mapObject)[target_object_id];
 	if (source_object == nullptr || target_object == nullptr)return false;
-	
+
 	auto Base = target_object->GetComponent<BaseComponent>();
 	if (Base != nullptr) {
 		addRow(std::make_shared<DetailInfoRow>());
@@ -28,12 +28,20 @@ bool UIRButtonMenu::Init()
 			addRow(std::make_shared<MaintainDistanceRow>());
 		}
 	}
-	if(distance < 2500)
+	if (distance < 2500)
 	{
 		auto Station = target_object->GetComponent<StationComponent>();
 		if (Station != nullptr)
 		{
 			addRow(std::make_shared<DockRow>());
+		}
+	}
+	if (distance < 5000000) {
+		if (source_object->GetComponent<LockingComponent>()->IsLocked(Base->objectID)) {
+			addRow(std::make_shared<UnlockRow>());
+		}
+		else {
+			addRow(std::make_shared<LockRow>());
 		}
 	}
 

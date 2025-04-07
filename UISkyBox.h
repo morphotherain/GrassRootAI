@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
 class UISkyBox : public UIBase
@@ -8,8 +7,6 @@ public:
 	UISkyBox() = default;
 	UISkyBox(HINSTANCE _hInstance) :UIBase(_hInstance) {}
 	~UISkyBox() = default;
-
-
 
 	// 定义常量缓冲区结构
 	/*struct MatrixBufferType
@@ -39,10 +36,8 @@ private:
 	ComPtr<ID3D11Buffer> button_m_pVertexBuffer;		// 顶点缓冲区
 	std::fstream fs;
 
-
 	ComPtr<ID3D11PixelShader> m_pPixelShaderSky;	// 像素着色器
 	ComPtr<ID3D11VertexShader> m_pVertexShaderSky;	// 顶点着色器
-
 
 	std::shared_ptr<bool> clickFlag;
 
@@ -54,4 +49,3 @@ private:
 
 	std::vector<VertexPos> GenerateButtonVertices();
 };
-

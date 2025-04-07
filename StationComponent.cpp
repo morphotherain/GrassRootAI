@@ -4,5 +4,4 @@
 StationComponent::StationComponent(UINT _objectID)
 {
 	objectID = _objectID;
-	
 }

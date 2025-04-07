@@ -107,7 +107,6 @@ void SolarSystemMgr::InitPilots()
 	}
 }
 
-
 void SolarSystemMgr::getCurrentPilot()
 {
 	for (auto p : Pilots) {
@@ -128,4 +127,3 @@ void SolarSystemMgr::setCurrentPilot()
 	currentSolarSystem->setCurrentPilots(currentPilot);
 	currentSolarSystem->setCurrentSector();
 }
-

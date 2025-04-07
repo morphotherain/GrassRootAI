@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
 #include "UIText.h"
@@ -28,7 +27,6 @@ public:
 private:
 	std::fstream fs;
 
-
 	std::shared_ptr<bool> clickFlag;
 	std::shared_ptr<UIText> text;
 
@@ -42,4 +40,3 @@ private:
 
 	std::vector<PosTexIndex> GenerateButtonVertices(float x, float y, float deltaX, float deltaY);
 };
-

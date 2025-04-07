@@ -9,10 +9,9 @@
 #include "Transform.h"
 #include "Component.h"
 
-enum RenderType {Player, Map, Entity};
+enum RenderType { Player, Map, Entity };
 
 // 定义常量缓冲区的结构
-
 
 class RenderComponent : public Component {
 public:
@@ -47,7 +46,6 @@ public:
 	void setd3dResource(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dImmediateContext, IDXGISwapChain* pSwapChain, HWND hMainWnd, ID3D11RenderTargetView* pRenderTargetView, ID3D11DepthStencilView* m_pDepthStencilView);
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
 
-	
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
 	void setpos(const float _x, const float _y, const float _z) { posX = _x, posY = _y, posZ = _z; }
@@ -84,7 +82,6 @@ protected:
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	// 顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器
 
-
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
@@ -104,6 +101,4 @@ protected:
 
 public:
 	RenderType layer = RenderType::Player;
-
-    
 };

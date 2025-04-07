@@ -40,7 +40,6 @@ D3DApp::D3DApp(HINSTANCE hInstance)
 {
 	ZeroMemory(&m_ScreenViewport, sizeof(D3D11_VIEWPORT));
 
-
 	// 让一个全局指针获取这个类，这样我们就可以在Windows消息处理的回调函数
 	// 让这个类调用内部的回调函数了
 	g_pd3dApp = this;
@@ -73,7 +72,7 @@ int D3DApp::Run()
 	MSG msg = { 0 };
 
 	m_Timer.Reset();
-	const float targetFrameTime = 0.014; // 目标每帧时间（秒）
+	const float targetFrameTime = 0.014f; // 目标每帧时间（秒）
 	float accumulatedTime = 0.0f;
 
 	while (msg.message != WM_QUIT)
@@ -127,7 +126,6 @@ int D3DApp::Run()
 
 bool D3DApp::Init()
 {
-
 	m_pMouse = std::make_unique<DirectX::Mouse>();
 	m_pKeyboard = std::make_unique<DirectX::Keyboard>();
 
@@ -148,9 +146,8 @@ bool D3DApp::Init()
 		m_pSwapChain.Get(),
 		m_pRenderTargetView.Get(),
 		m_pDepthStencilView.Get(),
-		m_ClientWidth, 
+		m_ClientWidth,
 		m_ClientHeight);
-
 
 	return true;
 }
@@ -178,12 +175,11 @@ void D3DApp::OnResize()
 	HR(m_pSwapChain->ResizeBuffers(1, m_ClientWidth, m_ClientHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
 	HR(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf())));
 	HR(m_pd3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_pRenderTargetView.GetAddressOf()));
-	
+
 	// 设置调试对象名
 	D3D11SetDebugObjectName(backBuffer.Get(), "BackBuffer[0]");
-	
-	backBuffer.Reset();
 
+	backBuffer.Reset();
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 
@@ -204,8 +200,6 @@ void D3DApp::OnResize()
 		depthStencilDesc.SampleDesc.Count = 1;
 		depthStencilDesc.SampleDesc.Quality = 0;
 	}
-	
-
 
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -215,7 +209,6 @@ void D3DApp::OnResize()
 	// 创建深度缓冲区以及深度模板视图
 	HR(m_pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, m_pDepthStencilBuffer.GetAddressOf()));
 	HR(m_pd3dDevice->CreateDepthStencilView(m_pDepthStencilBuffer.Get(), nullptr, m_pDepthStencilView.GetAddressOf()));
-
 
 	// 将渲染目标视图和深度/模板缓冲区结合到管线
 	m_pd3dImmediateContext->OMSetRenderTargets(1, m_pRenderTargetView.GetAddressOf(), nullptr);// m_pDepthStencilView.Get()
@@ -229,21 +222,20 @@ void D3DApp::OnResize()
 	m_ScreenViewport.MaxDepth = 1.0f;
 
 	m_pd3dImmediateContext->RSSetViewports(1, &m_ScreenViewport);
-	
+
 	// 设置调试对象名
 	D3D11SetDebugObjectName(m_pDepthStencilBuffer.Get(), "DepthStencilBuffer");
 	D3D11SetDebugObjectName(m_pDepthStencilView.Get(), "DepthStencilView");
 	D3D11SetDebugObjectName(m_pRenderTargetView.Get(), "BackBufferRTV[0]");
-	
 }
 
 LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-		// WM_ACTIVATE is sent when the window is activated or deactivated.  
-		// We pause the game when the window is deactivated and unpause it 
-		// when it becomes active.  
+		// WM_ACTIVATE is sent when the window is activated or deactivated.
+		// We pause the game when the window is deactivated and unpause it
+		// when it becomes active.
 	case WM_ACTIVATE:
 		if (LOWORD(wParam) == WA_INACTIVE)
 		{
@@ -257,7 +249,7 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-		// WM_SIZE is sent when the user resizes the window.  
+		// WM_SIZE is sent when the user resizes the window.
 	case WM_SIZE:
 		// Save the new client area dimensions.
 		m_ClientWidth = LOWORD(lParam);
@@ -279,7 +271,6 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 			else if (wParam == SIZE_RESTORED)
 			{
-
 				// Restoring from minimized state?
 				if (m_Minimized)
 				{
@@ -297,13 +288,13 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 				else if (m_Resizing)
 				{
-					// If user is dragging the resize bars, we do not resize 
-					// the buffers here because as the user continuously 
+					// If user is dragging the resize bars, we do not resize
+					// the buffers here because as the user continuously
 					// drags the resize bars, a stream of WM_SIZE messages are
 					// sent to the window, and it would be pointless (and slow)
 					// to resize for each WM_SIZE message received from dragging
-					// the resize bars.  So instead, we reset after the user is 
-					// done resizing the window and releases the resize bars, which 
+					// the resize bars.  So instead, we reset after the user is
+					// done resizing the window and releases the resize bars, which
 					// sends a WM_EXITSIZEMOVE message.
 				}
 				else // API call such as SetWindowPos or m_pSwapChain->SetFullscreenState.
@@ -335,8 +326,8 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 
-		// The WM_MENUCHAR message is sent when a menu is active and the user presses 
-		// a key that does not correspond to any mnemonic or accelerator key. 
+		// The WM_MENUCHAR message is sent when a menu is active and the user presses
+		// a key that does not correspond to any mnemonic or accelerator key.
 	case WM_MENUCHAR:
 		// Don't beep when we alt-enter.
 		return MAKELRESULT(0, MNC_CLOSE);
@@ -382,7 +373,6 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-
 bool D3DApp::InitMainWindow()
 {
 	WNDCLASS wc;
@@ -410,7 +400,7 @@ bool D3DApp::InitMainWindow()
 	int height = R.bottom - R.top;
 
 	bool bordered = false;
-	if(bordered)
+	if (bordered)
 	{
 		m_hMainWnd = CreateWindow(L"D3DWndClassName", m_MainWndCaption.c_str(),
 			WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hAppInst, 0); //正常窗口
@@ -439,7 +429,7 @@ bool D3DApp::InitDirect3D()
 
 	// 创建D3D设备 和 D3D设备上下文
 	UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;    // Direct2D需要支持BGRA格式
-#if defined(DEBUG) || defined(_DEBUG)  
+#if defined(DEBUG) || defined(_DEBUG)
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	// 驱动类型数组
@@ -495,9 +485,6 @@ bool D3DApp::InitDirect3D()
 	m_pd3dDevice->CheckMultisampleQualityLevels(
 		DXGI_FORMAT_B8G8R8A8_UNORM, 4, &m_4xMsaaQuality);
 	assert(m_4xMsaaQuality > 0);
-
-
-
 
 	ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 	ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
@@ -581,10 +568,8 @@ bool D3DApp::InitDirect3D()
 		HR(dxgiFactory1->CreateSwapChain(m_pd3dDevice.Get(), &sd, m_pSwapChain.GetAddressOf()));
 	}
 
-
-
 	// 可以禁止alt+enter全屏
-	//  
+	//
 	//dxgiFactory1->MakeWindowAssociation(m_hMainWnd, DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_WINDOW_CHANGES);
 
 	// 设置调试对象名
@@ -631,12 +616,10 @@ void D3DApp::CalculateFrameStats()
 			<< L"FPS: " << fps << L"    "
 			<< L"Frame Time: " << mspf << L" (ms)";
 		SetWindowText(m_hMainWnd, outs.str().c_str());
-		DEBUG_("fps:{},Frame Time: {}",fps,mspf);
+		DEBUG_("fps:{},Frame Time: {}", fps, mspf);
 
 		// Reset for next average.
 		frameCnt = 0;
 		timeElapsed += 1.0f;
 	}
 }
-
-

@@ -13,8 +13,6 @@
 #include <wrl/client.h>
 #include "Keyboard.h"
 
-
-
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
@@ -48,7 +46,6 @@ namespace
 		ptr[(key >> 5)] &= ~bf;
 	}
 }
-
 
 #if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 
@@ -120,9 +117,7 @@ public:
 	static Keyboard::Impl* s_keyboard;
 };
 
-
 Keyboard::Impl* Keyboard::Impl::s_keyboard = nullptr;
-
 
 void Keyboard::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -186,8 +181,6 @@ void Keyboard::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 
 #endif
 
-
-
 #pragma warning( disable : 4355 )
 
 // Public constructor.
@@ -196,14 +189,12 @@ Keyboard::Keyboard() noexcept(false)
 {
 }
 
-
 // Move constructor.
 Keyboard::Keyboard(Keyboard&& moveFrom) noexcept
 	: pImpl(std::move(moveFrom.pImpl))
 {
 	pImpl->mOwner = this;
 }
-
 
 // Move assignment.
 Keyboard& Keyboard::operator= (Keyboard&& moveFrom) noexcept
@@ -213,12 +204,10 @@ Keyboard& Keyboard::operator= (Keyboard&& moveFrom) noexcept
 	return *this;
 }
 
-
 // Public destructor.
 Keyboard::~Keyboard()
 {
 }
-
 
 Keyboard::State Keyboard::GetState() const
 {
@@ -227,12 +216,10 @@ Keyboard::State Keyboard::GetState() const
 	return state;
 }
 
-
 void Keyboard::Reset()
 {
 	pImpl->Reset();
 }
-
 
 bool Keyboard::IsConnected() const
 {
@@ -246,8 +233,6 @@ Keyboard& Keyboard::Get()
 
 	return *Impl::s_keyboard->mOwner;
 }
-
-
 
 //======================================================================================
 // KeyboardStateTracker
@@ -272,7 +257,6 @@ void Keyboard::KeyboardStateTracker::Update(const State& state)
 
 	lastState = state;
 }
-
 
 void Keyboard::KeyboardStateTracker::Reset() noexcept
 {

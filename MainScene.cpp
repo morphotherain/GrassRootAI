@@ -8,7 +8,6 @@
 
 using namespace DirectX;
 
-
 MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
 	/*auto window = std::make_shared<UIWindowInfo>();

@@ -3,9 +3,7 @@
 #include "invGroupsManager.h"
 #include <sstream>
 #include <iomanip>
-using namespace DirectX; 
-	
-
+using namespace DirectX;
 
 UIWindowOverview::UIWindowOverview() : UIWindow()
 {
@@ -31,7 +29,6 @@ bool UIWindowOverview::Init()
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
-
 
 	return false;
 }
@@ -79,7 +76,6 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 		// 在鼠标没进入窗口前仍为ABSOLUTE模式
 		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 		{
-
 			m_RButtonMenu = nullptr;
 		}
 
@@ -88,7 +84,7 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 		{
 			UINT currentID = SolarSystemMgr::getInstance().currentPilot->currentShip->GetComponent<BaseComponent>()->objectID;
 			int index = static_cast<int>((mouseState.y - y - 35) / TitleHeight - 2);
-			if(m_RowMgr->Rows.size()>index)
+			if (m_RowMgr->Rows.size() > index)
 			{
 				UINT targetID = m_RowMgr->Rows[index + m_RowMgr->next_index]->objectID;
 				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
@@ -97,12 +93,9 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 				m_RButtonMenu->Init();
 			}
 		}
-
-
 	}
 
 	m_RowMgr->Update(tick);
-
 }
 
 void UIWindowOverview::DrawUI()
@@ -125,36 +118,29 @@ void UIWindowOverview::DrawUI()
 	m_RowMgr->Draw();
 	if (m_RButtonMenu != nullptr)
 		m_RButtonMenu->DrawUI();
-
 }
 
 void UIWindowOverview::cleanup()
 {
 }
 
-
-
 bool UIWindowOverview::InitResource()
 {
-
 	return true;
 }
 
 bool UIWindowOverview::InitEffect()
 {
-
 	return true;
 }
 
-
 void UIWindowOverview::setSize(const float _x, const float _y, const float _deltaX, const float _deltaY)
 {
-	UIWindow::setSize(_x, _y, _deltaX, _deltaY); 
+	UIWindow::setSize(_x, _y, _deltaX, _deltaY);
 }
 
 void UIWindowOverview::InitWindowComponent()
 {
-
 	UIWindow::InitWindowComponent();
 	auto Texture = m_windowEffect->getTextures();
 
@@ -164,7 +150,7 @@ void UIWindowOverview::InitWindowComponent()
 	m_windowEffect->Init();
 
 	auto text = std::make_shared<UIText>();
-	text->setSize(11.0f,  TitleHeight+5.0f, 350.0f, 350.0f);
+	text->setSize(11.0f, TitleHeight + 5.0f, 350.0f, 350.0f);
 	text->setText(L"默认");
 	AddUIComponent(text);
 
@@ -187,7 +173,6 @@ void UIWindowOverview::InitWindowComponent()
 	text->setSize(460.0f, TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(L"速度");
 	AddUIComponent(text);
-
 }
 
 void UIWindowOverview::Row::Init(float x, float y, float TitleHeight)
@@ -196,7 +181,6 @@ void UIWindowOverview::Row::Init(float x, float y, float TitleHeight)
 	text->setSize(x + 20.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(Name);
 	texts.push_back(text);
-
 
 	text = std::make_shared<UIText>();
 	text->setSize(x + 240.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
@@ -208,7 +192,6 @@ void UIWindowOverview::Row::Init(float x, float y, float TitleHeight)
 	text->setSize(x + 315.0f, y + 2 * TitleHeight + 35.0f, 350.0f, 350.0f);
 	text->setText(typeName);
 	texts.push_back(text);
-
 
 	std::wstringstream wss;
 	wss << std::fixed << std::setprecision(1) << velocity << L"m/s";
@@ -239,7 +222,6 @@ void UIWindowOverview::Row::setIndex(float x, float y, float TitleHeight)
 	texts[1]->setSize(x + 220.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
 	texts[2]->setSize(x + 300.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
 	texts[3]->setSize(x + 460.0f, y + (2) * TitleHeight + 35.0f, 350.0f, 350.0f);
-
 }
 
 std::wstring UIWindowOverview::Row::getDisplay()
@@ -289,7 +271,6 @@ void UIWindowOverview::RowMgr::Init()
 void UIWindowOverview::RowMgr::Update(UINT tick)
 {
 	if (tick % 30 == 0) {
-
 		Rows.clear();
 		auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 		auto currentSector = currentSolarSystem->currentSector;
@@ -302,7 +283,6 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 		auto currentBase = currentShip->GetComponent<BaseComponent>();
 		int count = 0;
 		int count_delta = 0;
-
 
 		for (auto object : spaceObjects) {
 			std::shared_ptr<Row> temp = std::make_shared<Row>();
@@ -351,8 +331,6 @@ void UIWindowOverview::RowMgr::Update(UINT tick)
 			temp->Init(x, y + count * Height, Height); count++;
 			Rows.push_back(temp);
 		}
-
-
 	}
 }
 

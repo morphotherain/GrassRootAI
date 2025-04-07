@@ -4,10 +4,8 @@
 
 using namespace DirectX;
 
-
 StargateLoadingScene::StargateLoadingScene(HINSTANCE _hInstance) : Scene(_hInstance)
 {
-
 }
 
 bool StargateLoadingScene::Init()

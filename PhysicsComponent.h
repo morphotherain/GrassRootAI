@@ -57,7 +57,6 @@ public:
 	UINT warpUniformTime = 0;
 	double warpUniform_t = 0.0f;
 
-
 	// 标记当前是否处于跃迁状态
 	bool isWarping = false;
 
@@ -74,8 +73,6 @@ public:
 	Pos currentPosition = { 0.0f,0.0f,0.0f };
 
 	Pos warpDirection = { 0.0f,0.0f,0.0f };
-
-
 
 	virtual void Update(UINT tick);
 

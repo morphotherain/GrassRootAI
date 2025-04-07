@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
 #include "InputHandler.h"
@@ -11,7 +10,6 @@ public:
 	UIWindow(HINSTANCE _hInstance) :UIBase(_hInstance) {}
 	~UIWindow() = default;
 
-
 	virtual bool Init();
 	virtual void OnResize();
 	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
@@ -22,16 +20,14 @@ public:
 
 	bool InitResource();
 	bool InitEffect();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) { 
-		x = _x, y = _y, width = _deltaX, height = _deltaY; 
+	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) {
+		x = _x, y = _y, width = _deltaX, height = _deltaY;
 		DEBUG_("width:{} height:{}", width, height);
 	}
 	void setTex(std::string _Tex) { TexPath = _Tex; };
 
-
 	std::shared_ptr<bool> isCatchingMouse = std::make_shared<bool>();
 	std::shared_ptr<bool> getCatchingMouse() { return isCatchingMouse; }
-
 
 	bool IsActive() const { return isActive; }
 	bool IsVisible() const { return isVisible; }
@@ -46,7 +42,6 @@ public:
 	void SetActive(bool active) { isActive = active; }
 	void SetClosed(bool closed) { isClosed = closed; }
 
-
 	int GetZOrder() const { return m_zOrder; }
 	void SetZOrder(int zOrder) { m_zOrder = zOrder; }
 
@@ -54,7 +49,6 @@ public:
 	InputHandler m_inputHandler;
 
 	void HandleMouseEvent(float dt, DirectX::Mouse& mouse);
-
 
 protected:
 	void InitWindowComponent();
@@ -75,7 +69,6 @@ protected:
 
 	std::shared_ptr<OrthographicCamera> m_pUICamera;
 
-
 private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 	ComPtr<ID3D11ShaderResourceView> window_textureArraySRV;
@@ -85,15 +78,12 @@ private:
 
 	ComPtr<ID3D11PixelShader> m_pTestPixelShader;	// 像素着色器
 
-
-
 	std::string TexPath;
 	std::string TitleTexPath;
 	std::string CloseTexPath;
 	std::string MaxTexPath;
 	std::string MinTexPath;
 	std::string BodyTexPath;
-
 
 	// 窗口标志变量
 	bool isVisible = true;
@@ -104,7 +94,4 @@ private:
 	bool isClosed = false;
 
 	int m_zOrder = 0;
-
-
 };
-

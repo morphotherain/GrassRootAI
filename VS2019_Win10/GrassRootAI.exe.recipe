@@ -7,6 +7,12 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\ProcessCircle_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\ProcessCircle_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\GaugeTarget_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>

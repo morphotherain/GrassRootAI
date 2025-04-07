@@ -17,13 +17,14 @@ void Ship::Init()
 	AddComponent<Component>(m_pPilotStorage);
 	m_pCargoStorage = std::make_shared<CargoContainerComponent>(objectID);
 	AddComponent<Component>(m_pCargoStorage);
+	m_pLocking = std::make_shared<LockingComponent>(objectID);
+	AddComponent<Component>(m_pLocking);
 
 	fillObjectName();
 }
 
 void Ship::Update(UINT tick)
 {
-	
 	processTasks();
 	if (tick % 30 == 0) {
 		handleApproach(approachTarget.lock());
@@ -41,6 +42,7 @@ void Ship::Update(UINT tick)
 	}
 	m_pPhysics->Update(tick);
 	m_pBase->Update(tick);
+	m_pLocking->Update(tick);
 }
 
 void Ship::fillObjectName()
@@ -53,7 +55,7 @@ void Ship::handleTask(const Task& task)
 	switch (task.taskTypeId) {
 	case 0:
 	{
-		if(warpTarget.lock() == nullptr)
+		if (warpTarget.lock() == nullptr)
 		{
 			approachTarget = task.target;
 			activeTarget.reset();
@@ -70,8 +72,24 @@ void Ship::handleTask(const Task& task)
 	case 2:
 	{
 		activeTarget = task.target;
+		break;
 	}
-	default:;
+	case 3:
+	{
+		m_pLocking->AddLocked(task.target->objectID);
+		DEBUG_("发布锁定任务");
+		break;
+	}
+	case 4:
+	{
+		m_pLocking->EraseLocked(task.target->objectID);
+		DEBUG_("发布取消锁定任务");
+		break;
+	}
+	default: {
+		//nothing to do
+		break;
+	}
 	}
 }
 
@@ -97,7 +115,7 @@ void Ship::handleApproach(std::shared_ptr<GameObject> target)
 		XMStoreFloat3(&direction, dirVec);
 	}
 
-	float maxSpeed = m_pPhysics->maxSpeed;  
+	float maxSpeed = m_pPhysics->maxSpeed;
 	// 乘以最大速度
 	m_pPhysics->target_velocity.x = direction.x * maxSpeed;
 	m_pPhysics->target_velocity.y = direction.y * maxSpeed;
@@ -115,7 +133,7 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 		return;
 
 	switch (currentWarpState) {
-	case ShipWarpState::None: 
+	case ShipWarpState::None:
 	{
 		currentWarpState = ShipWarpState::PreparingWarp;
 		break;
@@ -134,7 +152,6 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 		float currentSpeed = XMVector3Length(currentVelocityVec).m128_f32[0];
 		// 获取最大速度
 		float maxSpeed = m_pPhysics->maxSpeed;
-
 
 		// 将XMFLOAT3转换为XMVECTOR（方便后续数学运算）
 		XMVECTOR dirVec = XMLoadFloat3(&direction);
@@ -167,7 +184,7 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 		float dotProduct = XMVector3Dot(currentForwardVec, dirVec).m128_f32[0];
 		dotProduct = (dotProduct < -1.0f) ? -1.0f : ((dotProduct > 1.0f) ? 1.0f : dotProduct);
 		float angleInRadians = acosf(dotProduct);
-		float angleInDegrees = angleInRadians * (180.0f /	DirectX::XM_PI);
+		float angleInDegrees = angleInRadians * (180.0f / DirectX::XM_PI);
 		bool angleRequirementMet = angleInDegrees <= 5.0f;
 
 		if (speedRequirementMet && angleRequirementMet)
@@ -187,7 +204,4 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 		break;
 	}
 	}
-
-	
 }
-

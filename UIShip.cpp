@@ -2,12 +2,8 @@
 
 using namespace DirectX;
 
-
-
 bool UIShip::Init()
 {
-
-
 	if (!InitEffect())
 		return false;
 
@@ -23,26 +19,6 @@ void UIShip::OnResize()
 
 void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
-	auto p_mapObject = SolarSystemMgr::getInstance().p_mapObject;
-	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
-	auto m_currentLockedTarget = (*p_mapObject)[7];
-	auto Tran1 = m_currentShip->GetComponent<SpaceTransformComponent>();
-	auto Tran2 = m_currentLockedTarget->GetComponent<SpaceTransformComponent>();
-	auto ThirdCameraLocal = std::reinterpret_pointer_cast<ThirdPersonCamera>(m_pLocalCamera);
-	auto sector = SolarSystemMgr::getInstance().currentSolarSystem->currentSector;
-	DirectX::XMMATRIX viewMatrixLocal = m_pLocalCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrixLocal = m_pLocalCamera->GetProjXM();
-	auto ndc = Convert3DToNDC({
-		static_cast<float>(Tran2->x - sector->x),
-		static_cast<float>(Tran2->y - sector->y),
-		static_cast<float>(Tran2->z - sector->z) }, viewMatrixLocal, projMatrixLocal);
-	auto pos = ConvertNDCToScreen(ndc, 1920.0f, 1080.0f);
-
-	m_mapLockedTarget[7]->target_x = pos.x + 10.0f;
-	m_mapLockedTarget[7]->target_y = pos.y + 16.0f;
-
-
-
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -52,6 +28,7 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 	m_KeyboardTracker.Update(keyState);
 
 	m_tick = tick;
+	UpdateLockedTargets(tick);
 }
 
 void UIShip::DrawUI()
@@ -60,7 +37,6 @@ void UIShip::DrawUI()
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
-
 
 	DirectX::XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 
@@ -78,15 +54,11 @@ void UIShip::DrawUI()
 	DrawGaugeEffect(m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
 	DrawGaugeEffect(m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
 	DrawGaugeEffect(m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
-
-
 }
 
 void UIShip::cleanup()
 {
 }
-
-
 
 bool UIShip::InitResource()
 {
@@ -110,7 +82,7 @@ bool UIShip::InitResource()
 
 	std::vector<PosTexIndex> verticesGauge1 = {};
 	GenerateRectVertex(verticesGauge1, 6.0f, 6.0f, 148.0f, 148.0f, 0.0f);
-	InitGaugeEffect(verticesGauge1, {front + "gauge1.dds"}, m_gaugeShieldEffect);
+	InitGaugeEffect(verticesGauge1, { front + "gauge1.dds" }, m_gaugeShieldEffect);
 	std::vector<PosTexIndex> verticesGauge2 = {};
 	GenerateRectVertex(verticesGauge2, 6.0f, 6.0f, 148.0f, 148.0f, 0.0f);
 	InitGaugeEffect(verticesGauge2, { front + "gauge2.dds" }, m_gaugeArmorEffect);
@@ -138,7 +110,6 @@ bool UIShip::InitResource()
 		front + "slotOverloadOff.dds",
 		front + "slotOverloadDisabled.dds"
 		}, m_slotOverloadBtnEffect);
-
 
 	std::vector<PosTexIndex> verticesSlotBase = {};
 	GenerateSlotUnderlayVertices(verticesSlotBase);
@@ -168,9 +139,7 @@ bool UIShip::InitResource()
 
 	std::vector<PosTexIndex> verticesCapacitor = {};
 	GenerateCapacitorDots(verticesCapacitor, 16, 80.0f, 80.0f, 25.0f);
-	InitCommonEffect(verticesCapacitor, {front + "capacitorCell.dds"}, m_capacitorEffect);
-
-	GenerateLockedTarget(7);
+	InitCommonEffect(verticesCapacitor, { front + "capacitorCell.dds" }, m_capacitorEffect);
 
 	auto UIcamera = std::make_shared<OrthographicCamera>();
 	m_pUICamera = UIcamera;
@@ -192,6 +161,54 @@ bool UIShip::InitEffect()
 	return true;
 }
 
+void UIShip::UpdateLockedTargets(UINT tick)
+{
+	for (auto& pair : m_mapLockedTarget) {
+		pair.second->m_checked = false;
+	}
+	auto p_mapObject = SolarSystemMgr::getInstance().p_mapObject;
+	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+	auto lockingComponent = m_currentShip->GetComponent<LockingComponent>();
+	for (auto& pair : lockingComponent->m_mapLockedTarget) {
+		int id = pair.second->m_TargetObjectID;
+		auto it = m_mapLockedTarget.find(id);
+		if (it == m_mapLockedTarget.end()) {
+			GenerateLockedTarget(id);
+		}
+		m_mapLockedTarget[id]->m_checked = true;
+		m_mapLockedTarget[id]->m_isLocked = pair.second->m_isLocked;
+		m_mapLockedTarget[id]->m_lockedProcess = pair.second->m_lockedProcess;
+	}
+	std::vector<int> idsToRemove;
+	for (auto& pair : m_mapLockedTarget) {
+		if (!pair.second->m_checked) {
+			idsToRemove.push_back(pair.first);
+		}
+	}
+
+	for (int id : idsToRemove) {
+		m_mapLockedTarget.erase(id);
+	}
+
+	auto Tran1 = m_currentShip->GetComponent<SpaceTransformComponent>();
+
+	for (auto& pair : m_mapLockedTarget) {
+		auto m_currentLockedTarget = (*p_mapObject)[pair.first];
+		auto Tran2 = m_currentLockedTarget->GetComponent<SpaceTransformComponent>();
+		auto ThirdCameraLocal = std::reinterpret_pointer_cast<ThirdPersonCamera>(m_pLocalCamera);
+		auto sector = SolarSystemMgr::getInstance().currentSolarSystem->currentSector;
+		DirectX::XMMATRIX viewMatrixLocal = m_pLocalCamera->GetViewXM();
+		DirectX::XMMATRIX projMatrixLocal = m_pLocalCamera->GetProjXM();
+		auto ndc = Convert3DToNDC({
+			static_cast<float>(Tran2->x - sector->x),
+			static_cast<float>(Tran2->y - sector->y),
+			static_cast<float>(Tran2->z - sector->z) }, viewMatrixLocal, projMatrixLocal);
+		auto pos = ConvertNDCToScreen(ndc, 1920.0f, 1080.0f);
+
+		m_mapLockedTarget[pair.first]->target_x = pos.x + 10.0f;
+		m_mapLockedTarget[pair.first]->target_y = pos.y + 16.0f;
+	}
+}
 
 void UIShip::InitCommonEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect)
 {
@@ -229,7 +246,6 @@ void UIShip::InitEquipmentEffect(std::shared_ptr<Effect>& m_effect)
 		getIconPathByTypeID(medTypeID),
 		getIconPathByTypeID(lowTypeID)
 		}, m_slotEquipmentEffect);
-
 }
 
 void UIShip::InitGaugeEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect)
@@ -280,7 +296,7 @@ void UIShip::GenerateCapacitorDots(std::vector<PosTexIndex>& vertices, int numRa
 			float dy = centerY - dotY;
 
 			// 计算小点的方向，始终朝向圆心
-			float dotAngle = std::atan2(dy, dx) - DirectX::XM_PI/2.0f;
+			float dotAngle = std::atan2(dy, dx) - DirectX::XM_PI / 2.0f;
 
 			// 调用 GenerateRectVertex 函数生成矩形顶点
 			//DEBUG_("GenerateRectVertex(vertices, dotX {}, dotY {}, dotSizeX {}, dotSizeY {}, dotAngle{}, 0.0f)", dotX, dotY, dotSize, dotSize, dotAngle);
@@ -292,7 +308,7 @@ void UIShip::GenerateCapacitorDots(std::vector<PosTexIndex>& vertices, int numRa
 void UIShip::GenerateSlotVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID)
 {
 	float delta = (row % 2 == 0) ? 0.0f : 30.0f;
-	GenerateRectVertex(vertices, 155.0f + delta + col * 50.0f,10.0f+ row * 40.0f, 64.0f, 64.0f, texID);
+	GenerateRectVertex(vertices, 155.0f + delta + col * 50.0f, 10.0f + row * 40.0f, 64.0f, 64.0f, texID);
 }
 
 void UIShip::GenerateSlotEquipmentVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID)
@@ -300,7 +316,6 @@ void UIShip::GenerateSlotEquipmentVertices(std::vector<PosTexIndex>& vertices, i
 	float delta = (row % 2 == 0) ? 0.0f : 30.0f;
 	GenerateRectVertex(vertices, 165.0f + delta + col * 50.0f, 18.0f + row * 40.0f, 48.0f, 48.0f, texID);
 }
-
 
 void UIShip::GenerateSlotUnderlayVertices(std::vector<PosTexIndex>& vertices)
 {
@@ -328,24 +343,30 @@ void UIShip::GenerateSlotOverloadsVertices(std::vector<PosTexIndex>& vertices)
 
 void UIShip::GenerateLockedTarget(int objectID)
 {
+	auto p_mapObject = SolarSystemMgr::getInstance().p_mapObject;
+	auto targetObject = (*p_mapObject)[objectID];
+	auto base = targetObject->GetComponent<BaseComponent>();
+
 	m_mapLockedTarget[objectID] = std::make_shared<LockedTarget>();
 	auto& target = m_mapLockedTarget[objectID];
 	target->x = 600.0f;
 	target->y = 100.0f;
 	target->target_x = 900.0f;
 	target->target_y = 500.0f;
+	target->m_lockedProcess = 0.4f;
 
+	int typeID = base->typeID;
 
 	std::vector<PosTexIndex> verticesSpeedoUnderlay = {};
 	GenerateRectVertex(verticesSpeedoUnderlay, 25.0f, 25.0f, 50.0f, 50.0f, 0.0f);
 	InitCommonEffect(verticesSpeedoUnderlay, {
-		getIconPathByTypeID(623) }, target->m_typeImgEffect);
+		getIconPathByTypeID(typeID) }, target->m_typeImgEffect);
 
 	std::vector<PosTexIndex> verticesButtonBody = {};
 	GenerateRectVertex(verticesButtonBody, 20.0f, 65.0f, 60.0f, 28.0f, 0.0f);
 	InitCommonEffect(verticesButtonBody, { front + "buttonBody.dds" }, target->m_bodyEffect);
 
-	std::vector<PosTexIndex> verticesArrow= {};
+	std::vector<PosTexIndex> verticesArrow = {};
 	GenerateRectVertex(verticesArrow, 0.0f, 0.0f, 100.0f, 100.0f, 0.0f);
 	InitCommonEffect(verticesArrow, { front + "releaseArrowOpacity.dds" }, target->m_arrowEffect);
 
@@ -369,7 +390,6 @@ void UIShip::GenerateLockedTarget(int objectID)
 	GenerateRectVertex(verticesGauge3, 8.0f, 8.0f, 84.0f, 84.0f, 0.0f);
 	InitLockedTargetGaugeEffect(verticesGauge3, { front + "gauge3_target.dds" }, target->m_gaugeStructureEffect);
 
-
 	std::vector<PosTexIndex> verticesLockedLine = {};
 	GenerateRectVertex(verticesLockedLine, -10000.0f, 0.0f, 10000.0f - 42.0f, 1.0f, 0.0f);
 	GenerateRectVertex(verticesLockedLine, 42.0f, 0.0f, 10000.0f - 42.0f, 1.0f, 0.0f);
@@ -380,6 +400,21 @@ void UIShip::GenerateLockedTarget(int objectID)
 	std::vector<PosTexIndex> verticesLockedCircle = {};
 	GenerateRectVertex(verticesLockedCircle, -42.0f, -42.0f, 84.0f, 84.0f, 0.0f);
 	InitCommonEffect(verticesLockedCircle, { front + "locked_circle.dds" }, target->m_lockedCircleEffect);
+
+	std::vector<PosTexIndex> verticesLockingCircle = {};
+	GenerateRectVertex(verticesLockingCircle, -42.0f, -42.0f, 84.0f, 84.0f, 0.0f);
+	target->m_lockingCircleEffect = std::make_shared<Effect>();
+	target->m_lockingCircleEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\UI\\ProcessCircle_VS.hlsl", L"HLSL\\UI\\ProcessCircle_VS.cso");
+	target->m_lockingCircleEffect->getVertexBuffer<PosTexIndex>()->setVertices(verticesLockingCircle);
+	target->m_lockingCircleEffect->addPixelShader(L"HLSL\\UI\\ProcessCircle_PS.hlsl", L"HLSL\\UI\\ProcessCircle_PS.cso");
+	target->m_lockingCircleEffect->addTextures({ front + "locking_circle.dds" });
+	target->m_lockingCircleEffect->addConstantBuffer<ConstantMVPIndex>();
+	target->m_lockingCircleEffect->Init();
+
+	target->m_lockedObjectName = std::make_shared<UIText>();
+	target->m_lockedObjectName->setSize(30.0f, 100.0f, 350.0f, 350.0f);
+	target->m_lockedObjectName->setText(InvTypesManager::getInstance()->getNameByTypeId(typeID));
+	target->m_lockedObjectName->Init();
 }
 
 void UIShip::DeleteLockedTarget(int objectID)
@@ -402,6 +437,7 @@ void UIShip::DrawLockedTarget()
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
 
+	int index = 0;
 	for (auto& pair : m_mapLockedTarget) {
 		auto& target = pair.second;
 
@@ -409,22 +445,37 @@ void UIShip::DrawLockedTarget()
 		DrawCommonEffect(target->m_lockedLineEffect, windowModelTarget, viewMatrix, projMatrix);
 		DrawCommonEffect(target->m_lockedCircleEffect, windowModelTarget, viewMatrix, projMatrix);
 
-		DirectX::XMMATRIX windowModel = XMMatrixTranslation(target->x, target->y, 0.0f);
-		DrawCommonEffect(target->m_typeImgEffect, windowModel, viewMatrix, projMatrix);
-		DrawCommonEffect(target->m_gaugeRedEffect, windowModel, viewMatrix, projMatrix);
-		DrawGaugeEffect(target->m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
-		DrawGaugeEffect(target->m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
-		DrawGaugeEffect(target->m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
-		DrawCommonEffect(target->m_bodyEffect, windowModel, viewMatrix, projMatrix);
+		DirectX::XMMATRIX windowModel = XMMatrixTranslation(target->x + 120.0f * index, target->y, 0.0f);
+		float angle = (XM_2PI) * (m_tick % 360) / 360.0f;
+		if (!target->m_isLocked)
+		{
+			ConstantMVPIndex* dataPtr = target->m_lockingCircleEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
+			dataPtr->model = XMMatrixTranspose(windowModelTarget);
+			dataPtr->view = XMMatrixTranspose(viewMatrix); // 转置矩阵以匹配HLSL的期望
+			dataPtr->projection = XMMatrixTranspose(projMatrix);
+			dataPtr->TexIndex = target->m_lockedProcess;
+			target->m_lockingCircleEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
+			target->m_lockingCircleEffect->apply();
+		}
+		else {
+			target->m_lockedObjectName->setDelta(target->x + 120.0f * index, target->y);
+			target->m_lockedObjectName->DrawUI();
 
-		float angle = (XM_2PI) * (m_tick % 360) / 360;
-		windowModel = CreateRotatedWindowModel(target->x, target->y, 100.0f, 100.0f, angle);
-		DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
+			DrawCommonEffect(target->m_typeImgEffect, windowModel, viewMatrix, projMatrix);
+			DrawCommonEffect(target->m_gaugeRedEffect, windowModel, viewMatrix, projMatrix);
+			DrawGaugeEffect(target->m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
+			DrawGaugeEffect(target->m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
+			DrawGaugeEffect(target->m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
+			DrawCommonEffect(target->m_bodyEffect, windowModel, viewMatrix, projMatrix);
+
+			windowModel = CreateRotatedWindowModel(target->x + 120.0f * index, target->y, 100.0f, 100.0f, angle);
+			DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
+		}
 
 		windowModel = CreateRotatedWindowModel(target->target_x - 50.0f, target->target_y - 50.0f, 100.0f, 100.0f, angle);
 		DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
 
-
+		if (target->m_isLocked)
+			index++;
 	}
 }
-

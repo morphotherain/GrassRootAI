@@ -9,7 +9,6 @@
 #include "UIRButtonMenu.h"
 #include "UIShip.h"
 
-
 class SpaceScene : public Scene
 {
 public:
@@ -17,7 +16,7 @@ public:
 	SpaceScene(HINSTANCE _hInstance);
 	~SpaceScene() = default;
 
-	struct Vertex3DPosIndex 
+	struct Vertex3DPosIndex
 	{
 		double x;
 		double y;
@@ -26,7 +25,6 @@ public:
 		std::wstring name;
 		std::shared_ptr<UIText> text;
 	};
-
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -40,7 +38,7 @@ private:
 	std::shared_ptr<Effect> m_pBracketEffect;
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
 	std::shared_ptr<UIWindowOverview> m_WindowOverview;
-	
+
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	std::vector<Pos2Tex> vertices;
@@ -57,6 +55,4 @@ private:
 	std::shared_ptr<UISkyBox> m_skybox;
 
 	std::vector<std::shared_ptr<UIText>> m_denormalizeTexts; // 用于存储星域名称文本对象
-
-
 };

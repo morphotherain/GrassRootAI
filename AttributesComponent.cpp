@@ -16,12 +16,10 @@ AttributesComponent::AttributesComponent(int _objectID)
 		dynObjectAttributesManager::getInstance()->resetAttributesByObjectID(objectID, *typeAttributes);
 		objectAttributes = dynObjectAttributesManager::getInstance()->getAttributesByObjectID(objectID);
 	}
-
 }
 
 void AttributesComponent::Init()
 {
-
 }
 
 void AttributeMgr::Init()

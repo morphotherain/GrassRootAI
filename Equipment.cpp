@@ -6,10 +6,9 @@
 std::shared_ptr<GameObject> Equipment::ConvertBasedOnGroupID(UINT groupID)
 {
 	switch (groupID) {
-	case 54: {                                   
+	case 54: {
 		return std::make_shared<Miner>(objectID);        //采矿激光器
 	}
-
 	}
 	return nullptr;
 }

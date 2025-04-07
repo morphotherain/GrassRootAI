@@ -9,9 +9,7 @@
 #include "dynObjectAttributesManager.h"
 #include "dynGameObjectsManager.h"
 
-
-
-class AttributeMgr{
+class AttributeMgr {
 public:
 	AttributeMgr() = default;
 	// 获取单例
@@ -29,7 +27,6 @@ public:
 	std::shared_ptr< std::unordered_map<int, std::shared_ptr<std::unordered_map<int, Attribute>>>> typeAttributes;
 };
 
-
 class AttributesComponent : public Component {
 public:
 	AttributesComponent() = default;
@@ -43,5 +40,4 @@ public:
 
 	std::shared_ptr<std::unordered_map<int, Attribute>> typeAttributes;
 	std::shared_ptr<std::unordered_map<int, Attribute>> objectAttributes;
-
 };

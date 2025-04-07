@@ -6,6 +6,7 @@
 #include <DirectXMath.h>
 #include "PhysicsComponent.h"
 #include "StorageComponent.h"
+#include "LockingComponent.h"
 
 enum class ShipWarpState
 {
@@ -14,14 +15,14 @@ enum class ShipWarpState
 	Warping        // 表示正在进行跃迁操作
 };
 
-class Ship : public GameObject{
+class Ship : public GameObject {
 public:
 	Ship() = default;
 	Ship(UINT _objectID) { objectID = (_objectID); }
 	~Ship() {
 		objectID = 1;
 	};
-	
+
 	virtual void Init();
 	virtual void Update(UINT tick);
 
@@ -33,7 +34,7 @@ public:
 
 	std::shared_ptr<PilotStorageComponent> m_pPilotStorage;
 	std::shared_ptr<CargoContainerComponent> m_pCargoStorage;
-
+	std::shared_ptr<LockingComponent> m_pLocking;
 
 	void fillObjectName();
 
@@ -47,5 +48,4 @@ public:
 	void handleApproach(std::shared_ptr<GameObject> target);
 	void handleActive(std::shared_ptr<GameObject> target);
 	void handleWarp(std::shared_ptr<GameObject> target);
-
 };

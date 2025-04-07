@@ -3,7 +3,6 @@
 using namespace DirectX;
 
 std::vector<PosTexIndex> UIButton::GenerateButtonVertices(float _x, float _y, float _deltaX, float _deltaY) {
-
 	std::vector<PosTexIndex> vertices;
 
 	vertices.reserve(6); // 每个格子两个三角形，每个三角形3个顶点
@@ -20,14 +19,11 @@ std::vector<PosTexIndex> UIButton::GenerateButtonVertices(float _x, float _y, fl
 	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
 	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), TexID });
 
-
 	return vertices;
 }
 
-
 bool UIButton::Init()
 {
-
 	if (!InitEffect())
 		return false;
 
@@ -51,15 +47,13 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
-		
+
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
 		if (x < mouseState.x && (x + deltaX) > mouseState.x && (y + deltaY) > mouseState.y && y < mouseState.y)
 			*clickFlag = true;
 	}
-	
-
 }
 
 void UIButton::DrawUI()
@@ -67,7 +61,6 @@ void UIButton::DrawUI()
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
-
 
 	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 
@@ -82,18 +75,14 @@ void UIButton::DrawUI()
 	if (text != nullptr) {
 		text->DrawUI();
 	}
-
 }
 
 void UIButton::cleanup()
 {
 }
 
-
-
 bool UIButton::InitResource()
 {
-	 
 	std::vector<std::string> textureButtonFileNames = {
 		TexPath
 	};
@@ -122,7 +111,7 @@ bool UIButton::InitResource()
 }
 
 bool UIButton::InitEffect()
-{	
+{
 	return true;
 }
 
@@ -130,6 +119,6 @@ void UIButton::setText(std::wstring _text)
 {
 	text = std::make_shared<UIText>();
 	text->setText(_text);
-	text->setSize(x+10.0f,y+2.0f,200.0f,200.0f);
+	text->setSize(x + 10.0f, y + 2.0f, 200.0f, 200.0f);
 	text->Init();
 }

@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIBase.h"
 #include "UIText.h"
@@ -27,9 +26,11 @@ public:
 		m_pLocalCamera = _localCamera;
 	};
 
+	void UpdateLockedTargets(UINT tick);
+
 	void InitCommonEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect);
 	void DrawCommonEffect(std::shared_ptr<Effect>& m_effect, DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix);
-	
+
 	void InitEquipmentEffect(std::shared_ptr<Effect>& m_effect);
 	void InitGaugeEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect);
 	void DrawGaugeEffect(std::shared_ptr<Effect>& m_effect, DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix, float hpRadio);
@@ -47,7 +48,6 @@ public:
 
 	void DrawLockedTarget();
 
-
 	struct LockedTarget {
 		LockedTarget() = default;
 		~LockedTarget() = default;
@@ -55,6 +55,10 @@ public:
 		float y = 0.0f;
 		float target_x = 0.0f;
 		float target_y = 0.0f;
+
+		float m_lockedProcess = 0.0f;
+		bool m_isLocked = false;
+		bool m_checked = false;
 
 		std::shared_ptr<Effect> m_gaugeShieldEffect;
 		std::shared_ptr<Effect> m_gaugeArmorEffect;
@@ -68,17 +72,11 @@ public:
 		std::shared_ptr<Effect> m_lockedCircleEffect;
 		std::shared_ptr<Effect> m_lockedLineEffect;
 		std::shared_ptr<Effect> m_lockedarrowEffect;
-	};
-	struct LockingTarget {
-		LockingTarget() = default;
-		~LockingTarget() = default;
-		float target_x = 0.0f;
-		float target_y = 0.0f;
-		float m_lockingProgress = 0.0f;
-		std::shared_ptr<Effect> m_LockedCircleEffect;
 
-	};
+		std::shared_ptr<Effect> m_lockingCircleEffect;
 
+		std::shared_ptr<UIText> m_lockedObjectName;
+	};
 
 private:
 	std::fstream fs;
@@ -115,6 +113,4 @@ private:
 	std::shared_ptr<Effect> m_capacitorEffect;
 
 	std::unordered_map<int, std::shared_ptr<LockedTarget>> m_mapLockedTarget;
-
 };
-

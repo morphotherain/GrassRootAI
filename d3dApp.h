@@ -7,7 +7,6 @@
 #include "Keyboard.h"
 #include "GameTimer.h"
 
-
 // 添加所有要引用的库
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")
@@ -55,7 +54,6 @@ protected:
 	bool	  m_Enable4xMsaa;	 // 是否开启4倍多重采样
 	UINT      m_4xMsaaQuality;   // MSAA支持的质量等级
 
-
 	GameTimer m_Timer;           // 计时器
 
 	// 使用模板别名(C++11)简化类型名
@@ -70,7 +68,7 @@ protected:
 	ComPtr<ID3D11DeviceContext1> m_pd3dImmediateContext1; // D3D11.1设备上下文
 	ComPtr<IDXGISwapChain1> m_pSwapChain1;                // D3D11.1交换链
 
-	// Direct2D 
+	// Direct2D
 	ComPtr<ID2D1Factory> m_pd2dFactory;
 	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
 
@@ -90,7 +88,6 @@ protected:
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	std::unique_ptr<DirectX::Keyboard> m_pKeyboard;				// 键盘
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
-
 
 	// 派生类应该在构造函数设置好这些自定义的初始参数
 	std::wstring m_MainWndCaption;                        // 主窗口标题

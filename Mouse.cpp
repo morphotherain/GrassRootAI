@@ -13,7 +13,6 @@
 #include <wrl/client.h>
 #include "Mouse.h"
 
-
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
@@ -264,15 +263,12 @@ private:
 	}
 };
 
-
 Mouse::Impl* Mouse::Impl::s_mouse = nullptr;
-
 
 void Mouse::SetWindow(HWND window)
 {
 	pImpl->SetWindow(window);
 }
-
 
 void Mouse::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -493,14 +489,12 @@ Mouse::Mouse() noexcept(false)
 {
 }
 
-
 // Move constructor.
 Mouse::Mouse(Mouse&& moveFrom) noexcept
 	: pImpl(std::move(moveFrom.pImpl))
 {
 	pImpl->mOwner = this;
 }
-
 
 // Move assignment.
 Mouse& Mouse::operator= (Mouse&& moveFrom) noexcept
@@ -510,12 +504,10 @@ Mouse& Mouse::operator= (Mouse&& moveFrom) noexcept
 	return *this;
 }
 
-
 // Public destructor.
 Mouse::~Mouse()
 {
 }
-
 
 Mouse::State Mouse::GetState() const
 {
@@ -524,18 +516,15 @@ Mouse::State Mouse::GetState() const
 	return state;
 }
 
-
 void Mouse::ResetScrollWheelValue()
 {
 	pImpl->ResetScrollWheelValue();
 }
 
-
 void Mouse::SetMode(Mode mode)
 {
 	pImpl->SetMode(mode);
 }
-
 
 bool Mouse::IsConnected() const
 {
@@ -559,8 +548,6 @@ Mouse& Mouse::Get()
 
 	return *Impl::s_mouse->mOwner;
 }
-
-
 
 //======================================================================================
 // ButtonStateTracker
@@ -586,7 +573,6 @@ void Mouse::ButtonStateTracker::Update(const Mouse::State& state)
 }
 
 #undef UPDATE_BUTTON_STATE
-
 
 void Mouse::ButtonStateTracker::Reset() noexcept
 {

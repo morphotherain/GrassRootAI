@@ -8,7 +8,6 @@
 
 using namespace DirectX;
 
-
 UIWindowStorage::UIWindowStorage() : UIWindow()
 {
 }
@@ -18,8 +17,6 @@ bool UIWindowStorage::Init()
 	windowTitle = L"仓库";
 
 	InitWindowComponent();
-
-
 
 	if (!InitEffect())
 		return false;
@@ -39,9 +36,9 @@ bool UIWindowStorage::Init()
 	auto typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 	auto containerID = dynContainersManager::getInstance()->getContainerID(base->objectID, CONTAINER_TYPE_CARGO);
 	if (dynGameObjectsManager::getInstance()->queryObjectsByContainerID(containerID, m_itemsPair)) {
-		DEBUG_("查询到的结果数量: {}" , m_itemsPair.size());
+		DEBUG_("查询到的结果数量: {}", m_itemsPair.size());
 		for (const auto& pair : m_itemsPair) {
-			DEBUG_("ObjectID: {}, TypeID: {}" , pair.first ,  pair.second);
+			DEBUG_("ObjectID: {}, TypeID: {}", pair.first, pair.second);
 		}
 	}
 	else {
@@ -55,7 +52,6 @@ bool UIWindowStorage::Init()
 	shipCargo->text->setText(typeName);
 	shipCargo->text->setSize(20.0f, TitleHeight + 32.0f, 350.0f, 350.0f);
 	shipCargo->Init();
-
 
 	return false;
 }
@@ -75,7 +71,6 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 	}
 
 	shipCargo->text->setDelta(x, y);
-	
 }
 
 void UIWindowStorage::DrawUI()
@@ -93,7 +88,7 @@ void UIWindowStorage::DrawUI()
 
 	ConstantMVPIndex* dataPtritemImgBack = m_itemBackEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtritemImgBack->model = XMMatrixTranspose(windowModel);
-	dataPtritemImgBack->view = XMMatrixTranspose(viewMatrix); 
+	dataPtritemImgBack->view = XMMatrixTranspose(viewMatrix);
 	dataPtritemImgBack->projection = XMMatrixTranspose(projMatrix);
 	dataPtritemImgBack->TexIndex = 0;
 	m_itemBackEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
@@ -116,7 +111,6 @@ void UIWindowStorage::DrawUI()
 	m_itemNumBackEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_itemNumBackEffect->apply();
 
-
 	for (auto& text : m_itemsTexts) {
 		text->DrawUI();
 	}
@@ -131,17 +125,13 @@ void UIWindowStorage::cleanup()
 {
 }
 
-
-
 bool UIWindowStorage::InitResource()
 {
-
 	return true;
 }
 
 bool UIWindowStorage::InitEffect()
 {
-
 	return true;
 }
 
@@ -149,7 +139,6 @@ bool UIWindowStorage::InitItemImgEffect()
 {
 	std::vector<PosTexIndex> vertexsBack = {};
 	std::vector<PosTexIndex> vertexsNumBack = {};
-
 
 	m_itemBackEffect = std::make_shared<Effect>();
 	m_itemBackEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
@@ -185,7 +174,7 @@ bool UIWindowStorage::InitItemImgEffect()
 		GenerateRectVertex(vertexsNumBack, 256.0f + 76.0f * index, 150.0f, 30.0f, 16.0f, 0.0f);
 
 		auto textName = std::make_unique<UIText>();
-		textName->setSize(220.0f + 76.0f * index, 170.0f, 350.0f,350.0f);
+		textName->setSize(220.0f + 76.0f * index, 170.0f, 350.0f, 350.0f);
 		textName->setText(processedName);
 		textName->switchTextFormat("Arial_XS");
 		m_itemsTexts.push_back(std::move(textName));
@@ -194,7 +183,6 @@ bool UIWindowStorage::InitItemImgEffect()
 		textNum->setSize(260.0f + 76.0f * index, 147.0f, 350.0f, 350.0f);
 		textNum->setText(L"1");
 		m_itemsTexts.push_back(std::move(textNum));
-
 
 		index += 1.0f;
 
@@ -232,7 +220,7 @@ void UIWindowStorage::InitWindowComponent()
 	UIWindow::InitWindowComponent();
 
 	auto vertexs = m_windowEffect->getVertexBuffer<PosTexIndex>()->getVertices();
-	GenerateRectVertex(vertexs, 200.0f , TitleHeight, 5.0f, 600.0f - TitleHeight -1.0f, 5.0f);
+	GenerateRectVertex(vertexs, 200.0f, TitleHeight, 5.0f, 600.0f - TitleHeight - 1.0f, 5.0f);
 	GenerateRectVertex(vertexs, 200.0f, TitleHeight + 25.0f, 600.0f, 3.0f, 5.0f);
 	GenerateRectVertex(vertexs, 200.0f, TitleHeight + 50.0f, 600.0f, 3.0f, 5.0f);
 	GenerateRectVertex(vertexs, 3.0f, TitleHeight + 30.0f, 195.0f, 20.0f, 6.0f);

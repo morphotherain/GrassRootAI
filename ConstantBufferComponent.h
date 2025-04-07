@@ -6,22 +6,19 @@ template <typename ConstantBufferType>
 class ConstantBufferComponent : public EffectComponent
 {
 public:
-    ConstantBufferComponent() {};
-    ~ConstantBufferComponent() {};
+	ConstantBufferComponent() {};
+	~ConstantBufferComponent() {};
 
+	virtual void Init();
 
-    virtual void Init();
+	virtual void apply();
 
-    virtual void apply();
+	ConstantBufferType* Map();
 
+	void Unmap();
 
-    ConstantBufferType* Map();
-
-    void Unmap();
-
-
-    // 创建常量缓冲区
-    ComPtr<ID3D11Buffer> matrixBuffer;
+	// 创建常量缓冲区
+	ComPtr<ID3D11Buffer> matrixBuffer;
 };
 
 template <typename ConstantBufferType>
@@ -38,7 +35,6 @@ void ConstantBufferComponent<ConstantBufferType>::Init()
 	matrixBufferDesc.StructureByteStride = 0;
 	// 使用设备创建缓冲区
 	auto hr = m_pd3dDevice->CreateBuffer(&matrixBufferDesc, nullptr, matrixBuffer.GetAddressOf());
-
 }
 
 template <typename ConstantBufferType>

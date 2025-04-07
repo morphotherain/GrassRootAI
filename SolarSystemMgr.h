@@ -7,7 +7,7 @@
 #include "TaskMgr.h"
 
 class SolarSystemMgr {
-public :
+public:
 
 	// 获取单例
 	static SolarSystemMgr& getInstance() {

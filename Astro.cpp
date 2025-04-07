@@ -21,7 +21,6 @@ std::shared_ptr<GameObject> Astro::ConvertBasedOnGroupID(UINT groupID)
 	case 10: {
 		return std::make_shared<StarGate>(objectID);
 	}
-
 	}
 	return nullptr;
 }
@@ -80,7 +79,6 @@ void StarGate::fillObjectName()
 	UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
 	std::wstring solarSystemName = mapSolarSystemsManager::getInstance()->getNameById(solarSystemID);
 	m_pBase->name = solarSystemName + L"（星门）";
-
 }
 
 void StarGate::handleTask(const Task& task)
@@ -100,7 +98,6 @@ void StarGate::handleTask(const Task& task)
 			tran->x = pos[0] + 12000.0f;
 			tran->y = pos[1];
 			tran->z = pos[2];
-
 		}
 		else {
 			break;

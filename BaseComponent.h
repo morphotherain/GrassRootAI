@@ -24,6 +24,4 @@ public:
 	UINT groupID;
 	UINT categoryID;
 	std::wstring name;
-
-
 };

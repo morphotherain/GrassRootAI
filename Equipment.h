@@ -14,9 +14,7 @@ public:
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
-
 };
-
 
 class Equipment : public GameObject
 {
@@ -31,6 +29,4 @@ public:
 	UINT objectID;
 
 	std::shared_ptr<BaseComponent> m_pBase;
-
 };
-

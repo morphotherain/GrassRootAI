@@ -29,12 +29,13 @@ public:
 	virtual void ParseParameters(std::unordered_map<std::string, std::any> paras) {};
 
 	void setcameraResource(int m_ClientWidth, int m_ClientHeight, std::shared_ptr<Camera> pCamera);
-	void setDelta(const float _deltaX, const float _deltaY) 
-		{ deltaX = _deltaX; deltaY = _deltaY;};
+	void setDelta(const float _deltaX, const float _deltaY)
+	{
+		deltaX = _deltaX; deltaY = _deltaY;
+	};
 
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 	float AspectRatio()const { return static_cast<float>(m_ClientWidth) / m_ClientHeight; }
-
 
 	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float TexID);
 	std::vector<PosTexIndex> GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float angle, float TexID);
@@ -62,19 +63,16 @@ protected:
 	float deltaX = 0.0f;
 	float deltaY = 0.0f;
 
-
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
 	ComPtr<ID3D11Buffer> m_pVertexBuffer;		// 顶点缓冲区
 	ComPtr<ID3D11VertexShader> m_pVertexShader;	// 顶点着色器
 	ComPtr<ID3D11PixelShader> m_pPixelShader;	// 像素着色器
-
 
 	// 创建常量缓冲区
 	ComPtr<ID3D11Buffer> matrixBuffer;
 
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
-
 
 	// 添加 UI 组件列表成员
 	std::vector<std::shared_ptr<UIBase>> childComponents;

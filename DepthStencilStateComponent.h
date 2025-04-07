@@ -7,7 +7,6 @@ public:
 	DepthStencilStateComponent();
 	~DepthStencilStateComponent();
 
-
 	virtual void Init();
 
 	virtual void apply();

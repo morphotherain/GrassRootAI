@@ -1,7 +1,7 @@
 ﻿#include "UIWindowMap.h"
 #include <random>
 #include <DirectXMath.h>
-#include <algorithm>  
+#include <algorithm>
 #include <utility>    // 也包含 std::min
 #include <unordered_map>
 
@@ -24,12 +24,10 @@ const D3D11_INPUT_ELEMENT_DESC UIWindowMap::LineVertexPosColor::inputLayout[2] =
 
 UIWindowMap::UIWindowMap() : UIWindow()
 {
-
 }
 
 bool UIWindowMap::Init()
 {
-
 	UIWindow::windowTitle = L"星图";
 
 	InitWindowComponent();
@@ -57,9 +55,9 @@ bool UIWindowMap::Init()
 
 		// 创建并配置文本组件
 		auto text = std::make_shared<UIText>();
-		text->setSize(scaledPos.x , scaledPos.y, 350.0f, 350.0f); // 设置文本位置和尺寸
+		text->setSize(scaledPos.x, scaledPos.y, 350.0f, 350.0f); // 设置文本位置和尺寸
 		text->setText(region.regionName); // 设置星域名称文本
-		AddUIComponent(text); 
+		AddUIComponent(text);
 
 		// 存储文本对象以便后续更新
 		regionTexts.push_back(text);
@@ -69,7 +67,6 @@ bool UIWindowMap::Init()
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
-
 
 	return false;
 }
@@ -94,7 +91,6 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 
 	//auto cam1st = std::dynamic_pointer_cast<FirstPersonCamera>(m_pCamera);
 	auto cam3st = std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
-
 
 	// 方向移动
 	if (keyState.IsKeyDown(Keyboard::W))
@@ -133,16 +129,16 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 
 	if (keyState.IsKeyDown(Keyboard::U))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x , cam3st->GetTargetPosition().y + 0.1f, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y + 0.1f, cam3st->GetTargetPosition().z));
 	}
 	if (keyState.IsKeyDown(Keyboard::J))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x , cam3st->GetTargetPosition().y - 0.1f, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y - 0.1f, cam3st->GetTargetPosition().z));
 	}
 
 	if (keyState.IsKeyDown(Keyboard::Y))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x , cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.1f));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.1f));
 	}
 	if (keyState.IsKeyDown(Keyboard::I))
 	{
@@ -150,20 +146,14 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 	}
 	cam3st->RotateY(0.0002f);
 
-
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
-
 	}
-
-
 }
 
 void UIWindowMap::DrawUI()
 {
-
-
 	DirectX::XMMATRIX viewMatrixWindow = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrixWindow = m_pUICamera->GetProjXM();
 	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
@@ -201,7 +191,6 @@ void UIWindowMap::DrawUI()
 
 	double factor = 40000000000000000.0; // 用于坐标缩放
 
-
 	// 遍历每个星域名称文本并更新位置
 	for (size_t i = 0; i < m_regions.size(); ++i)
 	{
@@ -227,7 +216,7 @@ void UIWindowMap::DrawUI()
 		if (screenPos.y < 0 || screenPos.y > adjustedViewport.Height) screenPos.y = -10000.0f;
 
 		// 更新文本位置
-		regionTexts[i]->setSize(screenPos.x, screenPos.y , 350.0f, 350.0f);
+		regionTexts[i]->setSize(screenPos.x, screenPos.y, 350.0f, 350.0f);
 	}
 
 	ConstantMVPIndex* dataPtrLine = m_mapLineEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
@@ -237,7 +226,6 @@ void UIWindowMap::DrawUI()
 	dataPtrLine->TexIndex = 0;
 	m_mapLineEffect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
 	m_mapLineEffect->apply();
-
 
 	ConstantMVPIndex* dataPtrPoint = m_mapPointEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtrPoint->model = XMMatrixTranspose(XMMatrixIdentity());
@@ -252,7 +240,6 @@ void UIWindowMap::DrawUI()
 	m_pd3dImmediateContext->RSSetViewports(1, &originalViewport);
 
 	return;
-
 }
 
 void UIWindowMap::cleanup()
@@ -267,12 +254,8 @@ void UIWindowMap::ParseParameters(std::unordered_map<std::string, std::any> para
 	deltaY = 950;
 	UIWindow::setSize(x, y, deltaX, deltaY);
 
-
 	SetZOrder(getParameter<int>(paras, "z_order", -1));
 }
-
-
-
 
 // 生成随机浮点数的辅助函数
 float RandomFloat(float min, float max)
@@ -309,7 +292,6 @@ void GenerateRandomVerticesAndLines(
 	{
 		numPoints = static_cast<int>(solarSystem->size());
 	}
-
 
 	for (int i = 0; i < numPoints; ++i)
 	{
@@ -360,11 +342,9 @@ void GenerateRandomVerticesAndLines(
 
 				// 赋值给点的坐标，应用衰减
 				point.pos = DirectX::XMFLOAT3(x * decay, (y * decay - 0.5f) * yFactor, z * decay);
-
 			}
 			else
 			{
-
 				// 银河系参数
 				float a = 30.0f;     // 控制旋臂分布的总体大小
 				float b = 2.0f;      // 控制银河系的厚度
@@ -404,7 +384,6 @@ void GenerateRandomVerticesAndLines(
 			}
 			point.luminosity = RandomFloat(0.1f, 2.5f); // 调整亮度范围
 		}
-		
 
 		// 生成随机数，用于决定星体的颜色类别
 		float colorType = RandomFloat(0.0f, 1.0f);
@@ -431,10 +410,8 @@ void GenerateRandomVerticesAndLines(
 			point.color = DirectX::XMFLOAT4(RandomFloat(0.7f, 0.9f), RandomFloat(0.1f, 0.3f), RandomFloat(0.1f, 0.2f), 1.0f);
 		}
 
-
 		verticesPoints.push_back(point);
 	}
-	
 
 	// 为每个点找到最近的 0-5 个点并生成线条
 	for (int i = 0; i < verticesPoints.size(); ++i)
@@ -566,7 +543,6 @@ void GenerateEVEMapVerticesAndLines(
 	}
 }
 
-
 bool UIWindowMap::InitResource()
 {
 	auto camera = std::shared_ptr<ThirdPersonCamera>(new ThirdPersonCamera);
@@ -578,17 +554,12 @@ bool UIWindowMap::InitResource()
 	camera->SetDistanceMinMax(1.0f, 40.0f);
 	camera->Approach(-0.00f);
 
-
-
 	std::vector<PointVertexPosColor> verticesPoints;
 	std::vector<LineVertexPosColor> verticesLines;
 	GenerateEVEMapVerticesAndLines(verticesPoints, verticesLines, &m_solarSystem, &m_solarSystemJump);
 
 	numPoint = static_cast<UINT>(verticesPoints.size());
 	numLinePoint = static_cast<UINT>(verticesLines.size());
-
-
-
 
 	m_mapLineEffect = std::make_shared<Effect>();
 
@@ -600,7 +571,6 @@ bool UIWindowMap::InitResource()
 	m_mapLineEffect->addBlendState();
 	m_mapLineEffect->addConstantBuffer<ConstantMVPIndex>();
 	m_mapLineEffect->Init();
-
 
 	m_mapPointEffect = std::make_shared<Effect>();
 
@@ -628,7 +598,6 @@ bool UIWindowMap::InitMap()
 	m_solarSystem = getSolarSystems();
 	m_solarSystemJump = getSolarSystemJumps();
 	m_regions = getRegions();
-
 
 	return true;
 }

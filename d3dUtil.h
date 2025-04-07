@@ -16,9 +16,8 @@
 #include <d3dcompiler.h>
 #include <vector>
 #include <string>
-#include "DDSTextureLoader.h"	
+#include "DDSTextureLoader.h"
 #include "WICTextureLoader.h"
-
 
 //
 // 宏相关
@@ -185,8 +184,5 @@ HRESULT CreateShaderFromFile(
 	LPCSTR entryPoint,
 	LPCSTR shaderModel,
 	ID3DBlob** ppBlobOut);
-
-
-
 
 #endif

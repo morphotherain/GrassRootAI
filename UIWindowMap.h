@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <fstream>
 #include "UIWindow.h"
 #include "UIButton.h"
@@ -12,7 +11,6 @@ public:
 	UIWindowMap();
 	UIWindowMap(HINSTANCE _hInstance) :UIWindow(_hInstance) {}
 	~UIWindowMap() = default;
-
 
 	struct PointVertexPosColor
 	{
@@ -33,7 +31,6 @@ public:
 		static const D3D11_INPUT_ELEMENT_DESC inputLayout[2];
 	};
 
-
 	// 更新后的 MatrixBufferType 结构
 	struct MatrixBufferType
 	{
@@ -43,8 +40,6 @@ public:
 		DirectX::XMFLOAT3 cameraPosition; // 添加摄像机位置
 		float padding;                    // 用于填充，使得常量缓冲区对齐
 	};
-
-
 
 	virtual bool Init();
 	virtual void OnResize();
@@ -57,12 +52,10 @@ public:
 	bool InitResource();
 	bool InitEffect();
 	bool InitMap();
-	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY) 
-	{ 
-		UIWindow::setSize(_x, _y, _deltaX, _deltaY); 
+	void setSize(const float _x, const float _y, const float _deltaX, const float _deltaY)
+	{
+		UIWindow::setSize(_x, _y, _deltaX, _deltaY);
 	}
-
-
 
 private:
 
@@ -86,7 +79,6 @@ private:
 	ComPtr<ID3D11PixelShader> m_pPixelShaderLines;	// 像素着色器
 	ComPtr<ID3D11VertexShader> m_pVertexShaderLines;	// 顶点着色器
 
-
 	ComPtr<ID3D11BlendState> m_pBlendState;	// 混合状态对象
 
 	std::wstring windowTitle;
@@ -97,9 +89,6 @@ private:
 	std::vector<SolarSystemData> m_solarSystem;
 	std::vector<SolarSystemJump> m_solarSystemJump;
 
-
 	std::vector<std::shared_ptr<UIText>> regionTexts; // 用于存储星域名称文本对象
 	std::vector<RegionData> m_regions; // 存储星域数据
-
 };
-
