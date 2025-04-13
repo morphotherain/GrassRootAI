@@ -5,7 +5,8 @@
 void GS_Point(point PointGSInput input[1], inout TriangleStream<PointGSInput> OutputStream)
 {
     // 根据光度调整点的大小，可以根据需要调整0.01f和0.1f的系数
-    float pointSize = 0.03f + input[0].luminosity * 0.1f;
+    //float pointSize = 0.03f + input[0].luminosity * 0.1f;
+    float pointSize = 0.07f + log(1.0f + input[0].luminosity) * 0.15f;
 
     float aspectRatio = 0.5625f;
 

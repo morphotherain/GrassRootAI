@@ -16,6 +16,7 @@ std::string formatFileInfo(const char* filePath, int line, const char* function)
 
 #define DEBUG_(...) \
     spdlog::debug("{} {}", formatFileInfo(__FILE__, __LINE__, __FUNCTION__), fmt::format(__VA_ARGS__))
+//这是我的dubug宏，能不能为上面的那些逻辑加上方便调试的中文debug信息呢
 
 // 自定义 INFO 宏
 #define INFO_(...) \

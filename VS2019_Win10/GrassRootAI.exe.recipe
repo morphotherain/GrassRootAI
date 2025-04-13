@@ -7,6 +7,12 @@
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\Process_PS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\Process_VS.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
       <FullPath>D:\EVELab\GrassRootAI\HLSL\UI\ProcessCircle_PS.cso</FullPath>
     </ContentFile>
     <ContentFile>

@@ -2,6 +2,7 @@
 #include <fstream>
 #include "UIBase.h"
 #include "UIText.h"
+#include "UIRichText.h"
 
 class UIShip : public UIBase
 {
@@ -31,13 +32,13 @@ public:
 	void InitCommonEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect);
 	void DrawCommonEffect(std::shared_ptr<Effect>& m_effect, DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix);
 
-	void InitEquipmentEffect(std::shared_ptr<Effect>& m_effect);
+	void InitEquipmentsEffect(std::shared_ptr<Effect>& m_effect);
 	void InitGaugeEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect);
 	void DrawGaugeEffect(std::shared_ptr<Effect>& m_effect, DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix, float hpRadio);
 
 	void GenerateCapacitorDots(std::vector<PosTexIndex>& vertices, int numRadii, float centerX, float centerY, float circleRadius);
 	void GenerateSlotVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID);
-	void GenerateSlotEquipmentVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID);
+	void GenerateSlotEquipmentsVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID);
 	void GenerateSlotUnderlayVertices(std::vector<PosTexIndex>& vertices);
 	void GenerateSlotOverloadVertices(std::vector<PosTexIndex>& vertices, int row, int col);
 	void GenerateSlotOverloadsVertices(std::vector<PosTexIndex>& vertices);
@@ -47,6 +48,7 @@ public:
 	void InitLockedTargetGaugeEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect);
 
 	void DrawLockedTarget();
+	void DrawSlotRamp(DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix);
 
 	struct LockedTarget {
 		LockedTarget() = default;
@@ -108,9 +110,15 @@ private:
 
 	std::shared_ptr<Effect> m_slotBaseEffect;
 	std::shared_ptr<Effect> m_slotOverloadBtnEffect;
-	std::shared_ptr<Effect> m_slotEquipmentEffect;
+	std::shared_ptr<Effect> m_slotEquipmentsEffect;
+	std::shared_ptr<Effect> m_slotRampEffect;
+	std::unordered_map<int, std::shared_ptr<Effect>> m_mapSlotRampEffect;
 
 	std::shared_ptr<Effect> m_capacitorEffect;
 
 	std::unordered_map<int, std::shared_ptr<LockedTarget>> m_mapLockedTarget;
+	int m_currentLockingTargetId = -1;
+
+	std::shared_ptr<UIRichText> m_testRichText;
+
 };

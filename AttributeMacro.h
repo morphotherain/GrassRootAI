@@ -1,21 +1,27 @@
 ﻿#pragma once
 #define ATTR_ID_ITEM_DMG 3  // 物品损坏
 #define ATTR_ID_ITEM_MASS 4  // 质量
+#define ATTR_ID_CAPACITOR_NEED 6  // 启用耗电量
 #define ATTR_ID_STRUCTURE_VALUE 9  // 结构值
 #define ATTR_ID_POWER_OUTPUT 11  // 能量栅格输出
 #define ATTR_ID_LOW_SLOTS 12  // 低能量槽
 #define ATTR_ID_MED_SLOTS 13  // 中能量槽
 #define ATTR_ID_HI_SLOTS 14  // 高能量槽
 #define ATTR_ID_POWER_LOAD 15  // 能量负荷
-#define ATTR_ID_POWER_TO_SPEED 19  //
+#define ATTR_ID_POWER 30  //能量栅格占用
 #define ATTR_ID_WARP_FACTOR 21  //
 #define ATTR_ID_MAX_VELOCITY 37  // 最大速度
 #define ATTR_ID_CAPACITY 38  // 容量
+#define ATTR_ID_SLOTS 47  // 槽位
 #define ATTR_ID_CPU_OUTPUT 48  // CPU输出
 #define ATTR_ID_CPU_LOAD 49  // CPU载荷
+#define ATTR_ID_CPU 50  // CPU使用量
+#define ATTR_ID_MAX_RANGE 54  // 最佳射程
 #define ATTR_ID_RECHARGE_RATE 55  // 电容回充时间
 #define ATTR_ID_AGILITY 70  // 惯性调整
+#define ATTR_ID_DURATION 73  // 作用时间/单次运转时间
 #define ATTR_ID_MAX_TARGET_RANGE 76  // 锁定范围上限
+#define ATTR_ID_MINING_AMOUNT 77  //开采量
 #define ATTR_ID_SCAN_SPEED 79  //
 #define ATTR_ID_LAUNCHER_SLOTS_LEFT 101  // 发射器安装数
 #define ATTR_ID_TURRET_SLOTS_LEFT 102  // 炮台安装数
@@ -48,7 +54,7 @@
 #define ATTR_ID_SHIELD_EXPLOSIVE_DAMAGE_RESONANCE 272  // 护盾爆炸伤害抗性
 #define ATTR_ID_SHIELD_KINETIC_DAMAGE_RESONANCE 273  // 护盾动能伤害抗性
 #define ATTR_ID_SHIELD_THERMAL_DAMAGE_RESONANCE 274  // 护盾热能伤害抗性
-#define ATTR_ID_REQUIRED_SKILL1_LEVEL 277  //
+#define ATTR_ID_REQUIRED_SKILL1_LEVEL 277  //技能需求等级
 #define ATTR_ID_DRONE_CAPACITY 283  // 无人机容量
 #define ATTR_ID_TECH_LEVEL 422  // 科技等级
 #define ATTR_ID_SHIELD_RECHARGE_RATE 479  // 护盾回充时间
@@ -90,3 +96,8 @@
 #define ATTR_ID_ENERGY_WARFARE_RESISTANCE 2045  // 电容战抗性
 #define ATTR_ID_WEAPON_DISRUPTION_RESISTANCE 2113  // 武器干扰抗性
 #define ATTR_ID_STASIS_WEBIFIER_RESISTANCE 2115  // 停滞缠绕抗性
+#define ATTR_ID_RESIDUE_VOLUME_MULTIPLIER 3153  // 采矿浪费倍率Residue Volume Multiplier
+#define ATTR_ID_RESIDUE_PROBABILITY 3154// 采矿浪费几率
+#define ATTR_ID_CURRENT_HP 5000
+#define ATTR_ID_CURRENT_ARMOR 5001
+#define ATTR_ID_CURRENT_SHIELD 5002

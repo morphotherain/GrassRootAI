@@ -2,6 +2,7 @@
 #include "mapJumpsManager.h"
 #include "mapDenormalizeManager.h"
 #include "mapSolarSystemsManager.h"
+#include "TransformComponent.h"
 
 std::shared_ptr<GameObject> Astro::ConvertBasedOnGroupID(UINT groupID)
 {

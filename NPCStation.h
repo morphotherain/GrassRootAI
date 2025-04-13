@@ -2,6 +2,8 @@
 #include "BaseComponent.h"
 #include "PhysicsComponent.h"
 #include "SpaceTransformComponent.h"
+#include "StationComponent.h"
+
 
 class NPCStation : public GameObject {
 public:

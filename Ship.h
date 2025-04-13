@@ -3,6 +3,7 @@
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
 #include "AttributesComponent.h"
+#include "EquipmentsComponent.h"
 #include <DirectXMath.h>
 #include "PhysicsComponent.h"
 #include "StorageComponent.h"
@@ -28,12 +29,18 @@ public:
 
 	UINT objectID;
 	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<AttributesComponent> m_pAttribute;
+	std::shared_ptr<AttributesComponent> m_pAttributes;
+	std::shared_ptr<EquipmentsComponent> m_pEquipments;
 	std::shared_ptr<PhysicsComponent> m_pPhysics;
 	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
 
 	std::shared_ptr<PilotStorageComponent> m_pPilotStorage;
 	std::shared_ptr<CargoContainerComponent> m_pCargoStorage;
+	std::shared_ptr<HighSlotComponent> m_pHighSlotStorage;
+	std::shared_ptr<MediumSlotComponent> m_pMediumSlotStorage;
+	std::shared_ptr<LowSlotComponent> m_pLowSlotStorage;
+	std::shared_ptr<RigSlotComponent> m_pRigSlotStorage;
+
 	std::shared_ptr<LockingComponent> m_pLocking;
 
 	void fillObjectName();
@@ -48,4 +55,29 @@ public:
 	void handleApproach(std::shared_ptr<GameObject> target);
 	void handleActive(std::shared_ptr<GameObject> target);
 	void handleWarp(std::shared_ptr<GameObject> target);
+
+	void updateEquipments(int tick);
+
+	// 实现 ConvertBasedOnGroupID 方法
+	static std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID, UINT objectID);
+};
+
+class Frigate : public Ship {
+public:
+	Frigate(UINT _objectID) : Ship(_objectID) {}
+};
+
+class Cruiser : public Ship {
+public:
+	Cruiser(UINT _objectID) : Ship(_objectID) {}
+};
+
+class Battleship : public Ship {
+public:
+	Battleship(UINT _objectID) : Ship(_objectID) {}
+};
+
+class Capsule : public Ship {
+public:
+	Capsule(UINT _objectID) : Ship(_objectID) {}
 };

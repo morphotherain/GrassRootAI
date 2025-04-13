@@ -50,6 +50,9 @@ public:
 
 	std::shared_ptr<std::vector<dynGameObject>> getGameObjectBySolarSystemID(UINT solarSystemID);
 	dynGameObject getGameObjectByObjectID(int object_id);
+	int insertGameObject(const dynGameObject& obj);
+	bool deleteGameObject(int objectID);
+
 	std::shared_ptr<std::vector<dynGameObject>> getPilots();
 
 	std::vector<int> getItemsByContainerID(UINT containerID);

@@ -24,7 +24,6 @@ public:
 
 	void switchTextFormat(std::string index);
 
-private:
 	std::fstream fs;
 	ComPtr<ID2D1RenderTarget> m_pd2dRenderTarget;
 	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;

@@ -300,7 +300,7 @@
     <ClCompile Include="mapSolarSystemsManager.cpp">
       <Filter>数据库\数据表</Filter>
     </ClCompile>
-    <ClCompile Include="EquipmentComponent.cpp">
+    <ClCompile Include="EquipmentsComponent.cpp">
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="AttributesComponent.cpp">
@@ -347,6 +347,36 @@
     </ClCompile>
     <ClCompile Include="LockingComponent.cpp">
       <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipmentComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MinerComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRichText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowEquipment.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowMarket.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWinodwRefining.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowShipTree.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowDemo.cpp">
+      <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowIndusty.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -590,7 +620,7 @@
     <ClInclude Include="mapSolarSystemsManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="EquipmentComponent.h">
+    <ClInclude Include="EquipmentsComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="AttributesComponent.h">
@@ -634,6 +664,36 @@
     </ClInclude>
     <ClInclude Include="LockingComponent.h">
       <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipmentComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MinerComponent.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRichText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowEquipment.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowMarket.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowShipTree.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWinodwRefining.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowDemo.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowIndusty.h">
+      <Filter>UI\window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -694,6 +754,12 @@
     <FxCompile Include="HLSL\UI\ProcessCircle_PS.hlsl">
       <Filter>着色器</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\UI\Process_VS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\UI\Process_PS.hlsl">
+      <Filter>着色器</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\Triangle.hlsli">
@@ -715,6 +781,9 @@
       <Filter>着色器</Filter>
     </None>
     <None Include="HLSL\UI\ProcessCircle.hlsli">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="HLSL\UI\Process.hlsli">
       <Filter>着色器</Filter>
     </None>
   </ItemGroup>

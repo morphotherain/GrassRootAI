@@ -2,24 +2,58 @@
 #include "InvTypesManager.h"
 using namespace DirectX;
 
+// 实现 ConvertBasedOnGroupID 方法
+std::shared_ptr<GameObject> Ship::ConvertBasedOnGroupID(UINT groupID, UINT objectID) {
+	switch (groupID) {
+	case 25: {
+		return std::make_shared<Frigate>(objectID);
+	}
+	case 26: {
+		return std::make_shared<Cruiser>(objectID);
+	}
+	case 27: {
+		return std::make_shared<Battleship>(objectID);
+	}
+	case 29: {
+		return std::make_shared<Capsule>(objectID);
+	}
+	}
+	return nullptr;
+}
+
 void Ship::Init()
 {
 	m_pBase = std::make_shared<BaseComponent>(objectID);
 	AddComponent<Component>(m_pBase);
-	m_pAttribute = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttribute);
+	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
+	AddComponent<Component>(m_pAttributes);
+	m_pEquipments = std::make_shared<EquipmentsComponent>(objectID);
+	AddComponent<Component>(m_pEquipments);
 	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
 	AddComponent<Component>(m_pSpaceTran);
 	m_pPhysics = std::make_shared<PhysicsComponent>(objectID);
 	AddComponent<Component>(m_pPhysics);
 	m_pPhysics->SpaceTran = m_pSpaceTran;
+
 	m_pPilotStorage = std::make_shared<PilotStorageComponent>(objectID);
 	AddComponent<Component>(m_pPilotStorage);
+	
 	m_pCargoStorage = std::make_shared<CargoContainerComponent>(objectID);
 	AddComponent<Component>(m_pCargoStorage);
+	
+	m_pHighSlotStorage = std::make_shared<HighSlotComponent>(objectID);
+	AddComponent<Component>(m_pHighSlotStorage);
+	m_pMediumSlotStorage = std::make_shared<MediumSlotComponent>(objectID);
+	AddComponent<Component>(m_pMediumSlotStorage);
+	m_pLowSlotStorage = std::make_shared<LowSlotComponent>(objectID);
+	AddComponent<Component>(m_pLowSlotStorage);
+	m_pRigSlotStorage = std::make_shared<RigSlotComponent>(objectID);
+	AddComponent<Component>(m_pRigSlotStorage);
+
 	m_pLocking = std::make_shared<LockingComponent>(objectID);
 	AddComponent<Component>(m_pLocking);
 
+	ResolveDependencies();
 	fillObjectName();
 }
 
@@ -43,6 +77,9 @@ void Ship::Update(UINT tick)
 	m_pPhysics->Update(tick);
 	m_pBase->Update(tick);
 	m_pLocking->Update(tick);
+	m_pEquipments->Update(tick);
+	updateEquipments(tick);
+
 }
 
 void Ship::fillObjectName()
@@ -84,6 +121,24 @@ void Ship::handleTask(const Task& task)
 	{
 		m_pLocking->EraseLocked(task.target->objectID);
 		DEBUG_("发布取消锁定任务");
+		break;
+	}
+	case 5:
+	{
+		DEBUG_("装备按键输入");
+		m_pEquipments->handleTask(task);
+		break;
+	}
+	case 6:
+	{
+		DEBUG_("切换锁定目标");
+		m_pLocking->handleTask(task);
+		break;
+	}
+	case 7:
+	{
+		DEBUG_("");
+		m_pCargoStorage->handleTask(task);
 		break;
 	}
 	default: {
@@ -203,5 +258,21 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 		}
 		break;
 	}
+	}
+}
+
+void Ship::updateEquipments(int tick)
+{
+	std::vector<std::vector<int>> ItemsIDs = {};
+	ItemsIDs.push_back(m_pHighSlotStorage->itemIDs);
+	ItemsIDs.push_back(m_pMediumSlotStorage->itemIDs);
+	ItemsIDs.push_back(m_pLowSlotStorage->itemIDs);
+	for (auto& ids : ItemsIDs) {
+		for (auto id : ids) {
+			auto equipment = GameObjectMgr::getInstance().getObject(id);
+			if (equipment) {
+				equipment->Update(tick);
+			}
+		}
 	}
 }

@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
+#include "WarpGateComponent.h"
+
 
 class Star : public GameObject
 {

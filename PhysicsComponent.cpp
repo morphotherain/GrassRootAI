@@ -68,6 +68,13 @@ void PhysicsComponent::reset()
 	maneuverEndTime = 0;
 }
 
+void PhysicsComponent::InjectDependency(const std::shared_ptr<Component>& dep)
+{
+	if (auto spaceTran = std::dynamic_pointer_cast<SpaceTransformComponent>(dep)) {
+		SpaceTran = spaceTran;
+	}
+}
+
 void PhysicsComponent::Update(UINT tick) {
 	m_tick = tick;
 	if (tick <= 10)

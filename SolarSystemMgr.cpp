@@ -4,6 +4,7 @@
 void SolarSystemMgr::Init()
 {
 	p_mapObject = std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>();
+	GameObjectMgr::getInstance().setObjectMap(p_mapObject);
 	p_starGateTransferObjects = std::make_shared < std::vector<std::shared_ptr<GameObject>>>();
 	auto IDs = dynGameObjectsManager::getInstance()->getSolarSystemIDHasPilot();
 	InitPilots();
@@ -29,6 +30,45 @@ void SolarSystemMgr::Update(UINT tick) {
 	}
 }
 
+void SolarSystemMgr::handleTask(const Task& task)
+{
+	if (task.paramsPtr->find("createObject") != task.paramsPtr->end()) {
+		try {
+			dynGameObject objectData;
+			objectData.x = task.getParamOrDefault<double>("x", 0.0);
+			objectData.y = task.getParamOrDefault("y", 0.0);
+			objectData.z = task.getParamOrDefault("z", 0.0);
+			objectData.typeID = task.getParamOrDefault("typeID", 0);
+			objectData.SolarSystemID = task.getParamOrDefault("SolarSystemID", 0);
+			objectData.OwnerID = task.getParamOrDefault("OwnerID", 0);
+			objectData.ContainerID = task.getParamOrDefault("ContainerID", 0);
+			objectData.qw = task.getParamOrDefault("qw", 0.0);
+			objectData.qx = task.getParamOrDefault("qx", 0.0);
+			objectData.qy = task.getParamOrDefault("qy", 0.0);
+			objectData.qz = task.getParamOrDefault("qz", 0.0);
+			if (objectData.typeID == 0)return;
+
+			auto id = dynGameObjectsManager::getInstance()->insertGameObject(objectData);
+			if (task.paramsPtr->find("attributes") != task.paramsPtr->end()) {
+				try {
+					auto attributeVec = std::any_cast<std::vector<Attribute>>((*task.paramsPtr)["attributes"]);
+					auto attributeComp = getObjectById(id)->GetComponent<AttributesComponent>();
+					if (attributeComp != nullptr) {
+						attributeComp->UpdateAttributes(attributeVec);
+					}
+				}
+				catch (const std::bad_any_cast& e) {
+					DEBUG_("类型转换错误: {}", e.what());
+				}
+			}
+		}
+		catch (const std::bad_any_cast& e) {
+			DEBUG_("类型转换错误: {}", e.what());
+		}
+	}
+
+}
+
 std::shared_ptr<SolarSystem> SolarSystemMgr::loadSolarSystem(int id)
 {
 	auto p_solarSystem = std::make_shared<SolarSystem>(id);
@@ -45,21 +85,29 @@ std::shared_ptr<SolarSystem> SolarSystemMgr::loadSolarSystem(int id)
 
 void SolarSystemMgr::distributeTasksFromTaskMgr()
 {
-	//TaskMgr& taskMgr = TaskMgr::getInstance();
-	//auto allTasks = taskMgr.tasks;
+	auto& taskMgr = TaskMgr::getInstance();
+	while (!taskMgr.isEmpty()) {
+		auto task = taskMgr.popTask();
+		if (task) {
 
-	//for (const auto& task : allTasks) {
-	//	UINT targetObjectId = task->targetId;  // 假设Task结构体中有objectId属性用于指定目标GameObject的ID
-	//	auto it = p_mapObject->find(targetObjectId);
-	//	if (it != p_mapObject->end()) {
-	//		// 找到了对应的GameObject，这里可以进行任务分发相关的操作，比如将任务添加到GameObject的任务队列中（假设GameObject有这样的结构来存储待处理任务）
-	//		std::shared_ptr<GameObject>& targetGameObject = it->second;
-	//		targetGameObject->addTask(task);  // 假设GameObject类有addTask方法来接收任务
-	//	}
-	//	else {
-	//		// 如果没找到对应的GameObject，可以选择记录日志或者进行其他错误处理逻辑，这里简单打印提示信息
-	//	}
-	//}
+			if (task->paramsPtr->find("ToSolarSystemMgr") != task->paramsPtr->end())
+			{
+				handleTask(*task);
+			}
+			else
+			{
+				if (task->publisherId != -1) {
+					task->publisher = getObjectById(task->publisherId);
+				}
+				if (task->targetId != -1) {
+					task->target = getObjectById(task->targetId);
+				}
+				DEBUG_("Processing task: ", task->to_string_abstract());
+				task->target->handleTask(*task);
+			}
+			
+		}
+	}
 }
 
 void SolarSystemMgr::handleStarGateTransferObjects()
@@ -105,6 +153,27 @@ void SolarSystemMgr::InitPilots()
 			}
 		}
 	}
+}
+
+std::shared_ptr<GameObject> SolarSystemMgr::getObjectById(int id)
+{
+	if (p_mapObject) {
+		auto it = p_mapObject->find(id);
+		if (it != p_mapObject->end()) {
+			return it->second;
+		}
+		DEBUG_("尝试加载object : {}",id);
+		auto objectData = dynGameObjectsManager::getInstance()->getGameObjectByObjectID(id);
+		if (SolarSystems.begin() != SolarSystems.end()) 
+		{
+			SolarSystems.begin()->second->addGameObject(objectData);
+			auto it = p_mapObject->find(id);
+			if (it != p_mapObject->end()) {
+				return it->second;
+			}
+		}
+	}
+	return nullptr;
 }
 
 void SolarSystemMgr::getCurrentPilot()

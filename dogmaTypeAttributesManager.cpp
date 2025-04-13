@@ -10,7 +10,7 @@ std::shared_ptr<std::unordered_map<int, Attribute>> dogmaTypeAttributesManager::
 		while (sqlite3_step(stmt) == SQLITE_ROW) {
 			Attribute temp;
 			temp.attributeID = sqlite3_column_int(stmt, 0);
-			temp.value = sqlite3_column_int(stmt, 1);
+			temp.value = sqlite3_column_double(stmt, 1);
 			(*result)[temp.attributeID] = temp;
 		}
 	}

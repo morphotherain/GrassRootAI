@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="Astro.cpp" />
     <ClCompile Include="AttributeMacro.h" />
     <ClCompile Include="AttributesComponent.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="EffectComponent.cpp" />
     <ClCompile Include="Equipment.cpp" />
     <ClCompile Include="EquipmentComponent.cpp" />
+    <ClCompile Include="EquipmentsComponent.cpp" />
     <ClCompile Include="eveBracketsManager.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -201,8 +203,18 @@
     <ClCompile Include="LockComponenet.cpp" />
     <ClCompile Include="LockingComponent.cpp" />
     <ClCompile Include="logger_manager.cpp" />
+    <ClCompile Include="MinerComponent.cpp" />
+    <ClCompile Include="UIWindowDemo.cpp" />
+    <ClCompile Include="UIWindowEquipment.cpp" />
+    <ClCompile Include="UIRichText.cpp" />
     <ClCompile Include="UIShip.cpp" />
+    <ClCompile Include="UIWindowIndusty.cpp" />
+    <ClCompile Include="UIWindowMarket.cpp" />
+    <ClCompile Include="UIWindowShipTree.cpp" />
+    <ClCompile Include="UIWinodwRefining.cpp" />
     <ClCompile Include="WindowManager.cpp" />
+    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="EquipmentComponent.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LockingComponent.h" />
     <ClInclude Include="logger_manager.h" />
@@ -255,7 +267,15 @@
     <ClCompile Include="VSEffectComponent.cpp" />
     <ClCompile Include="WarpGateComponent.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
+    <ClInclude Include="MinerComponent.h" />
+    <ClInclude Include="UIWindowDemo.h" />
+    <ClInclude Include="UIWindowEquipment.h" />
+    <ClInclude Include="UIRichText.h" />
     <ClInclude Include="UIShip.h" />
+    <ClInclude Include="UIWindowIndusty.h" />
+    <ClInclude Include="UIWindowMarket.h" />
+    <ClInclude Include="UIWindowShipTree.h" />
+    <ClInclude Include="UIWinodwRefining.h" />
     <ClInclude Include="WindowManager.h" />
     <ClInclude Include="WindowMessagingSystem.h" />
   </ItemGroup>
@@ -288,7 +308,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectComponent.h" />
     <ClInclude Include="Equipment.h" />
-    <ClInclude Include="EquipmentComponent.h" />
+    <ClInclude Include="EquipmentsComponent.h" />
     <ClInclude Include="eveBracketsManager.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="GameObject.h" />
@@ -351,6 +371,42 @@
     <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="HLSL\UI\Process_PS.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\UI\Process_VS.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\UI\ProcessCircle_PS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
@@ -459,6 +515,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HLSL\\UI\\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HLSL\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <None Include="HLSL\UI\Process.hlsli" />
     <None Include="HLSL\UI\ProcessCircle.hlsli" />
     <None Include="HLSL\UI\Gauge.hlsli" />
     <None Include="HLSL\Sky\Sky.hlsli" />

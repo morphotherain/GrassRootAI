@@ -34,6 +34,13 @@ public:
 		m_depthStencilView = depthStencilView;
 		width = _width;
 		height = _height;
+		
+		DWriteCreateFactory(
+			DWRITE_FACTORY_TYPE_SHARED,
+			__uuidof(IDWriteFactory),
+			reinterpret_cast<IUnknown**>(m_pDWriteFactory.GetAddressOf())
+		);
+
 	}
 	void setd2dResource(ID2D1RenderTarget* pd2dRenderTarget, ID2D1SolidColorBrush* pColorBrush, IDWriteTextFormat* pTextFormat) {
 		m_pd2dRenderTarget = pd2dRenderTarget;
@@ -59,6 +66,8 @@ public:
 	ID3D11Device* getDevice() const { return m_device.Get(); }
 	ID3D11DeviceContext* getDeviceContext() const { return m_deviceContext.Get(); }
 	IDXGISwapChain* getSwapChain() const { return m_swapChain.Get(); }
+	
+	IDWriteFactory* GetDWriteFactory();
 
 	// 设置渲染目标视图
 	void setRenderTarget(ID3D11RenderTargetView* renderTargetView, ID3D11DepthStencilView* depthStencilView);
@@ -92,6 +101,8 @@ private:
 	ComPtr<ID2D1SolidColorBrush> m_pColorBrush;
 	ComPtr<IDWriteTextFormat> m_pTextFormat; //默认字体
 	std::map<std::string, ComPtr<IDWriteTextFormat>> m_textFormats;
+
+	Microsoft::WRL::ComPtr<IDWriteFactory> m_pDWriteFactory;
 
 	UINT width = 800;
 	UINT height = 600;

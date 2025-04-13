@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <any>
 
 class GameObject;
 
@@ -16,17 +17,28 @@ struct Task {
 	bool isInnerTask;
 	std::shared_ptr<GameObject> publisher;
 	std::shared_ptr<GameObject> target;
-	UINT taskTypeId;
-	UINT taskStatus;
-	UINT createdTime;
-	UINT result;
+	int publisherId = -1;
+	int targetId = -1;
+	int taskTypeId = -1;
+	int taskStatus;
+	int createdTime;
+	int result;
 
-	std::shared_ptr<std::vector<int>> intParamsPtr;
-	std::shared_ptr<std::vector<float>> floatParamsPtr;
-	std::shared_ptr<std::vector<double>> doubleParamsPtr;
-	std::shared_ptr<std::vector<std::string>> stringParamsPtr;
-	std::shared_ptr<std::vector<std::wstring>> wstringParamsPtr;
+	std::shared_ptr<std::unordered_map<std::string, std::any>> paramsPtr;
 
 	std::string to_string() const;
 	std::string to_string_abstract() const;
+
+	template<typename T>
+	T getParamOrDefault(const std::string& paramName, const T& defaultValue) const {
+		if (paramsPtr->find(paramName) != paramsPtr->end()) {
+			try {
+				return std::any_cast<T>((*paramsPtr)[paramName]);
+			}
+			catch (const std::bad_any_cast& e) {
+				DEBUG_("类型转换错误: {}", e.what());
+			}
+		}
+		return defaultValue;
+	}
 };

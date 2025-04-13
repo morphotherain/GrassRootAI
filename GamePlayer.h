@@ -1,5 +1,7 @@
 #pragma once
 #include "GameObject.h"
+#include "TransformComponent.h"
+
 class GamePlayer : public GameObject
 {
 public:

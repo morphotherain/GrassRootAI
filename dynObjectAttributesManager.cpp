@@ -3,7 +3,7 @@
 std::shared_ptr<std::unordered_map<int, Attribute>> dynObjectAttributesManager::getAttributesByObjectID(int object_id)
 {
 	std::shared_ptr<std::unordered_map<int, Attribute>> result = std::make_shared<std::unordered_map<int, Attribute>>();
-	std::string query = "SELECT attributeID,value FROM dynObjectAttributesManager WHERE ObjectID = ?";
+	std::string query = "SELECT attributeID,value FROM dynObjectAttributes WHERE ObjectID = ?";
 	int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
 	if (rc == SQLITE_OK) {
 		sqlite3_bind_int(stmt, 1, object_id);
@@ -19,7 +19,7 @@ std::shared_ptr<std::unordered_map<int, Attribute>> dynObjectAttributesManager::
 }
 
 void dynObjectAttributesManager::updateAttributesByObjectID(int object_id, const std::unordered_map<int, Attribute>& newAttributes) {
-	std::string updateQuery = "UPDATE dynObjectAttributesManager SET value =? WHERE ObjectID =? AND attributeID =?";
+	std::string updateQuery = "UPDATE dynObjectAttributes SET value =? WHERE ObjectID =? AND attributeID =?";
 	int rc = sqlite3_prepare_v2(db, updateQuery.c_str(), -1, &stmt, nullptr);
 	if (rc == SQLITE_OK) {
 		for (const auto& attrPair : newAttributes) {
@@ -59,7 +59,7 @@ void dynObjectAttributesManager::resetAttributesByObjectID(int object_id, const 
 			// 绑定参数到插入语句
 			sqlite3_bind_int(stmt, 1, object_id);
 			sqlite3_bind_int(stmt, 2, attr.attributeID);
-			sqlite3_bind_int(stmt, 3, attr.value);
+			sqlite3_bind_double(stmt, 3, attr.value);
 			// 执行插入操作
 			sqlite3_step(stmt);
 			// 重置插入语句状态，以便下一次循环使用

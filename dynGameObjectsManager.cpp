@@ -251,6 +251,76 @@ dynGameObject dynGameObjectsManager::getGameObjectByObjectID(int object_id)
 	return result;
 }
 
+// 自动获取下一个自增的objectID然后根据参数插入一条新记录
+int dynGameObjectsManager::insertGameObject(const dynGameObject& obj) {
+	// 获取当前最大的objectID
+	std::string getMaxIDQuery = "SELECT MAX(ObjectID) FROM dynGameObjects;";
+	int rc = sqlite3_prepare_v2(db, getMaxIDQuery.c_str(), -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "SQLite prepare error: " << sqlite3_errmsg(db) << std::endl;
+		return false;
+	}
+
+	int nextObjectID = 1;
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		int maxID = sqlite3_column_int(stmt, 0);
+		nextObjectID = maxID + 1;
+	}
+	sqlite3_finalize(stmt);
+
+	// 插入新记录
+	std::string insertQuery = "INSERT INTO dynGameObjects (ObjectID, typeID, x, y, z, SolarSystemID, OwnerID, ContainerID, qw, qx, qy, qz) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+	rc = sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "SQLite prepare error: " << sqlite3_errmsg(db) << std::endl;
+		return false;
+	}
+
+	sqlite3_bind_int(stmt, 1, nextObjectID);
+	sqlite3_bind_int(stmt, 2, obj.typeID);
+	sqlite3_bind_double(stmt, 3, obj.x);
+	sqlite3_bind_double(stmt, 4, obj.y);
+	sqlite3_bind_double(stmt, 5, obj.z);
+	sqlite3_bind_int(stmt, 6, obj.SolarSystemID);
+	sqlite3_bind_int(stmt, 7, obj.OwnerID);
+	sqlite3_bind_int(stmt, 8, obj.ContainerID);
+	sqlite3_bind_double(stmt, 9, obj.qw);
+	sqlite3_bind_double(stmt, 10, obj.qx);
+	sqlite3_bind_double(stmt, 11, obj.qy);
+	sqlite3_bind_double(stmt, 12, obj.qz);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		std::cerr << "SQLite insert error: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	sqlite3_finalize(stmt);
+	return nextObjectID;
+}
+
+// 根据objectID删除指定的记录
+bool dynGameObjectsManager::deleteGameObject(int objectID) {
+	std::string deleteQuery = "DELETE FROM dynGameObjects WHERE ObjectID =?;";
+	int rc = sqlite3_prepare_v2(db, deleteQuery.c_str(), -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "SQLite prepare error: " << sqlite3_errmsg(db) << std::endl;
+		return false;
+	}
+
+	sqlite3_bind_int(stmt, 1, objectID);
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		std::cerr << "SQLite delete error: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		return false;
+	}
+
+	sqlite3_finalize(stmt);
+	return true;
+}
+
 unsigned int dynGameObjectsManager::getPilotObjectIDByPilotID(int pilot_id)
 {
 	unsigned int id = 0;

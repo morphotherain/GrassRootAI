@@ -3,10 +3,9 @@
 #include <memory>
 #include <unordered_map>
 #include <cstdint>
-// 包含所有组件类型的头文件
-#include "StationComponent.h"
-#include "TransformComponent.h"
-#include "WarpGateComponent.h"
+#include "Mouse.h"
+#include "Keyboard.h"
+#include "Component.h"
 #include "TaskMgr.h"
 
 class GameObject {
@@ -51,6 +50,7 @@ public:
 		}
 		return matchedComponents;
 	}
+	void ResolveDependencies();
 
 	virtual void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) {
 		tick++;
@@ -88,25 +88,26 @@ public:
 		// 默认的任务处理逻辑，可以是空实现或者打印提示信息等，具体由子类按需重写
 	}
 };
-
 class GameObjectMgr {
 private:
 	// 使用智能指针管理对象映射表，初始化为nullptr，后续由外部传入进行初始化
-	static std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
+	std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> p_mapObject;
 
 	// 私有构造函数，保证单例模式，外部不能随意创建实例
 	GameObjectMgr() {}
 
-	// 静态单例对象，定义并初始化（C++11及之后可以保证线程安全的初始化）
-	static GameObjectMgr instance;
-
 public:
+	// 提供一个静态函数来获取单例对象
+	static GameObjectMgr& getInstance() {
+		static GameObjectMgr instance;
+		return instance;
+	}
 	// 设置映射表的静态方法，用于接收外部初始化好的映射表
-	static void setObjectMap(std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> map);
+	void setObjectMap(std::shared_ptr<std::unordered_map<UINT, std::shared_ptr<GameObject>>> map);
 
 	// 根据id获取对象的静态成员函数，可直接调用
-	static std::shared_ptr<GameObject> getObject(UINT id);
+	std::shared_ptr<GameObject> getObject(UINT id);
 
 	// 添加对象到映射表的方法（前提是映射表已通过setObjectMap设置好）
-	static void addObject(UINT id, std::shared_ptr<GameObject> obj);
+	void addObject(UINT id, std::shared_ptr<GameObject> obj);
 };

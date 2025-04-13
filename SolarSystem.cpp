@@ -116,8 +116,12 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
 		object = std::make_shared<Ship>(objectData.objectID);
 		break;
 	}
-	case 7: {    //舰船(含太空舱
+	case 7: {    //舰装
 		object = std::make_shared<Equipment>(objectData.objectID);
+		break;
+	}
+	case 25: {    //小行星
+		object = std::make_shared<Asteroid>(objectData.objectID);
 		break;
 	}
 	default: {

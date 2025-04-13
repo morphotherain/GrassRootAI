@@ -36,6 +36,7 @@ public:
 	void getCurrentPilot();
 	void setCurrentPilot();
 	void Update(UINT tick);
+	void handleTask(const Task& task);
 
 	std::shared_ptr<SolarSystem> loadSolarSystem(int id);
 
@@ -43,6 +44,8 @@ public:
 	void handleStarGateTransferObjects();
 
 	void InitPilots();
+
+	std::shared_ptr<GameObject> getObjectById(int id);
 
 private:
 };

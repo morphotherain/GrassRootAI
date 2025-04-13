@@ -27,12 +27,107 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
+	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+	auto lockingComponent = m_currentShip->GetComponent<LockingComponent>();
+	int currentSelectLockingObjectId;
+	if (lockingComponent->m_mapLockedTarget.empty())
+		currentSelectLockingObjectId = -1;
+	else {
+		currentSelectLockingObjectId = lockingComponent->m_mapLockedTarget.begin()->second->m_TargetObjectID;
+	}
+
+	std::shared_ptr<Task> task = std::make_shared<Task>();
+	task->isInnerTask = true;
+	task->taskID = -1;
+	task->publisher = m_currentShip;
+	task->target = m_currentShip;
+	task->taskTypeId = 5;
+	(*task->paramsPtr)["targetObjectID"] = currentSelectLockingObjectId;
+	(*task->paramsPtr)["taskType"] = std::string("switch");
+	while (true) {
+		(*task->paramsPtr)["slotType"] = std::string("low");
+		if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)){
+			(*task->paramsPtr)["slotIndex"] = 0; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
+			(*task->paramsPtr)["slotIndex"] = 1; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
+			(*task->paramsPtr)["slotIndex"] = 2; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
+			(*task->paramsPtr)["slotIndex"] = 3; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
+			(*task->paramsPtr)["slotIndex"] = 4; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
+			(*task->paramsPtr)["slotIndex"] = 5; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
+			(*task->paramsPtr)["slotIndex"] = 6; break;
+		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
+			(*task->paramsPtr)["slotIndex"] = 7; break;
+		}
+
+		(*task->paramsPtr)["slotType"] = std::string("medium");
+		if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)) {
+			(*task->paramsPtr)["slotIndex"] = 0; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
+			(*task->paramsPtr)["slotIndex"] = 1; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
+			(*task->paramsPtr)["slotIndex"] = 2; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
+			(*task->paramsPtr)["slotIndex"] = 3; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
+			(*task->paramsPtr)["slotIndex"] = 4; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
+			(*task->paramsPtr)["slotIndex"] = 5; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
+			(*task->paramsPtr)["slotIndex"] = 6; break;
+		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
+			(*task->paramsPtr)["slotIndex"] = 7; break;
+		}
+		(*task->paramsPtr)["slotType"] = std::string("high");
+		if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)) {
+			(*task->paramsPtr)["slotIndex"] = 0; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
+			(*task->paramsPtr)["slotIndex"] = 1; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
+			(*task->paramsPtr)["slotIndex"] = 2; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
+			(*task->paramsPtr)["slotIndex"] = 3; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
+			(*task->paramsPtr)["slotIndex"] = 4; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
+			(*task->paramsPtr)["slotIndex"] = 5; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
+			(*task->paramsPtr)["slotIndex"] = 6; break;
+		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
+			(*task->paramsPtr)["slotIndex"] = 7; break;
+		}
+		
+		break;
+	}
+	if(task->paramsPtr->find("slotIndex") != task->paramsPtr->end())
+		TaskMgr::getInstance().addTask(task);
+
+	std::shared_ptr<Task> taskSwitchLockingTarget = std::make_shared<Task>();
+	taskSwitchLockingTarget->isInnerTask = true;
+	taskSwitchLockingTarget->taskID = -1;
+	taskSwitchLockingTarget->publisher = m_currentShip;
+	taskSwitchLockingTarget->target = m_currentShip;
+	taskSwitchLockingTarget->taskTypeId = 6;
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::OemComma)) {
+		(*taskSwitchLockingTarget->paramsPtr)["direction"] = 0;
+		TaskMgr::getInstance().addTask(taskSwitchLockingTarget);
+	}
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::OemPeriod)) {
+		(*taskSwitchLockingTarget->paramsPtr)["direction"] = 1;
+		TaskMgr::getInstance().addTask(taskSwitchLockingTarget);
+	}
+
 	m_tick = tick;
 	UpdateLockedTargets(tick);
 }
 
 void UIShip::DrawUI()
 {
+	//m_testRichText->DrawUI();
 	DrawLockedTarget();
 	// 假设 camera 是当前场景中的摄影机对象
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
@@ -50,7 +145,8 @@ void UIShip::DrawUI()
 	DrawCommonEffect(m_overloadBtnEffect, windowModel, viewMatrix, projMatrix);
 	DrawCommonEffect(m_slotBaseEffect, windowModel, viewMatrix, projMatrix);
 	DrawCommonEffect(m_slotOverloadBtnEffect, windowModel, viewMatrix, projMatrix);
-	DrawCommonEffect(m_slotEquipmentEffect, windowModel, viewMatrix, projMatrix);
+	DrawCommonEffect(m_slotEquipmentsEffect, windowModel, viewMatrix, projMatrix);
+	DrawSlotRamp(windowModel, viewMatrix, projMatrix);
 	DrawGaugeEffect(m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
 	DrawGaugeEffect(m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
 	DrawGaugeEffect(m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
@@ -115,7 +211,7 @@ bool UIShip::InitResource()
 	GenerateSlotUnderlayVertices(verticesSlotBase);
 	InitCommonEffect(verticesSlotBase, { front + "slotMainFull.dds" }, m_slotBaseEffect);
 
-	InitEquipmentEffect(m_slotEquipmentEffect);
+	InitEquipmentsEffect(m_slotEquipmentsEffect);
 
 	std::vector<PosTexIndex> verticesLowHighHeat = {};
 	GenerateRectVertex(verticesLowHighHeat, 38.0f, 42.0f, 28.0f, 40.0f, 0.0f);
@@ -153,6 +249,18 @@ bool UIShip::InitResource()
 	float farZ = 1.0f;
 	UIcamera->SetOrthographic(left, right, bottom, top, nearZ, farZ);
 
+	m_testRichText = std::make_shared<UIRichText>(hInstance);
+	// 设置文本区域的大小和位置
+	m_testRichText->setSize(10.0f, 30.0f, 200.0f, 40.0f);
+
+	// 添加不同颜色的文本片段
+	m_testRichText->addTextSegment(L"Hello", D2D1::ColorF(D2D1::ColorF::Red));
+	m_testRichText->addTextSegment(L" ", D2D1::ColorF(D2D1::ColorF::White));
+	m_testRichText->addTextSegment(L"World", D2D1::ColorF(D2D1::ColorF::Blue));
+
+	// 设置文字居中
+	m_testRichText->setTextCentered(true);
+	m_testRichText->Init();
 	return true;
 }
 
@@ -189,6 +297,7 @@ void UIShip::UpdateLockedTargets(UINT tick)
 	for (int id : idsToRemove) {
 		m_mapLockedTarget.erase(id);
 	}
+	m_currentLockingTargetId = lockingComponent->currentLockedTargetId;
 
 	auto Tran1 = m_currentShip->GetComponent<SpaceTransformComponent>();
 
@@ -203,7 +312,7 @@ void UIShip::UpdateLockedTargets(UINT tick)
 			static_cast<float>(Tran2->x - sector->x),
 			static_cast<float>(Tran2->y - sector->y),
 			static_cast<float>(Tran2->z - sector->z) }, viewMatrixLocal, projMatrixLocal);
-		auto pos = ConvertNDCToScreen(ndc, 1920.0f, 1080.0f);
+		auto pos = ConvertNDCToScreen(ndc, 1920, 1080);
 
 		m_mapLockedTarget[pair.first]->target_x = pos.x + 10.0f;
 		m_mapLockedTarget[pair.first]->target_y = pos.y + 16.0f;
@@ -232,20 +341,46 @@ void UIShip::DrawCommonEffect(std::shared_ptr<Effect>& m_effect, DirectX::XMMATR
 	m_effect->apply();
 }
 
-void UIShip::InitEquipmentEffect(std::shared_ptr<Effect>& m_effect)
+void UIShip::InitEquipmentsEffect(std::shared_ptr<Effect>& m_effect)
 {
-	int highTypeID = 483;
-	int medTypeID = 439;
-	int lowTypeID = 22542;
-	std::vector<PosTexIndex> verticesSlotEquipment = {};
-	GenerateSlotEquipmentVertices(verticesSlotEquipment, 0, 0, 0.0f);
-	GenerateSlotEquipmentVertices(verticesSlotEquipment, 1, 0, 1.0f);
-	GenerateSlotEquipmentVertices(verticesSlotEquipment, 2, 0, 2.0f);
-	InitCommonEffect(verticesSlotEquipment, {
-		getIconPathByTypeID(highTypeID),
-		getIconPathByTypeID(medTypeID),
-		getIconPathByTypeID(lowTypeID)
-		}, m_slotEquipmentEffect);
+	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+	auto equipmentComponent = m_currentShip->GetComponent<EquipmentsComponent>();
+	std::vector<std::vector<int>> ItemsIDs = {};
+	ItemsIDs.push_back(equipmentComponent->m_pHighSlot->itemIDs);
+	ItemsIDs.push_back(equipmentComponent->m_pMediumSlot->itemIDs);
+	ItemsIDs.push_back(equipmentComponent->m_pLowSlot->itemIDs);
+	
+	int slotIndex = 0;
+	float textureIndex = 0.0f;
+	std::vector<std::string> texturesArray = {};
+	std::vector<PosTexIndex> verticesSlotEquipments = {};
+	for (auto& ids : ItemsIDs) {
+		float index = 0.0f;
+		for (auto id : ids) {
+			DEBUG_("load equipment:{}", id);
+			auto targetObject = SolarSystemMgr::getInstance().getObjectById(id);
+			auto typeID = targetObject->GetComponent<BaseComponent>()->typeID;
+			texturesArray.push_back(getIconPathByTypeID(typeID));
+			GenerateSlotEquipmentsVertices(verticesSlotEquipments, slotIndex, index, textureIndex);
+
+			{
+				std::vector<PosTexIndex> verticesSlotRamp = {};
+				m_mapSlotRampEffect[id] = std::make_shared<Effect>();
+				GenerateSlotVertices(verticesSlotRamp, slotIndex, index, 0.0f);
+				m_mapSlotRampEffect[id]->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\UI\\ProcessCircle_VS.hlsl", L"HLSL\\UI\\ProcessCircle_VS.cso");
+				m_mapSlotRampEffect[id]->getVertexBuffer<PosTexIndex>()->setVertices(verticesSlotRamp);
+				m_mapSlotRampEffect[id]->addPixelShader(L"HLSL\\UI\\ProcessCircle_PS.hlsl", L"HLSL\\UI\\ProcessCircle_PS.cso");
+				m_mapSlotRampEffect[id]->addTextures({ front + "slotRamp.dds" });
+				m_mapSlotRampEffect[id]->addConstantBuffer<ConstantMVPIndex>();
+				m_mapSlotRampEffect[id]->Init();
+			}
+
+			index++; textureIndex++;
+		}
+		slotIndex++;
+	}
+	InitCommonEffect(verticesSlotEquipments, texturesArray, m_effect);
+
 }
 
 void UIShip::InitGaugeEffect(std::vector<PosTexIndex>& _vertices, std::vector<std::string> textureFileName, std::shared_ptr<Effect>& m_effect)
@@ -308,13 +443,13 @@ void UIShip::GenerateCapacitorDots(std::vector<PosTexIndex>& vertices, int numRa
 void UIShip::GenerateSlotVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID)
 {
 	float delta = (row % 2 == 0) ? 0.0f : 30.0f;
-	GenerateRectVertex(vertices, 155.0f + delta + col * 50.0f, 10.0f + row * 40.0f, 64.0f, 64.0f, texID);
+	GenerateRectVertex(vertices, 155.0f + delta + col * 55.0f, 10.0f + row * 45.0f, 64.0f, 64.0f, texID);
 }
 
-void UIShip::GenerateSlotEquipmentVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID)
+void UIShip::GenerateSlotEquipmentsVertices(std::vector<PosTexIndex>& vertices, int row, int col, float texID)
 {
 	float delta = (row % 2 == 0) ? 0.0f : 30.0f;
-	GenerateRectVertex(vertices, 165.0f + delta + col * 50.0f, 18.0f + row * 40.0f, 48.0f, 48.0f, texID);
+	GenerateRectVertex(vertices, 165.0f + delta + col * 55.0f, 18.0f + row * 45.0f, 48.0f, 48.0f, texID);
 }
 
 void UIShip::GenerateSlotUnderlayVertices(std::vector<PosTexIndex>& vertices)
@@ -329,7 +464,7 @@ void UIShip::GenerateSlotUnderlayVertices(std::vector<PosTexIndex>& vertices)
 void UIShip::GenerateSlotOverloadVertices(std::vector<PosTexIndex>& vertices, int row, int col)
 {
 	float delta = (row % 2 == 0) ? 0.0f : 30.0f;
-	GenerateRectVertex(vertices, 155.0f + 16.0f + delta + col * 50.0f, 15.0f + row * 40.0f, 32.0f, 16.0f, 1.0f);
+	GenerateRectVertex(vertices, 155.0f + 16.0f + delta + col * 55.0f, 15.0f + row * 45.0f, 32.0f, 16.0f, 1.0f);
 }
 
 void UIShip::GenerateSlotOverloadsVertices(std::vector<PosTexIndex>& vertices)
@@ -468,14 +603,37 @@ void UIShip::DrawLockedTarget()
 			DrawGaugeEffect(target->m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
 			DrawCommonEffect(target->m_bodyEffect, windowModel, viewMatrix, projMatrix);
 
-			windowModel = CreateRotatedWindowModel(target->x + 120.0f * index, target->y, 100.0f, 100.0f, angle);
+			if (m_currentLockingTargetId == pair.first){
+				windowModel = CreateRotatedWindowModel(target->x + 120.0f * index, target->y, 100.0f, 100.0f, angle);
+				DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
+			}
+		}
+
+		if (m_currentLockingTargetId == pair.first) {
+			windowModel = CreateRotatedWindowModel(target->target_x - 50.0f, target->target_y - 50.0f, 100.0f, 100.0f, angle);
 			DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
 		}
 
-		windowModel = CreateRotatedWindowModel(target->target_x - 50.0f, target->target_y - 50.0f, 100.0f, 100.0f, angle);
-		DrawCommonEffect(target->m_arrowEffect, windowModel, viewMatrix, projMatrix);
-
 		if (target->m_isLocked)
 			index++;
+	}
+}
+
+void UIShip::DrawSlotRamp(DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& viewMatrix, DirectX::XMMATRIX& projMatrix)
+{
+	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+	auto equipmentComponent = m_currentShip->GetComponent<EquipmentsComponent>();
+	std::vector<std::vector<int>> ItemsIDs = {};
+	ItemsIDs.push_back(equipmentComponent->m_pHighSlot->itemIDs);
+	ItemsIDs.push_back(equipmentComponent->m_pMediumSlot->itemIDs);
+	ItemsIDs.push_back(equipmentComponent->m_pLowSlot->itemIDs);
+
+	for (auto& ids : ItemsIDs) {
+		for (auto id : ids) {
+			auto m_slotRampEffect = m_mapSlotRampEffect[id];
+			auto object = SolarSystemMgr::getInstance().getObjectById(id);
+			auto equipmentComponent = object->GetComponent<EquipmentComponent>();
+			DrawGaugeEffect(m_slotRampEffect, windowModel, viewMatrix, projMatrix, equipmentComponent->m_activateProcess);
+		}
 	}
 }

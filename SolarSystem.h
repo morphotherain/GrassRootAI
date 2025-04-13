@@ -11,6 +11,7 @@
 #include "Ship.h"
 #include "Astro.h"
 #include "Equipment.h"
+#include "Asteroid.h"
 #include "NPCStation.h"
 #include "Sector.h"
 

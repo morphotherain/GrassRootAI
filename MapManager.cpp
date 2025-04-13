@@ -75,6 +75,57 @@ std::vector<SolarSystemData> getSolarSystems()
 	return solarSystems;
 }
 
+std::vector<SolarSystemData> getSolarSystemsByRegionalID(int regionalID) {
+	std::vector<SolarSystemData> solarSystems;
+
+	// 获取数据库实例
+	DatabaseManager* dbManager = DatabaseManager::getInstance();
+	sqlite3* db = dbManager->getDatabase();
+
+	// SQL 查询语句，根据 regionalID 获取指定区域内的所有恒星系
+	std::string sql = "SELECT x, y, z, solarSystemName, luminosity, solarSystemID, constellationID, regionID, security "
+		"FROM mapSolarSystems "
+		"WHERE constellationID =?;";
+
+	sqlite3_stmt* stmt;
+	int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+		return solarSystems;
+	}
+
+	// 绑定参数
+	rc = sqlite3_bind_int(stmt, 1, regionalID);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Failed to bind parameter: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		return solarSystems;
+	}
+
+	// 迭代查询结果并将数据存储到 solarSystems 结构中
+	while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+		SolarSystemData system;
+
+		// 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
+		system.x = sqlite3_column_double(stmt, 0);
+		system.y = sqlite3_column_double(stmt, 1);
+		system.z = sqlite3_column_double(stmt, 2);
+		system.solarSystemName = dbManager->sqlite3_column_wstring(stmt, 3); // 获取 wstring 类型的名称
+		system.luminosity = sqlite3_column_double(stmt, 4);
+		system.solarSystemID = sqlite3_column_int(stmt, 5);
+		system.constellationID = sqlite3_column_int(stmt, 6);
+		system.regionalID = sqlite3_column_int(stmt, 7);
+		system.security = sqlite3_column_double(stmt, 8);
+
+		// 将数据添加到向量中
+		solarSystems.push_back(system);
+	}
+
+	// 释放语句资源
+	sqlite3_finalize(stmt);
+
+	return solarSystems;
+}
 SolarSystemData getSolarsystem(int id)
 {
 	return SolarSystemData(id);

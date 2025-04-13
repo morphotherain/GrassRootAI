@@ -11,7 +11,14 @@ public:
 	StorageComponent(UINT _objectID, UINT _containerTypeID);
 	~StorageComponent() = default;
 
+	std::vector<std::type_index> GetDependencies() const override {
+		return {};
+	}
+	void InjectDependency(const std::shared_ptr<Component>& dep) override {}
+
 	virtual void Update(UINT tick) {};
+	virtual void handleTask(const Task& task);
+
 
 	UINT objectID;
 	UINT containerID;
@@ -33,10 +40,28 @@ public:
 };
 
 // 装备槽
-class EquipmentSlotComponent : public StorageComponent {
+class HighSlotComponent : public StorageComponent {
 public:
-	EquipmentSlotComponent() = default;
-	EquipmentSlotComponent(UINT _objectID) : StorageComponent(_objectID, CONTAINER_TYPE_EQUIPMENT_SLOT) {}
+	HighSlotComponent() = default;
+	HighSlotComponent(UINT _objectID) : StorageComponent(_objectID, CONTAINER_TYPE_HIGH_SLOT) {}
+};
+
+class MediumSlotComponent : public StorageComponent {
+public:
+	MediumSlotComponent() = default;
+	MediumSlotComponent(UINT _objectID) : StorageComponent(_objectID, CONTAINER_TYPE_MEDIUM_SLOT) {}
+};
+
+class LowSlotComponent : public StorageComponent {
+public:
+	LowSlotComponent() = default;
+	LowSlotComponent(UINT _objectID) : StorageComponent(_objectID, CONTAINER_TYPE_LOW_SLOT) {}
+};
+
+class RigSlotComponent : public StorageComponent {
+public:
+	RigSlotComponent() = default;
+	RigSlotComponent(UINT _objectID) : StorageComponent(_objectID, CONTAINER_TYPE_RIG_SLOT) {}
 };
 
 // 弹药

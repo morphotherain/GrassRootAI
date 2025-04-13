@@ -30,3 +30,7 @@ void D3DManager::cleanup() {
 	m_deviceContext.Reset();
 	m_device.Reset();
 }
+
+IDWriteFactory* D3DManager::GetDWriteFactory() {
+	return m_pDWriteFactory.Get();
+}

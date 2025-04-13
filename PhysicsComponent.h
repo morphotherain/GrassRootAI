@@ -19,6 +19,11 @@ public:
 	PhysicsComponent(UINT _object_id) { object_id = _object_id; };
 	~PhysicsComponent() = default;
 
+	std::vector<std::type_index> GetDependencies() const override {
+		return { typeid(SpaceTransformComponent) };
+	}
+	void InjectDependency(const std::shared_ptr<Component>& dep) override;
+
 	UINT object_id;
 	UINT m_tick = 0;
 

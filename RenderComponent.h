@@ -37,6 +37,11 @@ public:
 	RenderComponent(HINSTANCE hInstance);
 	~RenderComponent() = default;
 
+	std::vector<std::type_index> GetDependencies() const override {
+		return {};
+	}
+	void InjectDependency(const std::shared_ptr<Component>& dep) override {}
+
 	bool Init();
 	void OnResize();
 	void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);

@@ -114,3 +114,5 @@ std::vector<SolarSystemJump> getSolarSystemJumps();
 
 // 获取星门跳跃数据的函数声明
 std::vector<RegionData> getRegions();
+
+std::vector<SolarSystemData> getSolarSystemsByRegionalID(int regionalID);

@@ -57,13 +57,35 @@ bool UIWindowMap::Init()
 		auto text = std::make_shared<UIText>();
 		text->setSize(scaledPos.x, scaledPos.y, 350.0f, 350.0f); // 设置文本位置和尺寸
 		text->setText(region.regionName); // 设置星域名称文本
-		AddUIComponent(text);
 
 		// 存储文本对象以便后续更新
 		regionTexts.push_back(text);
 	}
+	for (const auto& solarSystem : m_currentRegionSolarSystem) {
+		// 计算缩放后的坐标
+		DirectX::XMFLOAT3 scaledPos = DirectX::XMFLOAT3(
+			static_cast<float>(solarSystem.x / factor),
+			static_cast<float>(solarSystem.y / factor),
+			static_cast<float>(solarSystem.z / factor)
+		);
+
+		// 创建并配置文本组件
+		auto text = std::make_shared<UIText>();
+		text->setSize(scaledPos.x, scaledPos.y, 350.0f, 350.0f); // 设置文本位置和尺寸
+		text->setText(solarSystem.solarSystemName); // 设置星域名称文本
+
+		solarSystemTexts.push_back(text);
+	}
 
 	for (auto& component : childComponents) {
+		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+		component->Init();
+	}
+	for (auto& component : regionTexts) {
+		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+		component->Init();
+	}
+	for (auto& component : solarSystemTexts) {
 		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		component->Init();
 	}
@@ -79,6 +101,12 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 {
 	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
 	for (auto& component : childComponents) {
+		component->setDelta(x, y);
+	}
+	for (auto& component : regionTexts) {
+		component->setDelta(x, y);
+	}
+	for (auto& component : solarSystemTexts) {
 		component->setDelta(x, y);
 	}
 	// 更新鼠标事件，获取相对偏移量
@@ -120,31 +148,49 @@ void UIWindowMap::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 
 	if (keyState.IsKeyDown(Keyboard::H))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x + 0.1f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x + 0.02f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
 	}
 	if (keyState.IsKeyDown(Keyboard::K))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x - 0.1f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x - 0.02f, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
 	}
 
 	if (keyState.IsKeyDown(Keyboard::U))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y + 0.1f, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y + 0.02f, cam3st->GetTargetPosition().z));
 	}
 	if (keyState.IsKeyDown(Keyboard::J))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y - 0.1f, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y - 0.02f, cam3st->GetTargetPosition().z));
 	}
 
 	if (keyState.IsKeyDown(Keyboard::Y))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.1f));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.02f));
 	}
-	if (keyState.IsKeyDown(Keyboard::I))
+	if (keyState.IsKeyDown(Keyboard::P))
 	{
-		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z - 0.1f));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z - 0.02f));
 	}
-	cam3st->RotateY(0.0002f);
+	if (keyState.IsKeyDown(Keyboard::Z))
+	{
+		if(m_viewTypeCooldown== 0)
+		{
+			m_viewTypeCooldown = 30;
+			m_viewType = 1 - m_viewType;
+		}
+	}
+	if (m_viewTypeCooldown > 0)
+	{
+		m_viewTypeCooldown--;
+	}
+	if (m_viewType == 1 && temp>0) {
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y - 0.00115f * temp, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x - 0.0005f * temp, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z));
+		cam3st->SetTarget(XMFLOAT3(cam3st->GetTargetPosition().x, cam3st->GetTargetPosition().y, cam3st->GetTargetPosition().z + 0.00035f * temp--));
+
+	}
+	cam3st->RotateY(0.0f);
 
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
@@ -167,6 +213,20 @@ void UIWindowMap::DrawUI()
 
 	for (auto& component : childComponents) {
 		component->DrawUI();
+	}
+
+	if (m_viewType == 0)
+	{
+		for (auto& component : regionTexts) {
+			component->DrawUI();
+		}
+	}
+
+	if (m_viewType == 1)
+	{
+		for (auto& component : solarSystemTexts) {
+			component->DrawUI();
+		}
 	}
 
 	// 1. 保存当前视口
@@ -200,7 +260,6 @@ void UIWindowMap::DrawUI()
 			static_cast<float>(m_regions[i].y / factor),
 			static_cast<float>(m_regions[i].z / factor)
 		);
-
 		// 将世界坐标转换为屏幕坐标
 		DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&worldPos);
 		pos = DirectX::XMVector3TransformCoord(pos, viewMatrix * projMatrix);
@@ -208,15 +267,34 @@ void UIWindowMap::DrawUI()
 		// 将归一化设备坐标映射到屏幕坐标
 		DirectX::XMFLOAT2 screenPos;
 		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width;// 假设 m_screenWidth 是屏幕宽度
-
 		if (screenPos.x < 0 || screenPos.x >  adjustedViewport.Width) screenPos.x = -10000.0f;
-
 		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height;//假设 m_screenHeight 是屏幕高度
-
 		if (screenPos.y < 0 || screenPos.y > adjustedViewport.Height) screenPos.y = -10000.0f;
-
 		// 更新文本位置
 		regionTexts[i]->setSize(screenPos.x, screenPos.y, 350.0f, 350.0f);
+	}
+
+	// 遍历每个星域名称文本并更新位置
+	for (size_t i = 0; i < m_currentRegionSolarSystem.size(); ++i)
+	{
+		// 计算缩放后的世界坐标
+		DirectX::XMFLOAT3 worldPos(
+			static_cast<float>(m_currentRegionSolarSystem[i].x / factor),
+			static_cast<float>(m_currentRegionSolarSystem[i].y / factor),
+			static_cast<float>(m_currentRegionSolarSystem[i].z / factor)
+		);
+		// 将世界坐标转换为屏幕坐标
+		DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&worldPos);
+		pos = DirectX::XMVector3TransformCoord(pos, viewMatrix * projMatrix);
+
+		// 将归一化设备坐标映射到屏幕坐标
+		DirectX::XMFLOAT2 screenPos;
+		screenPos.x = (pos.m128_f32[0] + 1.0f) * 0.5f * adjustedViewport.Width;// 假设 m_screenWidth 是屏幕宽度
+		if (screenPos.x < 0 || screenPos.x >  adjustedViewport.Width) screenPos.x = -10000.0f;
+		screenPos.y = (1.0f - pos.m128_f32[1]) * 0.5f * adjustedViewport.Height;//假设 m_screenHeight 是屏幕高度
+		if (screenPos.y < 0 || screenPos.y > adjustedViewport.Height) screenPos.y = -10000.0f;
+		// 更新文本位置
+		solarSystemTexts[i]->setSize(screenPos.x, screenPos.y, 350.0f, 350.0f);
 	}
 
 	ConstantMVPIndex* dataPtrLine = m_mapLineEffect->getConstantBuffer<ConstantMVPIndex>()->Map();
@@ -553,6 +631,8 @@ bool UIWindowMap::InitResource()
 	camera->SetDistance(10.0f);
 	camera->SetDistanceMinMax(1.0f, 40.0f);
 	camera->Approach(-0.00f);
+	camera->RotateX(1.0f);
+
 
 	std::vector<PointVertexPosColor> verticesPoints;
 	std::vector<LineVertexPosColor> verticesLines;
@@ -598,6 +678,7 @@ bool UIWindowMap::InitMap()
 	m_solarSystem = getSolarSystems();
 	m_solarSystemJump = getSolarSystemJumps();
 	m_regions = getRegions();
+	m_currentRegionSolarSystem = getSolarSystemsByRegionalID(20000012);
 
 	return true;
 }

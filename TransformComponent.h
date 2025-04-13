@@ -5,6 +5,11 @@
 
 class TransformComponent : public Component {
 public:
+	std::vector<std::type_index> GetDependencies() const override {
+		return {};
+	}
+	void InjectDependency(const std::shared_ptr<Component>& dep) override {}
+
 	DirectX::XMFLOAT3 position;
 
 	Transform m_Tran = {};

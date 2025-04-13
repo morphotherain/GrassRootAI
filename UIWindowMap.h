@@ -88,7 +88,14 @@ private:
 
 	std::vector<SolarSystemData> m_solarSystem;
 	std::vector<SolarSystemJump> m_solarSystemJump;
+	std::vector<SolarSystemData> m_currentRegionSolarSystem;
 
 	std::vector<std::shared_ptr<UIText>> regionTexts; // 用于存储星域名称文本对象
+	std::vector<std::shared_ptr<UIText>> solarSystemTexts; // 用于存储星域名称文本对象
 	std::vector<RegionData> m_regions; // 存储星域数据
+
+	int m_viewType = 0;
+	int m_viewTypeCooldown = 0;
+	int temp = 100;
+
 };

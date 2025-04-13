@@ -87,7 +87,7 @@ int D3DApp::Run()
 			m_Timer.Tick();
 			float deltaTime = m_Timer.DeltaTime();
 
-			if (!m_AppPaused)
+			if (!m_AppPaused || true)
 			{
 				accumulatedTime += deltaTime;
 
@@ -95,7 +95,8 @@ int D3DApp::Run()
 				if (accumulatedTime >= targetFrameTime)
 				{
 					CalculateFrameStats();
-					UpdateScene(targetFrameTime); // 使用固定帧时间更新逻辑
+					if(!m_AppPaused)
+						UpdateScene(targetFrameTime); // 使用固定帧时间更新逻辑
 					DrawScene();
 					accumulatedTime = 0.0f; // 重置累积时间
 

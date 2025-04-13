@@ -157,6 +157,20 @@ bool UIWindowStorage::InitItemImgEffect()
 		m_itemImgEffect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
 		m_itemImgEffect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 
+		auto quantity = 1;
+		auto object = SolarSystemMgr::getInstance().getObjectById(pair.first);
+		if(object && object->GetComponent<AttributesComponent>()){
+			auto attributes = object->GetComponent<AttributesComponent>();
+			quantity = (*attributes->objectAttributes)[ATTR_ID_QUANTITY].value;
+		}
+		else {
+			if (object) 
+				DEBUG_("Couldn't load Attributes objectID {}", pair.first);
+			else
+				DEBUG_("Couldn't load objectID {}", pair.first);
+		}
+		DEBUG_("Couldn't load objectID {}", pair.first);
+
 		std::string IconPath = getIconPathByTypeID(pair.second);
 		std::wstring name = InvTypesManager::getInstance()->getNameByTypeId(pair.second);
 		std::wstring processedName = L"";
@@ -181,7 +195,7 @@ bool UIWindowStorage::InitItemImgEffect()
 
 		auto textNum = std::make_unique<UIText>();
 		textNum->setSize(260.0f + 76.0f * index, 147.0f, 350.0f, 350.0f);
-		textNum->setText(L"1");
+		textNum->setText(std::to_wstring(quantity));
 		m_itemsTexts.push_back(std::move(textNum));
 
 		index += 1.0f;
