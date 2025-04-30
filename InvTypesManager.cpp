@@ -30,6 +30,21 @@ int InvTypesManager::getGroupByTypeId(int type_id)
 	return groupID;
 }
 
+std::vector<int> InvTypesManager::getAllTypeIDByGroupID(int group_id) {
+	std::vector<int> typeIDs;
+	std::string query = "SELECT typeID FROM invTypes WHERE groupID =?";
+	int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+	if (rc == SQLITE_OK) {
+		sqlite3_bind_int(stmt, 1, group_id);
+		while (sqlite3_step(stmt) == SQLITE_ROW) {
+			int typeID = sqlite3_column_int(stmt, 0);
+			typeIDs.push_back(typeID);
+		}
+	}
+	sqlite3_finalize(stmt);
+	return typeIDs;
+}
+
 std::string getIconPathByTypeID(int typeID)
 {
 	std::string IconPath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Types\\Types\\dds\\";
@@ -37,3 +52,4 @@ std::string getIconPathByTypeID(int typeID)
 	IconPath += "_64.dds";
 	return IconPath;
 }
+

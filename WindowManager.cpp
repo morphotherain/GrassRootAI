@@ -7,6 +7,7 @@
 #include "UIWindowMap.h"
 #include "UIWindowStorage.h"
 #include "UIWindowEquipment.h"
+#include "UIWindowMarket.h"
 
 using namespace DirectX;
 
@@ -27,6 +28,7 @@ void WindowManager::Initialize(int width, int height, std::shared_ptr<Camera> ca
 	RegisterWindowTypeT<UIWindowMap>("map");
 	RegisterWindowTypeT<UIWindowStorage>("cargo");
 	RegisterWindowTypeT<UIWindowEquipment>("equipment");
+	RegisterWindowTypeT<UIWindowMarket>("market");
 	DEBUG_("WindowManager初始化完成");
 }
 
@@ -71,6 +73,15 @@ void WindowManager::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 		// 触发打开窗口
 		WindowMessage msg;
 		msg.windowType = "equipment";
+		msg.parameters["z_order"] = (m_maxWindowZOrder++);
+		WindowMessagingSystem::GetInstance().Enqueue(msg);
+	}
+	// 检测 1 键按下
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad1)) {
+		DEBUG_("打开market窗口");
+		// 触发打开窗口
+		WindowMessage msg;
+		msg.windowType = "market";
 		msg.parameters["z_order"] = (m_maxWindowZOrder++);
 		WindowMessagingSystem::GetInstance().Enqueue(msg);
 	}

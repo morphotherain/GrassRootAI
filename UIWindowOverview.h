@@ -49,6 +49,7 @@ public:
 		void Init();
 		void Update(UINT tick);
 		void Draw();
+		void setPos(float _x, float _y) { x = _x; y = _y; }
 
 		int index = 0;
 		int next_index = 0;
@@ -62,4 +63,6 @@ protected:
 private:
 
 	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
+	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
+	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 };

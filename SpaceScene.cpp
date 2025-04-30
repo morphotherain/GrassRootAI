@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 
+
 #include "WindowManager.h"
 
 using namespace DirectX;
@@ -22,6 +23,7 @@ SpaceScene::SpaceScene(HINSTANCE _hInstance) : Scene(_hInstance)
 
 bool SpaceScene::Init()
 {
+
 	m_pSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
 
 	WindowManager::GetInstance().Initialize(m_ClientWidth, m_ClientHeight, m_pCamera);
@@ -209,30 +211,6 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
 		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
 }
-
-//// 将三维坐标转换为标准化设备坐标(NDC)范围的函数
-//XMFLOAT2 Convert3DToNDC(const XMFLOAT3& worldPos, const XMMATRIX& viewMatrix, const XMMATRIX& projMatrix)
-//{
-//	// 将三维世界坐标转换为裁剪空间
-//	XMVECTOR worldPosition = XMLoadFloat3(&worldPos);
-//	XMVECTOR clipPosition = XMVector3Transform(worldPosition, viewMatrix * projMatrix);
-//
-//	// 获取裁剪空间坐标的各个分量（这里假设采用透视投影）
-//	XMFLOAT4  clipPos;
-//	XMStoreFloat4(&clipPos, clipPosition);
-//
-//	if (clipPos.w <0.0f)
-//	{
-//		return XMFLOAT2(FLT_MAX, FLT_MAX);
-//	}
-//
-//	// 手动透视除法
-//	float x_ndc = clipPos.x / clipPos.w;
-//	float y_ndc = clipPos.y / clipPos.w;
-//
-//	// 返回的ndcPos.x 和 ndcPos.y 直接是 NDC 范围 [-1, 1]
-//	return XMFLOAT2(x_ndc, y_ndc);
-//}
 
 void SpaceScene::DrawScene()
 {

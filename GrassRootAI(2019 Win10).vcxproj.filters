@@ -64,6 +64,9 @@
     <Filter Include="Object框架">
       <UniqueIdentifier>{755ec50c-6617-424f-8a2d-616e81fe63fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GenericChain">
+      <UniqueIdentifier>{cc5467ea-54fd-4849-a136-56a42624613a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3dApp.cpp">
@@ -131,12 +134,6 @@
     </ClCompile>
     <ClCompile Include="UIShaderTest.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="shell.c">
-      <Filter>sqlite</Filter>
-    </ClCompile>
-    <ClCompile Include="sqlite3.c">
-      <Filter>sqlite</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseManager.cpp">
       <Filter>数据库</Filter>
@@ -378,6 +375,33 @@
     <ClCompile Include="UIWindowIndusty.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
+    <ClCompile Include="invCategoriesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericChainNode.h">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericChainNode.cpp">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
+    <ClCompile Include="RuleParser.cpp">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeCalculator.cpp">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomNode.cpp">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
+    <ClCompile Include="include\sqlite\shell.c">
+      <Filter>sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="include\sqlite\sqlite3.c">
+      <Filter>sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="AttributeCalculatorManager.cpp">
+      <Filter>GenericChain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WICTextureLoader.h">
@@ -445,12 +469,6 @@
     </ClInclude>
     <ClInclude Include="UIShaderTest.h">
       <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite3.h">
-      <Filter>sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="sqlite3ext.h">
-      <Filter>sqlite</Filter>
     </ClInclude>
     <ClInclude Include="DatabaseManager.h">
       <Filter>数据库</Filter>
@@ -694,6 +712,30 @@
     </ClInclude>
     <ClInclude Include="UIWindowIndusty.h">
       <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="invCategoriesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="RuleParser.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeCalculator.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomNode.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sqlite\sqlite3.h">
+      <Filter>sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sqlite\sqlite3ext.h">
+      <Filter>sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeCalculatorMacro.h">
+      <Filter>宏定义</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeCalculatorManager.h">
+      <Filter>GenericChain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

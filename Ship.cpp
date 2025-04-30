@@ -78,6 +78,8 @@ void Ship::Update(UINT tick)
 	m_pBase->Update(tick);
 	m_pLocking->Update(tick);
 	m_pEquipments->Update(tick);
+
+	m_pAttributes->Update(tick);
 	updateEquipments(tick);
 
 }

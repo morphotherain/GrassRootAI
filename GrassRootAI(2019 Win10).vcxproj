@@ -98,7 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GrassRootAI;..\GrassRootAI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -113,7 +113,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GrassRootAI;..\GrassRootAI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GrassRootAI;..\GrassRootAI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,7 +149,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\EVELab\GrassRootAI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GrassRootAI;..\GrassRootAI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -161,6 +161,8 @@
   <ItemGroup>
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="Astro.cpp" />
+    <ClCompile Include="AttributeCalculator.cpp" />
+    <ClCompile Include="AttributeCalculatorManager.cpp" />
     <ClCompile Include="AttributeMacro.h" />
     <ClCompile Include="AttributesComponent.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
@@ -168,6 +170,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConstantBufferComponent.cpp" />
+    <ClCompile Include="CustomNode.cpp" />
     <ClCompile Include="d3dApp.cpp" />
     <ClCompile Include="D3DManager.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
@@ -194,9 +197,14 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GamePlayer.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="GenericChainNode.cpp" />
+    <ClCompile Include="GenericChainNode.h" />
     <ClCompile Include="GSEffectComponent.cpp" />
+    <ClCompile Include="include\sqlite\shell.c" />
+    <ClCompile Include="include\sqlite\sqlite3.c" />
     <ClCompile Include="IndexBufferComponent.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="invCategoriesManager.cpp" />
     <ClCompile Include="invGroupsManager.cpp" />
     <ClCompile Include="InvTypesManager.cpp" />
     <ClCompile Include="Keyboard.cpp" />
@@ -204,6 +212,7 @@
     <ClCompile Include="LockingComponent.cpp" />
     <ClCompile Include="logger_manager.cpp" />
     <ClCompile Include="MinerComponent.cpp" />
+    <ClCompile Include="RuleParser.cpp" />
     <ClCompile Include="UIWindowDemo.cpp" />
     <ClCompile Include="UIWindowEquipment.cpp" />
     <ClCompile Include="UIRichText.cpp" />
@@ -214,8 +223,15 @@
     <ClCompile Include="UIWinodwRefining.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="AttributeCalculator.h" />
+    <ClInclude Include="AttributeCalculatorMacro.h" />
+    <ClInclude Include="AttributeCalculatorManager.h" />
+    <ClInclude Include="CustomNode.h" />
     <ClInclude Include="EquipmentComponent.h" />
+    <ClInclude Include="include\sqlite\sqlite3.h" />
+    <ClInclude Include="include\sqlite\sqlite3ext.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="invCategoriesManager.h" />
     <ClInclude Include="LockingComponent.h" />
     <ClInclude Include="logger_manager.h" />
     <ClCompile Include="Main.cpp" />
@@ -236,13 +252,11 @@
     <ClCompile Include="RenderProxy.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sector.cpp" />
-    <ClCompile Include="shell.c" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SolarSystem.cpp" />
     <ClCompile Include="SolarSystemMgr.cpp" />
     <ClCompile Include="SpaceScene.cpp" />
     <ClCompile Include="SpaceTransformComponent.cpp" />
-    <ClCompile Include="sqlite3.c" />
     <ClCompile Include="StorageComponent.cpp" />
     <ClCompile Include="StorageMacro.h" />
     <ClCompile Include="Task.cpp" />
@@ -268,6 +282,7 @@
     <ClCompile Include="WarpGateComponent.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
     <ClInclude Include="MinerComponent.h" />
+    <ClInclude Include="RuleParser.h" />
     <ClInclude Include="UIWindowDemo.h" />
     <ClInclude Include="UIWindowEquipment.h" />
     <ClInclude Include="UIRichText.h" />
@@ -343,8 +358,6 @@
     <ClInclude Include="SolarSystemMgr.h" />
     <ClInclude Include="SpaceScene.h" />
     <ClInclude Include="SpaceTransformComponent.h" />
-    <ClInclude Include="sqlite3.h" />
-    <ClInclude Include="sqlite3ext.h" />
     <ClInclude Include="StorageComponent.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="taskDatabaseManager.h" />

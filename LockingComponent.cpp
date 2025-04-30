@@ -1,9 +1,20 @@
 ﻿#include "LockingComponent.h"
 #include "dynGameObjectsManager.h"
+#include "GameObject.h"
 
 LockingComponent::LockingComponent(UINT _objectID)
 {
 	objectID = _objectID;
+}
+
+void LockingComponent::InjectDependency(const std::shared_ptr<Component>& dep)
+{
+	if (auto pComponent = std::dynamic_pointer_cast<AttributesComponent>(dep)) {
+		m_pAttributes = pComponent;
+	}
+	else if (auto pComponent = std::dynamic_pointer_cast<SpaceTransformComponent>(dep)) {
+		m_pSpaceTran = pComponent;
+	}
 }
 
 void LockingComponent::Update(UINT tick)
@@ -16,8 +27,26 @@ void LockingComponent::Update(UINT tick)
 	if (tick % 3 != 0)
 		return;
 
+	std::vector<int> IdsToErase = {};
 	for (auto& pair : m_mapLockedTarget) {
 		pair.second->Update();
+		auto target = GameObjectMgr::getInstance().getObject(pair.second->m_TargetObjectID);
+		if (!target) {
+			IdsToErase.push_back(pair.first);
+			continue;
+		}
+		auto tran = target->GetComponent<SpaceTransformComponent>();
+		if (!tran) {
+			IdsToErase.push_back(pair.first);
+			continue;
+		}
+		if (tran->calculateDistance(*m_pSpaceTran) > 10000) {
+			IdsToErase.push_back(pair.first);
+			continue;
+		}
+	}
+	for (auto &id : IdsToErase) {
+		EraseLocked(id);
 	}
 }
 

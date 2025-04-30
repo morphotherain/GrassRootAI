@@ -13,7 +13,7 @@ float4 PS(PSInput input) : SV_Target
     //angle += 3.1415926f;
 
     float res = (angle / 3.1415926f + 1.0f) / 2.0f;
-    float scale = 0.127f;
+    float scale = 0.1335f;
     float maxAngle = input.texIndex;
 
     // 检查res是否在(scale, 1 - scale)范围内

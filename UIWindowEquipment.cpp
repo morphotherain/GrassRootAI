@@ -193,20 +193,35 @@ void UIWindowEquipment::InitStatusBars()
     addStatusText({ 555, 84 }, L"78.3/150.0 MW");
     addStatusText({ 400, 40 }, L"装配资源");
     addStatusText({ 400, 115 }, L"抗性");
-    addStatusText({ 430, 140 - 2 }, L"35%");
-    addStatusText({ 430, 170 - 2 }, L"50%");
-    addStatusText({ 430, 200 - 2 }, L"35%");
-    addStatusText({ 490, 140 - 2 }, L"35%");
-    addStatusText({ 490, 170 - 2 }, L"50%");
-    addStatusText({ 490, 200 - 2 }, L"35%");
+    addStatusText({ 430, 140 - 2 }, L"15%");
+    addStatusText({ 430, 170 - 2 }, L"55%");
+    addStatusText({ 430, 200 - 2 }, L"33%");
+    addStatusText({ 490, 140 - 2 }, L"25%");
+    addStatusText({ 490, 170 - 2 }, L"45%");
+    addStatusText({ 490, 200 - 2 }, L"33%");
     addStatusText({ 550, 140 - 2 }, L"35%");
-    addStatusText({ 550, 170 - 2 }, L"50%");
-    addStatusText({ 550, 200 - 2 }, L"35%");
-    addStatusText({ 610, 140 - 2 }, L"35%");
-    addStatusText({ 610, 170 - 2 }, L"50%");
-    addStatusText({ 610, 200 - 2 }, L"35%");
-    addStatusText({ 400, 260 }, L"电容");
-    addStatusText({ 400, 300 }, L"目标和导航");
+    addStatusText({ 550, 170 - 2 }, L"35%");
+    addStatusText({ 550, 200 - 2 }, L"33%");
+    addStatusText({ 610, 140 - 2 }, L"45%");
+    addStatusText({ 610, 170 - 2 }, L"25%");
+    addStatusText({ 610, 200 - 2 }, L"33%");
+    addStatusText({ 400, 240 }, L"电容");
+    addStatusText({ 425, 270 }, L"总计：3.78kGJ");
+    addStatusText({ 425, 290 }, L"稳定：49.1%");
+    addStatusText({ 555, 280 }, L"+8.23GJ/s");
+
+    float offset = 20;
+    addStatusText({ 400, 320 + offset }, L"目标和导航");
+
+    addStatusText({ 405, 350 + offset }, L"最大锁定数:3");
+    addStatusText({ 405, 375 + offset }, L"锁定范围:  17 km");
+    addStatusText({ 405, 400 + offset }, L"扫描精度:  368 mm");
+    addStatusText({ 405, 425 + offset }, L"传感器强度:27.6");
+
+    addStatusText({ 540, 350 + offset }, L"巡航速度:  219 m/s");
+    addStatusText({ 540, 375 + offset }, L"起跳时间:  3.1s");
+    addStatusText({ 540, 400 + offset }, L"信号半径:  4 m");
+    addStatusText({ 540, 425 + offset }, L"跃迁速度:  3 AU/s");
 }
 
 void UIWindowEquipment::InitStatusEffects()
@@ -216,6 +231,8 @@ void UIWindowEquipment::InitStatusEffects()
     InitStatusEffect(2545, 395, 140);
     InitStatusEffect(1284, 395, 170);
     InitStatusEffect(2603, 395, 200);
+    InitStatusEffect(2018, 395, 280);
+    InitStatusEffect(1195, 530, 280);
 }
 
 void UIWindowEquipment::InitStatusEffect(int typeID, int _x, int _y)
@@ -267,11 +284,11 @@ void UIWindowEquipment::DrawUI()
     DrawFractionBarBorder(m_borderEffect, 550, 80);
 
     for (int i = 0; i < 4; ++i) {
-        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 140, 0.35f);
+        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 140, 0.15f + 0.10f * i);
         DrawFractionBarBorder(m_borderEffectResistance, 420 + i * 60, 140);
-        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 170, 0.45f);
+        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 170, 0.55f - 0.05f * i);
         DrawFractionBarBorder(m_borderEffectResistance, 420 + i * 60, 170);
-        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 200, 0.30f);
+        DrawFractionBar(m_resistanceEffects[i], 420 + i * 60, 200, 0.33f);
         DrawFractionBarBorder(m_borderEffectResistance, 420 + i * 60, 200);
 
     }

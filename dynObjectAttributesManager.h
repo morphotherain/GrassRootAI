@@ -13,4 +13,5 @@ public:
 	std::shared_ptr<std::unordered_map<int, Attribute>> getAttributesByObjectID(int object_id);
 	void updateAttributesByObjectID(int object_id, const std::unordered_map<int, Attribute>& newAttributes);
 	void resetAttributesByObjectID(int object_id, const std::unordered_map<int, Attribute>& newAttributes);
+
 };

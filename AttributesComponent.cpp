@@ -1,49 +1,4 @@
-﻿//#include "AttributesComponent.h"
-//
-//AttributesComponent::AttributesComponent(int _objectID)
-//{
-//	objectID = _objectID;
-//
-//	typeAttributes = std::make_shared<std::unordered_map<int, Attribute>>();
-//	objectAttributes = std::make_shared<std::unordered_map<int, Attribute>>();
-//
-//	auto typeID = dynGameObjectsManager::getInstance()->getTypeIdByObjectID(_objectID);
-//
-//	typeAttributes = AttributeMgr::getInstance().getTypeAttributesByTypeID(typeID);
-//	objectAttributes = dynObjectAttributesManager::getInstance()->getAttributesByObjectID(objectID);
-//
-//	if (objectAttributes->size() < typeAttributes->size()) {
-//		dynObjectAttributesManager::getInstance()->resetAttributesByObjectID(objectID, *typeAttributes);
-//		objectAttributes = dynObjectAttributesManager::getInstance()->getAttributesByObjectID(objectID);
-//	}
-//}
-//
-//void AttributesComponent::Init()
-//{
-//}
-//
-//void AttributeMgr::Init()
-//{
-//	InitAttributes();
-//}
-//
-//void AttributeMgr::InitAttributes()
-//{
-//	attributes = dogmaAttributesManager::getInstance()->getAttributes();
-//	typeAttributes = std::make_shared< std::unordered_map<int, std::shared_ptr<std::unordered_map<int, Attribute>>>>();
-//}
-//
-//std::shared_ptr<std::unordered_map<int, Attribute>> AttributeMgr::getTypeAttributesByTypeID(int typeID)
-//{
-//	auto it = typeAttributes->find(typeID);
-//	if (it == typeAttributes->end()) {
-//		(*typeAttributes)[typeID] = dogmaTypeAttributesManager::getInstance()->getTypeAttributesByTypeId(typeID);
-//		return (*typeAttributes)[typeID];
-//	}
-//	else {
-//		return (*typeAttributes)[typeID];
-//	}
-//}
+﻿
 
 #include "AttributesComponent.h"
 
@@ -58,12 +13,12 @@ AttributesComponent::AttributesComponent(int _objectID)
 
     typeAttributes = AttributeMgr::getInstance().getTypeAttributesByTypeID(typeID);
     objectAttributes = dynObjectAttributesManager::getInstance()->getAttributesByObjectID(objectID);
+    specificAttributes = std::make_shared< std::unordered_map<int, Attribute>>();
 
     // 只将特定属性存入动态表
-    std::unordered_map<int, Attribute> specificAttributes;
     for (const auto& attrPair : *typeAttributes) {
         if (SPECIFIC_ATTRIBUTES.count(attrPair.first) > 0) {
-            specificAttributes[attrPair.first] = attrPair.second;
+            (*specificAttributes)[attrPair.first] = attrPair.second;
         }
     }
 
@@ -82,12 +37,12 @@ AttributesComponent::AttributesComponent(int _objectID)
                 newAttr.value = (*typeAttributes)[mapping.first].value;
             else
                 newAttr.value = mapping.second.second;
-            specificAttributes[mapping.second.first] = newAttr;
+            (*specificAttributes)[mapping.second.first] = newAttr;
         }
     }
 
-    if (objectAttributes->size() < specificAttributes.size()) {
-        dynObjectAttributesManager::getInstance()->resetAttributesByObjectID(objectID, specificAttributes);
+    if (objectAttributes->size() < (*specificAttributes).size()) {
+        dynObjectAttributesManager::getInstance()->resetAttributesByObjectID(objectID, (*specificAttributes));
         objectAttributes = dynObjectAttributesManager::getInstance()->getAttributesByObjectID(objectID);
     }
 
@@ -95,6 +50,21 @@ AttributesComponent::AttributesComponent(int _objectID)
     for (const auto& attrPair : *typeAttributes) {
         if (objectAttributes->find(attrPair.first) == objectAttributes->end()) {
             (*objectAttributes)[attrPair.first] = attrPair.second;
+        }
+    }
+}
+
+void AttributesComponent::Update(UINT tick)
+{
+    if (tick % 30 == 0) {
+        if (shouldUpdate) {
+            for (auto& attrPair : *specificAttributes) {
+                if (objectAttributes->find(attrPair.first) != objectAttributes->end()) {
+                    attrPair.second = (*objectAttributes)[attrPair.first];
+                }
+            }
+            dynObjectAttributesManager::getInstance()->updateAttributesByObjectID(objectID, (*specificAttributes));
+            shouldUpdate = false;
         }
     }
 }
@@ -107,6 +77,27 @@ void AttributesComponent::UpdateAttributes(const std::vector<Attribute>& newAttr
 {
     for (const auto& attr : newAttributes) {
         (*objectAttributes)[attr.attributeID] = attr;
+    }
+    shouldUpdate = true;
+}
+
+void AttributesComponent::storeAttributes()
+{
+    for (auto& attrPair : *specificAttributes) {
+        if (objectAttributes->find(attrPair.first) != objectAttributes->end()) {
+            attrPair.second = (*objectAttributes)[attrPair.first];
+        }
+    }
+    dynObjectAttributesManager::getInstance()->updateAttributesByObjectID(objectID, (*specificAttributes));
+    shouldUpdate = false;
+}
+
+void AttributesComponent::setAttrValueById(int attrID, double value)
+{
+    if(objectAttributes->find(attrID)!= objectAttributes->end())
+    {
+        (*objectAttributes)[attrID].value = value;
+        shouldUpdate = true;
     }
 }
 

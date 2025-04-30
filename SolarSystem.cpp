@@ -275,7 +275,7 @@ void SolarSystem::checkObjectsInSector()
 
 				size_t size = sector->space_objects.size();
 				for (int i = 0; i < size; ++i) {
-					const auto& object = sector->space_objects[i];
+					const auto object = sector->space_objects[i];
 
 					auto Tran = object->GetComponent<SpaceTransformComponent>();
 					auto Base = object->GetComponent<BaseComponent>();

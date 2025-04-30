@@ -19,6 +19,7 @@
 #define ATTR_ID_MAX_RANGE 54  // 最佳射程
 #define ATTR_ID_RECHARGE_RATE 55  // 电容回充时间
 #define ATTR_ID_AGILITY 70  // 惯性调整
+#define ATTR_ID_SHIELD_HP_BONUS 72 //护盾值加值
 #define ATTR_ID_DURATION 73  // 作用时间/单次运转时间
 #define ATTR_ID_MAX_TARGET_RANGE 76  // 锁定范围上限
 #define ATTR_ID_MINING_AMOUNT 77  //开采量
@@ -78,6 +79,7 @@
 #define ATTR_ID_UPGRADE_CAPACITY 1132  // 校准值
 #define ATTR_ID_RIG_SLOTS 1137  // 改装件安装座
 #define ATTR_ID_UPGRADE_SLOTS_LEFT 1154  // 改装件槽位
+#define ATTR_ID_ARMOR_HP_BONUS 1159  //装甲值加成
 #define ATTR_ID_HEAT_CAPACITY_HI 1178  // 高热量容量
 #define ATTR_ID_HEAT_DISSIPATION_RATE_HI 1179  // 高热量发散率
 #define ATTR_ID_HEAT_DISSIPATION_RATE_MED 1196  // 中热量发散率

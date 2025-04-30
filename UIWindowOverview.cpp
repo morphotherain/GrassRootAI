@@ -61,6 +61,7 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 		// 新增代码，处理鼠标滚轮滚动事件来改变index值
 		m_RowMgr->next_index = m_RowMgr->index;
 		int wheelDelta = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
+		DEBUG_("wheelDelta  : {},mouseState.scrollWheelValue  : {},lastMouseState.scrollWheelValue  : {}", wheelDelta, mouseState.scrollWheelValue, lastMouseState.scrollWheelValue);
 		if (wheelDelta != 0) {
 			if (wheelDelta > 0) {
 				m_RowMgr->next_index--;  // 鼠标滚轮向上滚动，index减小，可根据实际需求调整增减幅度
@@ -94,7 +95,7 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 			}
 		}
 	}
-
+	m_RowMgr->setPos(x, y);
 	m_RowMgr->Update(tick);
 }
 

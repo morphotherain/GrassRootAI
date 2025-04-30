@@ -55,6 +55,7 @@ void SolarSystemMgr::handleTask(const Task& task)
 					auto attributeComp = getObjectById(id)->GetComponent<AttributesComponent>();
 					if (attributeComp != nullptr) {
 						attributeComp->UpdateAttributes(attributeVec);
+						attributeComp->storeAttributes();
 					}
 				}
 				catch (const std::bad_any_cast& e) {

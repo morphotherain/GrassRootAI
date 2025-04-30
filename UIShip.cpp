@@ -135,6 +135,19 @@ void UIShip::DrawUI()
 
 	DirectX::XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
 
+	auto m_currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
+	auto attrComponent = m_currentShip->GetComponent<AttributesComponent>();
+	auto& attributes = (*attrComponent->objectAttributes);
+	auto calculator1 = AttributeCalculatorManager::getInstance().getCalculator(CALCULATOR_SHIELD_HP_MAX);
+	double shield_hp_max = 0.0f;
+	if (calculator1) {
+		shield_hp_max = calculator1->calculate(*attrComponent->objectAttributes);
+	}
+
+	float shieldRadio = attributes[ATTR_ID_CURRENT_SHIELD].value / shield_hp_max;
+	float armorRadio = attributes[ATTR_ID_CURRENT_ARMOR].value / attributes[ATTR_ID_ARMOR_HP].value;
+	float structureRadio = attributes[ATTR_ID_CURRENT_HP].value / attributes[ATTR_ID_STRUCTURE_VALUE].value;
+
 	DrawCommonEffect(m_mainUnderlayEffect, windowModel, viewMatrix, projMatrix);
 	DrawCommonEffect(m_speedoUnderlayEffect, windowModel, viewMatrix, projMatrix);
 	DrawCommonEffect(m_gaugeRedEffect, windowModel, viewMatrix, projMatrix);
@@ -147,9 +160,9 @@ void UIShip::DrawUI()
 	DrawCommonEffect(m_slotOverloadBtnEffect, windowModel, viewMatrix, projMatrix);
 	DrawCommonEffect(m_slotEquipmentsEffect, windowModel, viewMatrix, projMatrix);
 	DrawSlotRamp(windowModel, viewMatrix, projMatrix);
-	DrawGaugeEffect(m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
-	DrawGaugeEffect(m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
-	DrawGaugeEffect(m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
+	DrawGaugeEffect(m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, shieldRadio);
+	DrawGaugeEffect(m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, armorRadio);
+	DrawGaugeEffect(m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, structureRadio);
 }
 
 void UIShip::cleanup()
@@ -575,6 +588,17 @@ void UIShip::DrawLockedTarget()
 	int index = 0;
 	for (auto& pair : m_mapLockedTarget) {
 		auto& target = pair.second;
+		auto object = SolarSystemMgr::getInstance().getObjectById(pair.first);
+		float shield_hp_radio = 0.0f;
+		if (object) {
+			if (object->GetComponent<AttributesComponent>())
+			{
+				auto attr = object->GetComponent<AttributesComponent>();
+				DEBUG_("attr->objectAttributes[5000]{}", (*attr->objectAttributes)[5000].value);
+				DEBUG_("attr->objectAttributes[263]{}", (*attr->objectAttributes)[263].value);
+				shield_hp_radio = (*attr->objectAttributes)[5000].value / (*attr->objectAttributes)[263].value;
+			}
+		}
 
 		DirectX::XMMATRIX windowModelTarget = XMMatrixTranslation(target->target_x, target->target_y, 0.0f);
 		DrawCommonEffect(target->m_lockedLineEffect, windowModelTarget, viewMatrix, projMatrix);
@@ -598,7 +622,7 @@ void UIShip::DrawLockedTarget()
 
 			DrawCommonEffect(target->m_typeImgEffect, windowModel, viewMatrix, projMatrix);
 			DrawCommonEffect(target->m_gaugeRedEffect, windowModel, viewMatrix, projMatrix);
-			DrawGaugeEffect(target->m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.7f);
+			DrawGaugeEffect(target->m_gaugeShieldEffect, windowModel, viewMatrix, projMatrix, 0.5f);
 			DrawGaugeEffect(target->m_gaugeArmorEffect, windowModel, viewMatrix, projMatrix, 1.0f);
 			DrawGaugeEffect(target->m_gaugeStructureEffect, windowModel, viewMatrix, projMatrix, 1.0f);
 			DrawCommonEffect(target->m_bodyEffect, windowModel, viewMatrix, projMatrix);

@@ -25,7 +25,7 @@ void dynObjectAttributesManager::updateAttributesByObjectID(int object_id, const
 		for (const auto& attrPair : newAttributes) {
 			const Attribute& attr = attrPair.second;
 			// 绑定新的值、对象ID以及属性ID到SQL语句中对应的参数位置
-			sqlite3_bind_int(stmt, 1, attr.value);
+			sqlite3_bind_double(stmt, 1, attr.value);
 			sqlite3_bind_int(stmt, 2, object_id);
 			sqlite3_bind_int(stmt, 3, attr.attributeID);
 			// 执行更新语句
