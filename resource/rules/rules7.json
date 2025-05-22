@@ -1,0 +1,14 @@
+{
+    "rules": [
+        {
+            "operation": "add",
+            "attrId": 118,
+            "multiplierZone": null
+        },        
+        {
+            "operation": "multiply",
+            "attrId": 64,
+            "multiplierZone": null
+        }
+    ]
+}

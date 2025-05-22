@@ -69,673 +69,688 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="d3dApp.cpp">
-      <Filter>d3d架构</Filter>
+    <ClCompile Include="include\thirdparty\sqlite\sqlite3.c">
+      <Filter>sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>d3d架构</Filter>
+    <ClCompile Include="include\thirdparty\sqlite\shell.c">
+      <Filter>sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="d3dUtil.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="DXTrace.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="GameTimer.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="ddsLoader.cpp">
-      <Filter>dds</Filter>
-    </ClCompile>
-    <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>dds</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader.cpp">
-      <Filter>dds</Filter>
-    </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
-      <Filter>输入</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>输入</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>摄像机</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
+    <ClCompile Include="src\Camera\Transform.cpp">
       <Filter>摄像机</Filter>
     </ClCompile>
-    <ClCompile Include="GameApp.cpp">
+    <ClCompile Include="src\Component\EquipmentComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\EquipmentsComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\LockingComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\MinerComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\PhysicsComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\RenderComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\SpaceTransformComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\StationComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\StorageComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\TransformComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\WarpGateComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\WeaponComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\AttributesComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\BaseComponent.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\Component.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\d3dUtil.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\DXTrace.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\GameTimer.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\Main.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\d3dApp.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\D3D\D3DManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DatabaseManager.cpp">
+      <Filter>数据库</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\taskDatabaseManager.cpp">
+      <Filter>数据库</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\demoManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dogmaAttributesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dogmaTypeAttributesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynContainersManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynGameObjectsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynMarketOrderManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynObjectAttributesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\eveBracketsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\invCategoriesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\invGroupsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\InvTypesManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\mapDenormalizeManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\mapJumpsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\MapManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\mapSolarSystemsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dds\ddsLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dds\DDSTextureLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dds\WICTextureLoader.cpp">
+      <Filter>dds</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effect\Effect.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effect\EffectComponent.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effect\RenderProxy.cpp">
+      <Filter>Effect框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\GSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\IndexBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\PSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\RasterizerStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\SamplerStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\TexturesComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\VertexBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\vertexData.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\VSEffectComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\BlendStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\ConstantBufferComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EffectComponent\DepthStencilStateComponent.cpp">
+      <Filter>EffectComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\GameApp.cpp">
       <Filter>游戏架构</Filter>
     </ClCompile>
-    <ClCompile Include="demoScene.cpp">
-      <Filter>Scene</Filter>
+    <ClCompile Include="src\GenericChain\CustomNode.cpp">
+      <Filter>GenericChain</Filter>
     </ClCompile>
-    <ClCompile Include="MainScene.cpp">
-      <Filter>Scene</Filter>
+    <ClCompile Include="src\GenericChain\GenericChainNode.cpp">
+      <Filter>GenericChain</Filter>
     </ClCompile>
-    <ClCompile Include="UIButton.cpp">
-      <Filter>UI</Filter>
+    <ClCompile Include="src\GenericChain\RuleParser.cpp">
+      <Filter>GenericChain</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Object框架</Filter>
+    <ClCompile Include="src\GenericChain\AttributeCalculator.cpp">
+      <Filter>GenericChain</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Component</Filter>
+    <ClCompile Include="src\GenericChain\AttributeCalculatorManager.cpp">
+      <Filter>GenericChain</Filter>
     </ClCompile>
-    <ClCompile Include="TransformComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="GamePlayer.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="UIShaderTest.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="DatabaseManager.cpp">
-      <Filter>数据库</Filter>
-    </ClCompile>
-    <ClCompile Include="DockScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="UIText.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SolarSystem.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="UISkyBox.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindow.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowInfo.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowMap.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowOverview.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="InvTypesManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="demoManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="invGroupsManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="eveBracketsManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="D3DManager.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="BlendStateComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBufferComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilStateComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="GSEffectComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBufferComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="PSEffectComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="RasterizerStateComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="VSEffectComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBufferComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderProxy.cpp">
-      <Filter>Effect框架</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectComponent.cpp">
-      <Filter>Effect框架</Filter>
-    </ClCompile>
-    <ClCompile Include="Effect.cpp">
-      <Filter>Effect框架</Filter>
-    </ClCompile>
-    <ClCompile Include="TexturesComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="UIBase.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="vertexData.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="SamplerStateComponent.cpp">
-      <Filter>EffectComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="UIWindowStorage.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="Pilot.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="SolarSystemMgr.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="dynGameObjectsManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceTransformComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Ship.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="mapDenormalizeManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="taskDatabaseManager.cpp">
-      <Filter>数据库</Filter>
-    </ClCompile>
-    <ClCompile Include="NPCStation.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="Sector.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="MapManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="Astro.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="UIRButtonMenu.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Task.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
-    <ClCompile Include="TaskMgr.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
-    <ClCompile Include="StationComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="WarpGateComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="StargateLoadingScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="mapJumpsManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="mapSolarSystemsManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="EquipmentsComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="AttributesComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="StorageComponent.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
-    <ClCompile Include="AttributeMacro.h">
-      <Filter>宏定义</Filter>
-    </ClCompile>
-    <ClCompile Include="dogmaTypeAttributesManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="dogmaAttributesManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="dynObjectAttributesManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="dynContainersManager.cpp">
-      <Filter>数据库\数据表</Filter>
-    </ClCompile>
-    <ClCompile Include="StorageMacro.h">
-      <Filter>宏定义</Filter>
-    </ClCompile>
-    <ClCompile Include="LockComponenet.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="Equipment.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="logger_manager.cpp">
-      <Filter>log</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowManager.cpp">
-      <Filter>UI\window</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
+    <ClCompile Include="src\Input\Keyboard.cpp">
       <Filter>输入</Filter>
     </ClCompile>
-    <ClCompile Include="UIShip.cpp">
-      <Filter>UI</Filter>
+    <ClCompile Include="src\Input\Mouse.cpp">
+      <Filter>输入</Filter>
     </ClCompile>
-    <ClCompile Include="LockingComponent.cpp">
-      <Filter>Component</Filter>
+    <ClCompile Include="src\Input\InputHandler.cpp">
+      <Filter>输入</Filter>
     </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
+    <ClCompile Include="src\log\logger_manager.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Equipment.cpp">
       <Filter>Object框架</Filter>
     </ClCompile>
-    <ClCompile Include="EquipmentComponent.cpp">
-      <Filter>Component</Filter>
+    <ClCompile Include="src\Object\GameObject.cpp">
+      <Filter>Object框架</Filter>
     </ClCompile>
-    <ClCompile Include="MinerComponent.cpp">
-      <Filter>Component</Filter>
+    <ClCompile Include="src\Object\GamePlayer.cpp">
+      <Filter>Object框架</Filter>
     </ClCompile>
-    <ClCompile Include="UIRichText.cpp">
+    <ClCompile Include="src\Object\NPCStation.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Pilot.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Sector.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Ship.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\SolarSystem.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\SolarSystemMgr.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Asteroid.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Astro.cpp">
+      <Filter>Object框架</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\DockScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SpaceScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\StargateLoadingScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\demoScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Task\Task.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Task\TaskMgr.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIRButtonMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowEquipment.cpp">
+    <ClCompile Include="src\UI\UIRichText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIShaderTest.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIShip.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UISkyBox.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UITable.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIButton.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\window\UIWindowInfo.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowMarket.cpp">
+    <ClCompile Include="src\UI\window\UIWindowMap.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="UIWinodwRefining.cpp">
+    <ClCompile Include="src\UI\window\UIWindowMarket.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowShipTree.cpp">
+    <ClCompile Include="src\UI\window\UIWindowOverview.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowDemo.cpp">
+    <ClCompile Include="src\UI\window\UIWindowShipTree.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowIndusty.cpp">
+    <ClCompile Include="src\UI\window\UIWindowStorage.cpp">
       <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="invCategoriesManager.cpp">
-      <Filter>数据库\数据表</Filter>
+    <ClCompile Include="src\UI\window\UIWinodwRefining.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="GenericChainNode.h">
-      <Filter>GenericChain</Filter>
+    <ClCompile Include="src\UI\window\WindowManager.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="GenericChainNode.cpp">
-      <Filter>GenericChain</Filter>
+    <ClCompile Include="src\UI\window\UIWindow.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="RuleParser.cpp">
-      <Filter>GenericChain</Filter>
+    <ClCompile Include="src\UI\window\UIWindowDemo.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="AttributeCalculator.cpp">
-      <Filter>GenericChain</Filter>
+    <ClCompile Include="src\UI\window\UIWindowEquipment.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
-    <ClCompile Include="CustomNode.cpp">
-      <Filter>GenericChain</Filter>
-    </ClCompile>
-    <ClCompile Include="include\sqlite\shell.c">
-      <Filter>sqlite</Filter>
-    </ClCompile>
-    <ClCompile Include="include\sqlite\sqlite3.c">
-      <Filter>sqlite</Filter>
-    </ClCompile>
-    <ClCompile Include="AttributeCalculatorManager.cpp">
-      <Filter>GenericChain</Filter>
+    <ClCompile Include="src\UI\window\UIWindowIndusty.cpp">
+      <Filter>UI\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WICTextureLoader.h">
-      <Filter>dds</Filter>
+    <ClInclude Include="include\thirdparty\sqlite\sqlite3.h">
+      <Filter>sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="ddsLoader.h">
-      <Filter>dds</Filter>
+    <ClInclude Include="include\thirdparty\sqlite\sqlite3ext.h">
+      <Filter>sqlite</Filter>
     </ClInclude>
-    <ClInclude Include="DDSTextureLoader.h">
-      <Filter>dds</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dApp.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dUtil.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
-    <ClInclude Include="DXTrace.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>输入</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>输入</Filter>
-    </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>d3d架构</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="include\Camera\Transform.h">
       <Filter>摄像机</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="include\Camera\Camera.h">
       <Filter>摄像机</Filter>
     </ClInclude>
-    <ClInclude Include="GameApp.h">
-      <Filter>游戏架构</Filter>
-    </ClInclude>
-    <ClInclude Include="demoScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="MainScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="UIButton.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
+    <ClInclude Include="include\Component\LockingComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="TransformComponent.h">
+    <ClInclude Include="include\Component\MinerComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="RenderComponent.h">
+    <ClInclude Include="include\Component\PhysicsComponent.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="GamePlayer.h">
-      <Filter>Object框架</Filter>
+    <ClInclude Include="include\Component\RenderComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIShaderTest.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="include\Component\SpaceTransformComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="DatabaseManager.h">
-      <Filter>数据库</Filter>
+    <ClInclude Include="include\Component\StationComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="DockScene.h">
-      <Filter>Scene</Filter>
+    <ClInclude Include="include\Component\StorageComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIText.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="include\Component\TransformComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="SolarSystem.h">
-      <Filter>Object框架</Filter>
+    <ClInclude Include="include\Component\WarpGateComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceScene.h">
-      <Filter>Scene</Filter>
+    <ClInclude Include="include\Component\WeaponComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UISkyBox.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="include\Component\AttributesComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindow.h">
-      <Filter>UI\window</Filter>
+    <ClInclude Include="include\Component\BaseComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowInfo.h">
-      <Filter>UI\window</Filter>
+    <ClInclude Include="include\Component\Component.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowMap.h">
-      <Filter>UI\window</Filter>
+    <ClInclude Include="include\Component\EquipmentComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowOverview.h">
-      <Filter>UI\window</Filter>
+    <ClInclude Include="include\Component\EquipmentsComponent.h">
+      <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="InvTypesManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonBase.h">
-      <Filter>数据库</Filter>
-    </ClInclude>
-    <ClInclude Include="demoManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="invGroupsManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="eveBracketsManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="D3DManager.h">
+    <ClInclude Include="include\D3D\D3DManager.h">
       <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="BlendStateComponent.h">
-      <Filter>EffectComponent</Filter>
+    <ClInclude Include="include\D3D\d3dUtil.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBufferComponent.h">
-      <Filter>EffectComponent</Filter>
+    <ClInclude Include="include\D3D\DXTrace.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="RasterizerStateComponent.h">
-      <Filter>EffectComponent</Filter>
+    <ClInclude Include="include\D3D\GameTimer.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="GSEffectComponent.h">
-      <Filter>EffectComponent</Filter>
+    <ClInclude Include="include\D3D\core.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="IndexBufferComponent.h">
-      <Filter>EffectComponent</Filter>
+    <ClInclude Include="include\D3D\d3dApp.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
-    <ClInclude Include="PSEffectComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="VSEffectComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBufferComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilStateComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderProxy.h">
-      <Filter>Effect框架</Filter>
-    </ClInclude>
-    <ClInclude Include="Effect.h">
-      <Filter>Effect框架</Filter>
-    </ClInclude>
-    <ClInclude Include="SamplerStateComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="TexturesComponent.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectComponent.h">
-      <Filter>Effect框架</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="UIBase.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexData.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBufferData.h">
-      <Filter>EffectComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowStorage.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="Pilot.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="SolarSystemMgr.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="dynGameObjectsManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceTransformComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Ship.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="mapDenormalizeManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="taskDatabaseManager.h">
+    <ClInclude Include="include\Database\DatabaseManager.h">
       <Filter>数据库</Filter>
     </ClInclude>
-    <ClInclude Include="NPCStation.h">
-      <Filter>Object框架</Filter>
+    <ClInclude Include="include\Database\SingletonBase.h">
+      <Filter>数据库</Filter>
     </ClInclude>
-    <ClInclude Include="Sector.h">
-      <Filter>Object框架</Filter>
+    <ClInclude Include="include\Database\taskDatabaseManager.h">
+      <Filter>数据库</Filter>
     </ClInclude>
-    <ClInclude Include="MapManager.h">
+    <ClInclude Include="include\Database\DataSheet\dogmaTypeAttributesManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Astro.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="UIRButtonMenu.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Task.h">
-      <Filter>Task</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskMgr.h">
-      <Filter>Task</Filter>
-    </ClInclude>
-    <ClInclude Include="StationComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="WarpGateComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="StargateLoadingScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="mapJumpsManager.h">
+    <ClInclude Include="include\Database\DataSheet\dynContainersManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="mapSolarSystemsManager.h">
+    <ClInclude Include="include\Database\DataSheet\dynGameObjectsManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="EquipmentsComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="AttributesComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="StorageComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="dogmaTypeAttributesManager.h">
+    <ClInclude Include="include\Database\DataSheet\dynMarketOrderManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="dogmaAttributesManager.h">
+    <ClInclude Include="include\Database\DataSheet\dynObjectAttributesManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="dynObjectAttributesManager.h">
+    <ClInclude Include="include\Database\DataSheet\eveBracketsManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="dynContainersManager.h">
+    <ClInclude Include="include\Database\DataSheet\invCategoriesManager.h">
       <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="Equipment.h">
-      <Filter>Object框架</Filter>
+    <ClInclude Include="include\Database\DataSheet\invGroupsManager.h">
+      <Filter>数据库\数据表</Filter>
     </ClInclude>
-    <ClInclude Include="version.h">
+    <ClInclude Include="include\Database\DataSheet\InvTypesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\mapDenormalizeManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\mapJumpsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\MapManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\mapSolarSystemsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\demoManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\dogmaAttributesManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dds\DDSTextureLoader.h">
+      <Filter>dds</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dds\WICTextureLoader.h">
+      <Filter>dds</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dds\ddsLoader.h">
+      <Filter>dds</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Effect\RenderProxy.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Effect\Effect.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Effect\EffectComponent.h">
+      <Filter>Effect框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\GSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\IndexBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\PSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\RasterizerStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\SamplerStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\TexturesComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\VertexBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\VertexData.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\VSEffectComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\BlendStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\ConstantBufferComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\ConstantBufferData.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EffectComponent\DepthStencilStateComponent.h">
+      <Filter>EffectComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\GameApp.h">
       <Filter>游戏架构</Filter>
     </ClInclude>
-    <ClInclude Include="logger_manager.h">
+    <ClInclude Include="include\Game\version.h">
+      <Filter>游戏架构</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GenericChain\CustomNode.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GenericChain\GenericChainNode.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GenericChain\RuleParser.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GenericChain\AttributeCalculator.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GenericChain\AttributeCalculatorManager.h">
+      <Filter>GenericChain</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\InputHandler.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\Keyboard.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input\Mouse.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\log\logger_manager.h">
       <Filter>log</Filter>
     </ClInclude>
-    <ClInclude Include="WindowManager.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowMessagingSystem.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="InputHandler.h">
-      <Filter>输入</Filter>
-    </ClInclude>
-    <ClInclude Include="UIShip.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LockingComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Asteroid.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="EquipmentComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="MinerComponent.h">
-      <Filter>Component</Filter>
-    </ClInclude>
-    <ClInclude Include="UIRichText.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowEquipment.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowMarket.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowShipTree.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWinodwRefining.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowDemo.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="UIWindowIndusty.h">
-      <Filter>UI\window</Filter>
-    </ClInclude>
-    <ClInclude Include="invCategoriesManager.h">
-      <Filter>数据库\数据表</Filter>
-    </ClInclude>
-    <ClInclude Include="RuleParser.h">
-      <Filter>GenericChain</Filter>
-    </ClInclude>
-    <ClInclude Include="AttributeCalculator.h">
-      <Filter>GenericChain</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomNode.h">
-      <Filter>GenericChain</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sqlite\sqlite3.h">
-      <Filter>sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sqlite\sqlite3ext.h">
-      <Filter>sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="AttributeCalculatorMacro.h">
+    <ClInclude Include="include\Macro\AttributeMacro.h">
       <Filter>宏定义</Filter>
     </ClInclude>
-    <ClInclude Include="AttributeCalculatorManager.h">
-      <Filter>GenericChain</Filter>
+    <ClInclude Include="include\Macro\StorageMacro.h">
+      <Filter>宏定义</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Macro\AttributeCalculatorMacro.h">
+      <Filter>宏定义</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\GamePlayer.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\NPCStation.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Pilot.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Sector.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Ship.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\SolarSystem.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\SolarSystemMgr.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Asteroid.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Astro.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Equipment.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\GameObject.h">
+      <Filter>Object框架</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\DockScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\SpaceScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\StargateLoadingScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\demoScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Task\Task.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Task\TaskMgr.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIButton.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIRButtonMenu.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIRichText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIShaderTest.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIShip.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UISkyBox.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UITable.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowInfo.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowMap.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowMarket.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowOverview.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowShipTree.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowStorage.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWinodwRefining.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\WindowManager.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\WindowMessagingSystem.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindow.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowDemo.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowEquipment.h">
+      <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\window\UIWindowIndusty.h">
+      <Filter>UI\window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
