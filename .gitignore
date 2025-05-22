@@ -406,3 +406,5 @@ FodyWeavers.xsd
 *.cso
 /.VSCodeCounter
 *.txt
+
+!media/**/*.png
