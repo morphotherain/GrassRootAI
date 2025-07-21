@@ -73,26 +73,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)</OutDir>
     <IntDir>.\VS2019_Win10\</IntDir>
-    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;D:\EVELab\GrassRootAI\include\TaskHandler;D:\EVELab\GrassRootAI\include\TaskHandler\SolarSystem;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(ProjectDir)</OutDir>
     <IntDir>VS2019_Win10\$(Configuration)\</IntDir>
-    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;D:\EVELab\GrassRootAI\include\TaskHandler;D:\EVELab\GrassRootAI\include\TaskHandler\SolarSystem;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(ProjectDir)</OutDir>
     <IntDir>VS2019_Win10\$(Configuration)\</IntDir>
     <LinkIncremental>
     </LinkIncremental>
-    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;D:\EVELab\GrassRootAI\include\TaskHandler;D:\EVELab\GrassRootAI\include\TaskHandler\SolarSystem;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)</OutDir>
     <IntDir>VS2019_Win10\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>
     </LinkIncremental>
-    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>D:\EVELab\GrassRootAI\include\UI\window;D:\EVELab\GrassRootAI\include\UI;D:\EVELab\GrassRootAI\include\Task;D:\EVELab\GrassRootAI\include\Scene;D:\EVELab\GrassRootAI\include\Object;D:\EVELab\GrassRootAI\include\Macro;D:\EVELab\GrassRootAI\include\log;D:\EVELab\GrassRootAI\include\Input;D:\EVELab\GrassRootAI\include\GenericChain;D:\EVELab\GrassRootAI\include\Game;D:\EVELab\GrassRootAI\include\EffectComponent;D:\EVELab\GrassRootAI\include\Effect;D:\EVELab\GrassRootAI\include\dds;D:\EVELab\GrassRootAI\include\Database\DataSheet;D:\EVELab\GrassRootAI\include\Database;D:\EVELab\GrassRootAI\include\D3D;D:\EVELab\GrassRootAI\include\Component;D:\EVELab\GrassRootAI\include\Camera;D:\EVELab\GrassRootAI\include\thirdparty;D:\EVELab\GrassRootAI\include\TaskHandler;D:\EVELab\GrassRootAI\include\TaskHandler\SolarSystem;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -250,6 +250,7 @@
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Scene\SpaceScene.cpp" />
     <ClCompile Include="src\Scene\StargateLoadingScene.cpp" />
+    <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp" />
     <ClCompile Include="src\Task\Task.cpp" />
     <ClCompile Include="src\Task\TaskMgr.cpp" />
     <ClCompile Include="src\UI\UIBase.cpp" />
@@ -346,6 +347,8 @@
     <ClInclude Include="include\log\logger_manager.h" />
     <ClInclude Include="include\Macro\AttributeCalculatorMacro.h" />
     <ClInclude Include="include\Macro\AttributeMacro.h" />
+    <ClInclude Include="include\Macro\InvCategoriesMacro.h" />
+    <ClInclude Include="include\Macro\InvGroupsMacro.h" />
     <ClInclude Include="include\Macro\StorageMacro.h" />
     <ClInclude Include="include\Object\Asteroid.h" />
     <ClInclude Include="include\Object\Astro.h" />
@@ -364,6 +367,9 @@
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Scene\SpaceScene.h" />
     <ClInclude Include="include\Scene\StargateLoadingScene.h" />
+    <ClInclude Include="include\TaskHandler\HandlerFactory.h" />
+    <ClInclude Include="include\TaskHandler\SolarSystem\SolarSystemHandler.h" />
+    <ClInclude Include="include\TaskHandler\TaskHandler.h" />
     <ClInclude Include="include\Task\Task.h" />
     <ClInclude Include="include\Task\TaskMgr.h" />
     <ClInclude Include="include\thirdparty\sqlite\sqlite3.h" />

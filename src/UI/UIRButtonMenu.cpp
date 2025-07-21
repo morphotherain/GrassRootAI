@@ -3,53 +3,61 @@ using namespace DirectX;
 
 bool UIRButtonMenu::Init()
 {
-	UINT count = 0;
-	double distance = 0.0f;
 	auto source_object = (*SolarSystemMgr::getInstance().p_mapObject)[source_object_id];
 	auto target_object = (*SolarSystemMgr::getInstance().p_mapObject)[target_object_id];
 	if (source_object == nullptr || target_object == nullptr)return false;
 
-	auto Base = target_object->GetComponent<BaseComponent>();
-	if (Base != nullptr) {
-		addRow(std::make_shared<DetailInfoRow>());
-	}
+	auto souce_base = source_object->GetComponent<BaseComponent>();
+	if (souce_base->categoryID == INV_CATEGORIES_SHIP) {
+		UINT count = 0;
+		double distance = 0.0f;
 
-	auto Tran = target_object->GetComponent<SpaceTransformComponent>();
-	if (Tran != nullptr)
-	{
-		auto sourceTran = source_object->GetComponent<SpaceTransformComponent>();
-		addRow(std::make_shared<OrientRow>());
-		distance = sourceTran->calculateDistance(*Tran);
-		if (distance >= 150000) {
-			addRow(std::make_shared<WarpToRow>());
+		auto Base = target_object->GetComponent<BaseComponent>();
+		if (Base != nullptr) {
+			addRow(std::make_shared<DetailInfoRow>());
 		}
-		if (distance < 10000000) {
-			addRow(std::make_shared<OrbitRow>());
-			addRow(std::make_shared<MaintainDistanceRow>());
-		}
-	}
-	if (distance < 2500)
-	{
-		auto Station = target_object->GetComponent<StationComponent>();
-		if (Station != nullptr)
+
+		auto Tran = target_object->GetComponent<SpaceTransformComponent>();
+		if (Tran != nullptr)
 		{
-			addRow(std::make_shared<DockRow>());
+			auto sourceTran = source_object->GetComponent<SpaceTransformComponent>();
+			addRow(std::make_shared<OrientRow>());
+			distance = sourceTran->calculateDistance(*Tran);
+			if (distance >= 150000) {
+				addRow(std::make_shared<WarpToRow>());
+			}
+			if (distance < 10000000) {
+				addRow(std::make_shared<OrbitRow>());
+				addRow(std::make_shared<MaintainDistanceRow>());
+			}
+		}
+		if (distance < 2500)
+		{
+			auto Station = target_object->GetComponent<StationComponent>();
+			if (Station != nullptr)
+			{
+				addRow(std::make_shared<DockRow>());
+			}
+		}
+		if (distance < 5000000) {
+			if (source_object->GetComponent<LockingComponent>()->IsLocked(target_object_id)) {
+				addRow(std::make_shared<UnlockRow>());
+			}
+			else {
+				addRow(std::make_shared<LockRow>());
+			}
+		}
+
+		auto Warp = target_object->GetComponent<WarpGateComponent>();
+		if (Warp != nullptr)
+		{
+			addRow(std::make_shared<JumpRow>());
 		}
 	}
-	if (distance < 5000000) {
-		if (source_object->GetComponent<LockingComponent>()->IsLocked(Base->objectID)) {
-			addRow(std::make_shared<UnlockRow>());
-		}
-		else {
-			addRow(std::make_shared<LockRow>());
-		}
+	if (souce_base->groupID == INV_GROUPS_CLONE) {
+		addRow(std::make_shared<RemoveEquipmentRow>());
 	}
 
-	auto Warp = target_object->GetComponent<WarpGateComponent>();
-	if (Warp != nullptr)
-	{
-		addRow(std::make_shared<JumpRow>());
-	}
 
 	return true;
 }

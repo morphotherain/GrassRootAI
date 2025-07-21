@@ -1,6 +1,7 @@
 ﻿#include "dynGameObjectsManager.h"
 #include "dynContainersManager.h"
 #include <unordered_set>
+#include "dynGameObjectsManager.h"
 
 unsigned int dynGameObjectsManager::getTypeIdByObjectID(int object_id)
 {
@@ -130,6 +131,33 @@ int dynGameObjectsManager::updatePosByObjectID(int object_id, const std::vector<
 	else {
 		// 如果准备语句出错，进行错误处理
 		std::cerr << "Error preparing update statement for object ID " << object_id << ": " << sqlite3_errmsg(db) << std::endl;
+		return -1;
+	}
+	sqlite3_finalize(stmt);
+	return 0;  // 返回0表示更新成功
+}
+
+int dynGameObjectsManager::updateContainerIdByObjectID(int object_id, unsigned int containerId)
+{
+	std::string query = "UPDATE dynGameObjects SET ContainerID =? WHERE ObjectID =?";
+	int rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+	if (rc == SQLITE_OK) {
+		// 绑定新的坐标值
+		sqlite3_bind_double(stmt, 1, containerId);
+		// 绑定要更新的对象ID
+		sqlite3_bind_int(stmt, 4, object_id);
+
+		rc = sqlite3_step(stmt);
+		if (rc != SQLITE_DONE) {
+			// 如果执行更新操作没有成功完成（期望返回SQLITE_DONE），可以在这里进行错误处理，比如打印错误日志等
+			std::cerr << "Error updating containerId for object ID " << object_id << ": " << sqlite3_errmsg(db) << std::endl;
+			sqlite3_finalize(stmt);
+			return -1;  // 返回错误码表示更新失败
+		}
+	}
+	else {
+		// 如果准备语句出错，进行错误处理
+		std::cerr << "Error preparing containerId statement for object ID " << object_id << ": " << sqlite3_errmsg(db) << std::endl;
 		return -1;
 	}
 	sqlite3_finalize(stmt);

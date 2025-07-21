@@ -68,3 +68,8 @@ void StorageComponent::OnDestroy()
 {
 	dynContainersManager::getInstance()->removeContainerByID(containerID);
 }
+
+void StorageComponent::Refresh()
+{
+	itemIDs = dynGameObjectsManager::getInstance()->getItemsByContainerID(containerID);
+}

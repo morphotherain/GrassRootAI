@@ -8,6 +8,7 @@
 #include "InvTypesManager.h"
 #include "AttributesComponent.h"
 #include "WindowManager.h"
+#include "HandlerFactory.h"
 
 using namespace DirectX;
 
@@ -106,6 +107,8 @@ bool GameApp::Init()
 		}
 	);
 
+	// 初始化Handler（触发构造函数注册）
+	HandlerFactory::initializeHandlers();
 	
 
 

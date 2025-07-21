@@ -58,8 +58,17 @@ void WindowManager::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 		msg.parameters["z_order"] = (m_maxWindowZOrder++);
 		WindowMessagingSystem::GetInstance().Enqueue(msg);
 	}
-	// 检测 C 键按下
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::C)) {
+	// 检测 1 键按下
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad1)) {
+		DEBUG_("打开market窗口");
+		// 触发打开窗口
+		WindowMessage msg;
+		msg.windowType = "market";
+		msg.parameters["z_order"] = (m_maxWindowZOrder++);
+		WindowMessagingSystem::GetInstance().Enqueue(msg);
+	}
+	// 检测 2 键按下
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad2)) {
 		DEBUG_("打开cargo窗口");
 		// 触发打开窗口
 		WindowMessage msg;
@@ -67,21 +76,12 @@ void WindowManager::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 		msg.parameters["z_order"] = (m_maxWindowZOrder++);
 		WindowMessagingSystem::GetInstance().Enqueue(msg);
 	}
-	// 检测 X 键按下
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::X)) {
+	// 检测 3 键按下
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad3)) {
 		DEBUG_("打开equipment窗口");
 		// 触发打开窗口
 		WindowMessage msg;
 		msg.windowType = "equipment";
-		msg.parameters["z_order"] = (m_maxWindowZOrder++);
-		WindowMessagingSystem::GetInstance().Enqueue(msg);
-	}
-	// 检测 1 键按下
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad1)) {
-		DEBUG_("打开market窗口");
-		// 触发打开窗口
-		WindowMessage msg;
-		msg.windowType = "market";
 		msg.parameters["z_order"] = (m_maxWindowZOrder++);
 		WindowMessagingSystem::GetInstance().Enqueue(msg);
 	}
@@ -188,7 +188,13 @@ void WindowManager::AddWindow(std::shared_ptr<UIWindow> window, std::string wind
 
 void WindowManager::handleTask(Task& task)
 {
+	/*if (task.paramsPtr->find("createObject") != task.paramsPtr->end()) {
+		auto it = taskHandlers.find("createObject");
+		if (it != taskHandlers.end()) {
+			it->second->handleTask(task);
+		}
 
+	}*/
 	// 从任务中获取目标坐标（假设参数为浮点数，若为整数需强制转换）
 	int taskX = task.getParamOrDefault<int>("x", 0);
 	int taskY = task.getParamOrDefault<int>("y", 0);

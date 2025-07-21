@@ -32,7 +32,7 @@ bool UIWindowStorage::Init()
 	rowHeight = 90.0f;
 	colWidth = 76.0f;
 
-	auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+	auto currentPilot = SolarSystemMgr::getInstance().currentPilot; 
 	auto currentShip = currentPilot->currentShip;
 	auto base = currentShip->GetComponent<BaseComponent>();
 	auto cargo = currentShip->GetComponent<CargoContainerComponent>();
@@ -59,6 +59,9 @@ void UIWindowStorage::OnResize()
 void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
+	if (tick % 30 == 0) {
+		InitItemImgEffect();
+	}
 
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
@@ -236,6 +239,10 @@ void UIWindowStorage::DrawUI()
 }
 
 void UIWindowStorage::cleanup()
+{
+}
+
+void UIWindowStorage::handleTask(Task& task)
 {
 }
 

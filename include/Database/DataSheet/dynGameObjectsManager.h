@@ -3,6 +3,10 @@
 #include <vector>
 #include "d3dUtil.h"
 
+#include "InvCategoriesMacro.h"
+#include "InvGroupsMacro.h"
+
+
 class dynGameObject {
 public:
 	dynGameObject() = default;
@@ -34,14 +38,15 @@ public:
 		db = DatabaseManager::getInstance()->getDatabase();
 	};
 
-	// 假设在 invtypes 表中根据 type_id 查找 name 列
+	// 在 invtypes 表中根据 type_id 查找 name 列
 	unsigned int getTypeIdByObjectID(int object_id);
 	unsigned int getSolarSystemIdByObjectID(int object_id);
 	unsigned int getOwnerIdByObjectID(int object_id);
 	unsigned int getContainerIdByObjectID(int object_id);
-	int updateRelatedIdsByObjectID(int object_id, unsigned int solarSystemId, unsigned int ownerId, unsigned int containerId);
 	std::vector<double> getPosByObjectID(int object_id);
+	int updateRelatedIdsByObjectID(int object_id, unsigned int solarSystemId, unsigned int ownerId, unsigned int containerId);
 	int updatePosByObjectID(int object_id, const std::vector<double>& pos);
+	int updateContainerIdByObjectID(int object_id, unsigned int containerId);
 	std::vector<double> getQuaternionByObjectID(int object_id);
 	unsigned int getPilotObjectIDByPilotID(int pilot_id);
 
@@ -49,6 +54,7 @@ public:
 		std::vector<std::pair<int, int>>& result);
 
 	std::shared_ptr<std::vector<dynGameObject>> getGameObjectBySolarSystemID(UINT solarSystemID);
+
 	dynGameObject getGameObjectByObjectID(int object_id);
 	int insertGameObject(const dynGameObject& obj);
 	bool deleteGameObject(int objectID);

@@ -1,4 +1,5 @@
-﻿#include "D3DManager.h"
+﻿#pragma once
+#include "D3DManager.h"
 #include <vector>
 #include <memory>
 #include <string>

@@ -170,6 +170,28 @@ public:
 		}
 	};
 
+	// 表示“解除锁定”菜单项对应的行类
+	class RemoveEquipmentRow : public Row {
+	public:
+		RemoveEquipmentRow() {
+			setText(L"卸下");
+		}
+
+		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+			UINT ContainerID = currentPilot->currentShip->GetComponent<CargoContainerComponent>()->containerID;
+			std::shared_ptr<Task> pTask = std::make_shared<Task>();
+			pTask->isInnerTask = true;
+			pTask->target = targetObject;
+			pTask->publisher = sourceObject;
+			pTask->targetSystem = SOLAR_SYSTEM;
+			(*pTask->paramsPtr)["handlerType"] = std::string("transferObject");
+			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(ContainerID);
+			TaskMgr::getInstance().addTask(pTask);
+			return;
+		}
+	};
+
 	std::vector<std::shared_ptr<Row>> m_Rows;
 
 	virtual bool Init();

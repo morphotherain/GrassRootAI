@@ -1,5 +1,6 @@
 ﻿// UIWindowEquipment.cpp
 #include "UIWindowEquipment.h"
+#include "dynContainersManager.h"
 using namespace DirectX;
 
 UIWindowEquipment::UIWindowEquipment(HINSTANCE _hInstance) : UIWindow(_hInstance)
@@ -9,6 +10,7 @@ UIWindowEquipment::UIWindowEquipment(HINSTANCE _hInstance) : UIWindow(_hInstance
 
 bool UIWindowEquipment::Init()
 {
+    m_windowEffect = nullptr;
     // 初始化窗口基础组件
     height = 800;
     width = 900; 
@@ -16,6 +18,16 @@ bool UIWindowEquipment::Init()
     windowTitle = L"装配";
     InitWindowComponent();
     m_windowEffect->Init();
+
+    auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+    auto currentShip = currentPilot->currentShip;
+    auto base = currentShip->GetComponent<BaseComponent>();
+    auto cargo = currentShip->GetComponent<CargoContainerComponent>();
+    auto typeName = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
+    highContainerID = dynContainersManager::getInstance()->getContainerID(base->objectID, CONTAINER_TYPE_HIGH_SLOT);
+    mediumContainerID = dynContainersManager::getInstance()->getContainerID(base->objectID, CONTAINER_TYPE_MEDIUM_SLOT);
+    lowContainerID = dynContainersManager::getInstance()->getContainerID(base->objectID, CONTAINER_TYPE_LOW_SLOT);
+    rigContainerID = dynContainersManager::getInstance()->getContainerID(base->objectID, CONTAINER_TYPE_RIG_SLOT);
 
     // 初始化装备槽
     InitSlots();
@@ -80,45 +92,109 @@ bool UIWindowEquipment::Init()
         component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
         component->Init();
     }
+
+    for (auto& text : m_statusTexts) {
+        text->setDelta(x, y);
+    }
+
+    for (auto& text : m_UITexts) {
+        text->setDelta(x, y);
+    }
+
+    for (auto& [id, slot] : m_slots) {
+        slot.itemName->setDelta(x, y);
+    }
+    m_RButtonMenu = nullptr;
     return true;
 }
 
 void UIWindowEquipment::InitSlots()
 {
+    m_slots.clear();
+    std::vector<std::pair<int, int>> highEquipments = {};
+    std::vector<std::pair<int, int>> midEquipments = {};
+    std::vector<std::pair<int, int>> lowEquipments = {};
+    std::vector<std::pair<int, int>> rigEquipments = {};
+    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(highContainerID, highEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(mediumContainerID, midEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(lowContainerID, lowEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(rigContainerID, rigEquipments);
+
+    auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+    auto currentShip = currentPilot->currentShip;
+    auto attr = currentShip->GetComponent<AttributesComponent>()->objectAttributes;
+    int lowSlots = (*attr)[ATTR_ID_HI_SLOTS].value;
+    int medSlots = (*attr)[ATTR_ID_MED_SLOTS].value;
+    int hiSlots = (*attr)[ATTR_ID_LOW_SLOTS].value;
+    int rigSlots = (*attr)[ATTR_ID_RIG_SLOTS].value;
+
+
     int index = 0;
     auto text_h = std::make_shared<UIText>();
     text_h->setSize(35, 65 + 36.0f * 0, 350.0f, 350.0f);
     text_h->setText(L"高能量槽");
     m_UITexts.push_back(text_h);
 
-    m_slots["H1"] = (InitSlot(HIGH_SLOT, 1, 482));
-    m_slots["H2"] = (InitSlot(HIGH_SLOT, 2, 482));
-    m_slots["H3"] = (InitSlot(HIGH_SLOT, 3, 482));
-    m_slots["H4"] = (InitSlot(HIGH_SLOT, 4, 0)); ;
-    m_slots["H2"] = (InitSlot(HIGH_SLOT, 1, 482, 2));
+    for (int idx = 1; idx <= 4; idx++) {
+        for (int col = 0; col < 2; col++) {
+            int index = idx + (col) * 4 - 1;
+            if (index >= hiSlots)break;
+            std::string key = "H" + std::to_string(index + 1);
+            if (highEquipments.size() > index)
+                m_slots[key] = (InitSlot(HIGH_SLOT, idx, highEquipments[index].second, highEquipments[index].first, col));
+            else
+                m_slots[key] = (InitSlot(HIGH_SLOT, idx, 0, -1, col));
+        }
+    }
+
     auto text_m = std::make_shared<UIText>();
     text_m->setSize(35, 65 + 36.0f * 5, 350.0f, 350.0f);
     text_m->setText(L"中能量槽");
     m_UITexts.push_back(text_m);
-    m_slots["M1"] = (InitSlot(MED_SLOT, 6, 439));
-    m_slots["M2"] = (InitSlot(MED_SLOT, 7, 0));
-    m_slots["M3"] = (InitSlot(MED_SLOT, 8, 0));
-    m_slots["M4"] = (InitSlot(MED_SLOT, 9, 0));
+
+    for (int idx = 6; idx <= 9; idx++) {
+        for (int col = 0; col < 2; col++) {
+            int index = idx + (col) * 4 - 6;
+            if (index >= medSlots)break;
+            std::string key = "M" + std::to_string(index + 1);
+            if (midEquipments.size() > index)
+                m_slots[key] = (InitSlot(MED_SLOT, idx, midEquipments[index].second, midEquipments[index].first, col));
+            else
+                m_slots[key] = (InitSlot(MED_SLOT, idx, 0, -1, col));
+        }
+    }
+
     auto text_l = std::make_shared<UIText>();
     text_l->setSize(35, 65 + 36.0f * 10, 350.0f, 350.0f);
     text_l->setText(L"低能量槽");
     m_UITexts.push_back(text_l);
-    m_slots["L1"] = (InitSlot(LOW_SLOT, 11, 22542));
-    m_slots["L2"] = (InitSlot(LOW_SLOT, 12, 0));
-    m_slots["L3"] = (InitSlot(LOW_SLOT, 13, 0));
-    m_slots["L4"] = (InitSlot(LOW_SLOT, 14, 0));
+
+    for (int idx = 11; idx <= 14; idx++) {
+        for (int col = 0; col < 2; col++) {
+            int index = idx + (col) * 4 - 11;
+            if (index >= lowSlots)break;
+            std::string key = "L" + std::to_string(index + 1);
+            if (lowEquipments.size() > index)
+                m_slots[key] = (InitSlot(LOW_SLOT, idx, lowEquipments[index].second, lowEquipments[index].first, col));
+            else
+                m_slots[key] = (InitSlot(LOW_SLOT, idx, 0, -1, col));
+        }
+    }
+
     auto text_r = std::make_shared<UIText>();
     text_r->setSize(35, 65 + 36.0f * 15, 350.0f, 350.0f);
     text_r->setText(L"改装件槽");
     m_UITexts.push_back(text_r);
-    m_slots["R1"] = (InitSlot(RIG_SLOT, 16, 26024));
-    m_slots["R2"] = (InitSlot(RIG_SLOT, 17, 0));
-    m_slots["R3"] = (InitSlot(RIG_SLOT, 18, 0));
+
+    for (int idx = 16; idx <= 18; idx++) {
+        int index = idx - 16;
+        if (index >= rigSlots)break;
+        std::string key = "R" + std::to_string(index + 1);
+        if (rigEquipments.size() > index)
+            m_slots[key] = (InitSlot(RIG_SLOT, idx, rigEquipments[index].second, rigEquipments[index].first, 0));
+        else
+            m_slots[key] = (InitSlot(RIG_SLOT, idx, 0, -1, 0));
+    }
 
     for (auto& text : m_UITexts) {
         text->switchTextFormat("Bold_XS");
@@ -126,15 +202,16 @@ void UIWindowEquipment::InitSlots()
     }
 }
 
-UIWindowEquipment::EquipmentSlot UIWindowEquipment::InitSlot(SlotType slotType, int index, int typeID, int column)
+UIWindowEquipment::EquipmentSlot UIWindowEquipment::InitSlot(SlotType slotType, int index, int typeID, int objectId, int column)
 {
     std::string texturePath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Icons\\Icons\\UI\\Fitting\\dds\\";
-    int columnWidth = 140;
+    int columnWidth = 200;
 
     EquipmentSlot temp;
     temp.index = index;
     temp.type = slotType;
     temp.typeID = typeID;
+    temp.objectId = objectId;
     temp.itemName = std::make_shared<UIText>();
     temp.itemName->setSize(80 + columnWidth * column, 65 + 36.0f * index, 350.0f, 350.0f);
 
@@ -186,6 +263,7 @@ UIWindowEquipment::EquipmentSlot UIWindowEquipment::InitSlot(SlotType slotType, 
 
 void UIWindowEquipment::InitStatusBars()
 {
+    m_statusTexts.clear();
     auto addStatusText = [&](const XMFLOAT2& pos, const std::wstring& text) {
         auto textComp = std::make_shared<UIText>();
         textComp->setSize(pos.x, pos.y, 200, 30);
@@ -231,6 +309,7 @@ void UIWindowEquipment::InitStatusBars()
 
 void UIWindowEquipment::InitStatusEffects()
 {
+    m_statusEffects.clear();
     InitStatusEffect(3887, 395 + attr_offset_x, 80);
     InitStatusEffect(1353, 530 + attr_offset_x, 80);
     InitStatusEffect(2545, 395 + attr_offset_x, 140);
@@ -342,6 +421,9 @@ void UIWindowEquipment::DrawUI()
     for (auto& component : childComponents) {
         component->DrawUI();
     }
+    if (m_RButtonMenu != nullptr)    
+        m_RButtonMenu->DrawUI();
+
 }
 
 void UIWindowEquipment::DrawProgressBar(const XMFLOAT2& pos, float width, float height, float progress, const std::shared_ptr<Effect>& effect)
@@ -387,6 +469,11 @@ void UIWindowEquipment::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keybo
 {
     UIWindow::UpdateUI(dt, mouse, keyboard, tick);
 
+    if (tick % 60 == 0) {
+        // 初始化装备槽
+        InitSlots();
+    }
+
     for (auto& text : m_statusTexts) {
         text->setDelta(x,y);
     }
@@ -398,6 +485,36 @@ void UIWindowEquipment::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keybo
     for (auto& [id, slot] : m_slots) {
         slot.itemName->setDelta(x, y);
     }
+    if (m_RButtonMenu != nullptr)
+        m_RButtonMenu->UpdateUI(dt, mouse, keyboard, tick);
+    // 更新鼠标事件，获取相对偏移量
+    Mouse::State mouseState = mouse.GetState();
+    Mouse::State lastMouseState = m_MouseTracker.GetLastState();
+    m_MouseTracker.Update(mouseState);
+
+    Keyboard::State keyState = keyboard.GetState();
+    m_KeyboardTracker.Update(keyState);
+    if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+    {
+        m_RButtonMenu = nullptr;
+        int index = static_cast<int>((mouseState.y - y - 64) / 36);
+
+        if (index == 1) {
+            if (m_slots.find("H1") != m_slots.end()) {
+                
+                UINT targetID = m_slots["H1"].objectId;
+                UINT currentID = SolarSystemMgr::getInstance().currentPilot->GetComponent<BaseComponent>()->objectID;
+                m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
+                m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+                m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+                m_RButtonMenu->Init();
+            }
+        }
+    }
+    if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+    {
+        m_RButtonMenu = nullptr;
+    }
 }
 
 void UIWindowEquipment::handleTask(Task& task)
@@ -408,7 +525,15 @@ void UIWindowEquipment::handleTask(Task& task)
     if (task.paramsPtr->find("ItemDrag") != task.paramsPtr->end())
     {
         int objectID = task.getParamOrDefault<int>("objectID", 0);
-
+        auto object = SolarSystemMgr::getInstance().getObjectById(objectID);
+        if (object) {
+            int containerID = highContainerID;
+            dynGameObjectsManager::getInstance()->updateContainerIDByObjectID(objectID, highContainerID);
+            Init();
+            auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+            auto currentShip = currentPilot->currentShip;
+            currentShip->GetComponent<EquipmentsComponent>()->Refresh();
+        }
     }
 
 }

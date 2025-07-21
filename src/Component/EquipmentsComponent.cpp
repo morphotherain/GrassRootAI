@@ -73,3 +73,11 @@ void EquipmentsComponent::handleTask(const Task& task)
 
 
 }
+
+
+void EquipmentsComponent::Refresh() {
+	m_pHighSlot->Refresh();
+	m_pMediumSlot->Refresh();
+	m_pLowSlot->Refresh();
+	m_pRigSlot->Refresh();
+}

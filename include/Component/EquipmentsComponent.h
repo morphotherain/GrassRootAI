@@ -29,6 +29,8 @@ public:
 
 	virtual void handleTask(const Task& task);
 
+	virtual void Refresh();
+
 
 	std::shared_ptr<LockingComponent> m_pLocking;
 	std::shared_ptr<AttributesComponent> m_pAttributes;

@@ -19,6 +19,7 @@ public:
 	virtual void Update(UINT tick) {};
 	virtual void handleTask(const Task& task);
 	virtual void OnDestroy();
+	virtual void Refresh();
 
 	UINT objectID;
 	UINT containerID;

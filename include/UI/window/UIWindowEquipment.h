@@ -2,6 +2,7 @@
 #include "UIWindow.h"
 #include "UIText.h"
 #include "UIButton.h"
+#include "UIRButtonMenu.h"
 
 class UIWindowEquipment : public UIWindow
 {
@@ -16,6 +17,11 @@ public:
     virtual void handleTask(Task& task);
 
 private:
+    int highContainerID = 0;
+    int mediumContainerID = 0;
+    int lowContainerID = 0;
+    int rigContainerID = 0;
+
     // 装备槽类型
     enum SlotType { HIGH_SLOT, MED_SLOT, LOW_SLOT, RIG_SLOT };
 
@@ -24,6 +30,7 @@ private:
         int index = 0;
         SlotType type;
         int typeID = 0; // 0表示空槽
+        int objectId = -1; // -1表示空槽
         std::shared_ptr<Effect> slotEffect;
         std::shared_ptr<Effect> itemEffect;
         std::shared_ptr<UIText> itemName;
@@ -31,7 +38,7 @@ private:
 
     // 初始化部分
     void InitSlots();
-    EquipmentSlot InitSlot(SlotType slotType, int index, int typeID, int column = 0);
+    EquipmentSlot InitSlot(SlotType slotType, int index, int typeID, int objectId = -1, int column = 0);
     void InitStatusBars();
     void InitStatusEffects();
     void InitStatusEffect(int typeID, int _x ,int _y);
@@ -60,4 +67,8 @@ private:
     std::vector <std::shared_ptr<Effect>> m_statusEffects;
     std::vector<std::shared_ptr<UIText>> m_statusTexts;
     std::vector<std::shared_ptr<UIText>> m_UITexts;
+
+    std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
+    DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
+    DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 };

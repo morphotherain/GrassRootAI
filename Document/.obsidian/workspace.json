@@ -1,0 +1,234 @@
+{
+  "main": {
+    "id": "0405019baf28a0d0",
+    "type": "split",
+    "children": [
+      {
+        "id": "4ab67afc17d122e3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d88fc0c7d679b494",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
+            }
+          },
+          {
+            "id": "25f4a0c82c953d88",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "文档.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "文档"
+            }
+          },
+          {
+            "id": "0165350063fc6012",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "文档.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "文档"
+            }
+          },
+          {
+            "id": "d242f3d594048079",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "任务/任务系统.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "任务系统"
+            }
+          },
+          {
+            "id": "922f795e25e7bdb9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "任务/任务系统.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "任务系统"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b5881cb38cd597c9",
+    "type": "split",
+    "children": [
+      {
+        "id": "e5be8b7932903567",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7618519d14948095",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "c29172c7fe83911c",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "10fe9652887f544e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d7d256545c5b9c46",
+    "type": "split",
+    "children": [
+      {
+        "id": "3dd4e6e9dbdd65a6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "603bd336d549b222",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "任务/任务系统.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "任务系统 的反向链接列表"
+            }
+          },
+          {
+            "id": "95372de3264b979a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "任务/任务系统.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "任务系统 的出链列表"
+            }
+          },
+          {
+            "id": "a24bb2bbdea4db0c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "5be40e0230b91874",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "任务/任务系统.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "任务系统 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "7618519d14948095",
+  "lastOpenFiles": [
+    "任务/SolarSystemMgr/transferObjectHandler.md",
+    "任务/任务系统.md",
+    "任务/SolarSystemMgr/createObjectHandler.md",
+    "任务/SolarSystemMgr",
+    "文档.md",
+    "任务",
+    "欢迎.md"
+  ]
+}

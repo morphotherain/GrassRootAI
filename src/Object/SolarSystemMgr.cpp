@@ -74,41 +74,13 @@ void SolarSystemMgr::handleTask(Task& task)
 	}
 	if (task.targetSystem == SOLAR_SYSTEM)
 	{
-		if (task.paramsPtr->find("createObject") != task.paramsPtr->end()) {
-			try {
-				dynGameObject objectData;
-				objectData.x = task.getParamOrDefault<double>("x", 0.0);
-				objectData.y = task.getParamOrDefault("y", 0.0);
-				objectData.z = task.getParamOrDefault("z", 0.0);
-				objectData.typeID = task.getParamOrDefault("typeID", 0);
-				objectData.SolarSystemID = task.getParamOrDefault("SolarSystemID", 0);
-				objectData.OwnerID = task.getParamOrDefault("OwnerID", 0);
-				objectData.ContainerID = task.getParamOrDefault("ContainerID", 0);
-				objectData.qw = task.getParamOrDefault("qw", 0.0);
-				objectData.qx = task.getParamOrDefault("qx", 0.0);
-				objectData.qy = task.getParamOrDefault("qy", 0.0);
-				objectData.qz = task.getParamOrDefault("qz", 0.0);
-				if (objectData.typeID == 0)return;
-
-				auto id = dynGameObjectsManager::getInstance()->insertGameObject(objectData);
-				if (task.paramsPtr->find("attributes") != task.paramsPtr->end()) {
-					try {
-						auto attributeVec = std::any_cast<std::vector<Attribute>>((*task.paramsPtr)["attributes"]);
-						auto attributeComp = getObjectById(id)->GetComponent<AttributesComponent>();
-						if (attributeComp != nullptr) {
-							attributeComp->UpdateAttributes(attributeVec);
-							attributeComp->storeAttributes();
-						}
-					}
-					catch (const std::bad_any_cast& e) {
-						DEBUG_("类型转换错误: {}", e.what());
-					}
-				}
-			}
-			catch (const std::bad_any_cast& e) {
-				DEBUG_("类型转换错误: {}", e.what());
-			}
+		auto handleType = task.getParamOrDefault<std::string>("handlerType", "");
+		auto it = taskHandlers.find(handleType);
+		if (it != taskHandlers.end()) {
+			it->second->handleTask(task);
+			return;
 		}
+
 		if (task.paramsPtr->find("destoryObject") != task.paramsPtr->end()) {
 			try {
 				auto id = targetPtr->GetComponent<BaseComponent>()->objectID;

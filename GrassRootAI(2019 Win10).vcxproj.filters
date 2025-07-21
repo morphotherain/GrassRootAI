@@ -67,6 +67,15 @@
     <Filter Include="GenericChain">
       <UniqueIdentifier>{cc5467ea-54fd-4849-a136-56a42624613a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Systems">
+      <UniqueIdentifier>{609337ea-7808-4c55-81d9-059b5649dbe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TaskHandler">
+      <UniqueIdentifier>{da294659-7053-4f66-9dcb-f59598d5d59a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TaskHandler\SolarSystem">
+      <UniqueIdentifier>{3e7b6d2c-9642-4594-a5b3-7e7678ef0ed5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\thirdparty\sqlite\sqlite3.c">
@@ -300,12 +309,6 @@
     <ClCompile Include="src\Object\Ship.cpp">
       <Filter>Object框架</Filter>
     </ClCompile>
-    <ClCompile Include="src\Object\SolarSystem.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Object\SolarSystemMgr.cpp">
-      <Filter>Object框架</Filter>
-    </ClCompile>
     <ClCompile Include="src\Object\Asteroid.cpp">
       <Filter>Object框架</Filter>
     </ClCompile>
@@ -398,6 +401,15 @@
     </ClCompile>
     <ClCompile Include="src\UI\window\UIWindowIndusty.cpp">
       <Filter>UI\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\SolarSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\SolarSystemMgr.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp">
+      <Filter>d3d架构</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -644,12 +656,6 @@
     <ClInclude Include="include\Object\Ship.h">
       <Filter>Object框架</Filter>
     </ClInclude>
-    <ClInclude Include="include\Object\SolarSystem.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Object\SolarSystemMgr.h">
-      <Filter>Object框架</Filter>
-    </ClInclude>
     <ClInclude Include="include\Object\Asteroid.h">
       <Filter>Object框架</Filter>
     </ClInclude>
@@ -751,6 +757,27 @@
     </ClInclude>
     <ClInclude Include="include\UI\window\UIWindowIndusty.h">
       <Filter>UI\window</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\SolarSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\SolarSystemMgr.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Macro\InvCategoriesMacro.h">
+      <Filter>宏定义</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Macro\InvGroupsMacro.h">
+      <Filter>宏定义</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TaskHandler\SolarSystem\SolarSystemHandler.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TaskHandler\HandlerFactory.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TaskHandler\TaskHandler.h">
+      <Filter>输入</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

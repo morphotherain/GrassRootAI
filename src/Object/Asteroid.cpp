@@ -49,6 +49,7 @@ void Asteroid::handleTask(const Task& task)
 			pTask->publisherId = objectID;
 			pTask->targetSystem = SOLAR_SYSTEM;
 			(*pTask->paramsPtr)["createObject"] = 0;
+			(*pTask->paramsPtr)["handlerType"] = std::string("createObject");
 			(*pTask->paramsPtr)["typeID"] = static_cast<int>(m_pBase->typeID);
 			(*pTask->paramsPtr)["OwnerID"] = 0;
 			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(containerID);

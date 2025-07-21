@@ -5,6 +5,7 @@
 #include "dynGameObjectsManager.h"
 
 #include "TaskMgr.h"
+#include "TaskHandler.h"
 
 class SolarSystemMgr {
 public:
@@ -48,4 +49,13 @@ public:
 	std::shared_ptr<GameObject> getObjectById(int id);
 
 private:
+	std::unordered_map<std::string, std::unique_ptr<TaskHandler>> taskHandlers;
+
+public:
+	// 注册Handler
+	void registerHandler(std::unique_ptr<TaskHandler> handler) {
+		auto type = handler->getTaskType();
+		taskHandlers[type] = std::move(handler);
+	}
+
 };

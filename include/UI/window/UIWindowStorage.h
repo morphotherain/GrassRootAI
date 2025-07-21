@@ -39,6 +39,7 @@ public:
 	virtual void UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick);
 	virtual void DrawUI();
 	virtual void cleanup();
+	virtual void handleTask(Task& task);
 
 	bool InitResource();
 	bool InitEffect();

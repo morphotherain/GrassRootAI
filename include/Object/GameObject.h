@@ -8,6 +8,9 @@
 #include "Component.h"
 #include "TaskMgr.h"
 
+#include "InvCategoriesMacro.h"
+#include "InvGroupsMacro.h"
+
 class GameObject {
 public:
 	UINT objectID = 0;
