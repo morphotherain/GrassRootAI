@@ -1,4 +1,4 @@
-上级目录：[[任务系统]]
+上级目录：[[SolarSystemManager - Handler]]
 用于新建一个对象
 
 示例：
