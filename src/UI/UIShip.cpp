@@ -45,6 +45,7 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 	task->publisher = m_currentShip;
 	task->target = m_currentShip;
 	task->taskTypeId = 5;
+	(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 	(*task->paramsPtr)["targetObjectID"] = currentSelectLockingObjectId;
 	(*task->paramsPtr)["taskType"] = std::string("switch");
 	while (true) {
@@ -115,6 +116,7 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 	taskSwitchLockingTarget->publisher = m_currentShip;
 	taskSwitchLockingTarget->target = m_currentShip;
 	taskSwitchLockingTarget->taskTypeId = 6;
+	(*taskSwitchLockingTarget->paramsPtr)["taskType"] = std::string("cargoStorage");
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::OemComma)) {
 		(*taskSwitchLockingTarget->paramsPtr)["direction"] = 0;
 		TaskMgr::getInstance().addTask(taskSwitchLockingTarget);

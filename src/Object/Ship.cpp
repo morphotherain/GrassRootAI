@@ -93,67 +93,113 @@ void Ship::handleTask(const Task& task)
 {
 	auto publisherPtr = task.publisher.lock();
 	auto targetPtr = task.target.lock();
+	auto taskType = task.getParamOrDefault<std::string>("taskType", "");
 
 	if (!publisherPtr || !targetPtr) {
 		return;
 	}
-	switch (task.taskTypeId) {
-	case 0:
-	{
-		if (warpTarget.lock() == nullptr)
-		{
+	static const std::unordered_map<std::string, std::function<void()>> taskHandlers = {
+		{"",[this]() {}},
+		{"setApproachTarget",[this,&task]() {
 			approachTarget = task.target;
 			activeTarget.reset();
-		}
-		break;
+		}},
+		{"setWarpTarget",[this,&task]() {
+			warpTarget = task.target;
+			approachTarget.reset();
+			activeTarget.reset();
+		}},
+		{"setActiveTarget",[this,&task]() {
+				activeTarget = task.target;
+		}},
+		{"addLocked",[this,&task,&targetPtr]() {
+				m_pLocking->AddLocked(targetPtr->objectID);
+				DEBUG_("发布锁定任务");
+		}},
+		{"eraseLocked",[this,&task,&targetPtr]() {
+				m_pLocking->EraseLocked(targetPtr->objectID);
+				DEBUG_("发布取消锁定任务");
+		}},
+		{"equipments",[this,&task]() {
+				DEBUG_("装备按键输入");
+				m_pEquipments->handleTask(task);
+		}},
+		{"locking",[this,&task]() {
+				DEBUG_("切换锁定目标");
+				m_pLocking->handleTask(task);
+		}},
+		{"cargoStorage",[this,&task]() {
+				DEBUG_("");
+				m_pCargoStorage->handleTask(task);
+		}},
+	};
+
+	auto it = taskHandlers.find(taskType);
+	if (it != taskHandlers.end()) {
+		it->second();
 	}
-	case 1:
-	{
-		warpTarget = task.target;
-		approachTarget.reset();
-		activeTarget.reset();
-		break;
+	else {
+		return;
 	}
-	case 2:
-	{
-		activeTarget = task.target;
-		break;
-	}
-	case 3:
-	{
-		m_pLocking->AddLocked(targetPtr->objectID);
-		DEBUG_("发布锁定任务");
-		break;
-	}
-	case 4:
-	{
-		m_pLocking->EraseLocked(targetPtr->objectID);
-		DEBUG_("发布取消锁定任务");
-		break;
-	}
-	case 5:
-	{
-		DEBUG_("装备按键输入");
-		m_pEquipments->handleTask(task);
-		break;
-	}
-	case 6:
-	{
-		DEBUG_("切换锁定目标");
-		m_pLocking->handleTask(task);
-		break;
-	}
-	case 7:
-	{
-		DEBUG_("");
-		m_pCargoStorage->handleTask(task);
-		break;
-	}
-	default: {
-		//nothing to do
-		break;
-	}
-	}
+
+
+	//switch (task.taskTypeId) {
+	//case 0:
+	//{
+	//	if (warpTarget.lock() == nullptr)
+	//	{
+	//		approachTarget = task.target;
+	//		activeTarget.reset();
+	//	}
+	//	break;
+	//}
+	//case 1:
+	//{
+	//	warpTarget = task.target;
+	//	approachTarget.reset();
+	//	activeTarget.reset();
+	//	break;
+	//}
+	//case 2:
+	//{
+	//	activeTarget = task.target;
+	//	break;
+	//}
+	//case 3:
+	//{
+	//	m_pLocking->AddLocked(targetPtr->objectID);
+	//	DEBUG_("发布锁定任务");
+	//	break;
+	//}
+	//case 4:
+	//{
+	//	m_pLocking->EraseLocked(targetPtr->objectID);
+	//	DEBUG_("发布取消锁定任务");
+	//	break;
+	//}
+	//case 5:
+	//{
+	//	DEBUG_("装备按键输入");
+	//	m_pEquipments->handleTask(task);
+	//	break;
+	//}
+	//case 6:
+	//{
+	//	DEBUG_("切换锁定目标");
+	//	m_pLocking->handleTask(task);
+	//	break;
+	//}
+	//case 7:
+	//{
+	//	DEBUG_("");
+	//	m_pCargoStorage->handleTask(task);
+	//	break;
+	//}
+	//default: {
+	//	//nothing to do
+	//	break;
+	//}
+	//}
 }
 
 void Ship::handleApproach(std::shared_ptr<GameObject> target)

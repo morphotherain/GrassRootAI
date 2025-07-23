@@ -409,7 +409,7 @@
       <Filter>Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp">
-      <Filter>d3d架构</Filter>
+      <Filter>TaskHandler\SolarSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -695,9 +695,6 @@
     <ClInclude Include="include\UI\UIButton.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="include\UI\UIRButtonMenu.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="include\UI\UIRichText.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -770,13 +767,16 @@
     <ClInclude Include="include\Macro\InvGroupsMacro.h">
       <Filter>宏定义</Filter>
     </ClInclude>
-    <ClInclude Include="include\TaskHandler\SolarSystem\SolarSystemHandler.h">
-      <Filter>输入</Filter>
-    </ClInclude>
     <ClInclude Include="include\TaskHandler\HandlerFactory.h">
-      <Filter>输入</Filter>
+      <Filter>TaskHandler</Filter>
     </ClInclude>
     <ClInclude Include="include\TaskHandler\TaskHandler.h">
+      <Filter>TaskHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TaskHandler\SolarSystem\SolarSystemHandler.h">
+      <Filter>TaskHandler\SolarSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UI\UIRButtonMenu.h">
       <Filter>输入</Filter>
     </ClInclude>
   </ItemGroup>

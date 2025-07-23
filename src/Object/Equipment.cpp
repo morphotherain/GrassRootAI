@@ -124,6 +124,7 @@ void MinerEquipments::Update(UINT tick)
 		task->publisherId = objectID;
 		task->targetId = ownerId;
 		task->taskTypeId = 7;
+		(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 		(*task->paramsPtr)["volume"] = (*m_pAttributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value;
 		(*task->paramsPtr)["RequestTarget"] = m_pEquipment->m_targetObjectId;
 

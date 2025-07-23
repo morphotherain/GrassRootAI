@@ -86,6 +86,7 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		task->publisher = currentShip;
 		task->target = currentStation;
 		task->taskTypeId = 1;
+		(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 		DEBUG_("currentStationID :{}", currentStationID);
 		DEBUG_("currentStation :{}", currentStation == nullptr);
 		//输出所有p_mapObject

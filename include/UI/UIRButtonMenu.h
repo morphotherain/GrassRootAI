@@ -54,6 +54,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 0;
+			(*task->paramsPtr)["taskType"] = std::string("setApproachTarget");
 			sourceObject->addTask(task);
 			return;
 		}
@@ -93,6 +94,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 0;
+			(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 			targetObject->addTask(task);
 			return;
 		}
@@ -111,6 +113,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 0;
+			(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 			targetObject->addTask(task);
 			return;
 		}
@@ -129,6 +132,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 1;
+			(*task->paramsPtr)["taskType"] = std::string("setWarpTarget");
 			sourceObject->addTask(task);
 			return;
 		}
@@ -147,6 +151,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 3;
+			(*task->paramsPtr)["taskType"] = std::string("addLocked");
 			sourceObject->addTask(task);
 			return;
 		}
@@ -165,6 +170,7 @@ public:
 			task->publisher = sourceObject;
 			task->target = targetObject;
 			task->taskTypeId = 4;
+			(*task->paramsPtr)["taskType"] = std::string("eraseLocked");
 			sourceObject->addTask(task);
 			return;
 		}
@@ -187,6 +193,13 @@ public:
 			pTask->targetSystem = SOLAR_SYSTEM;
 			(*pTask->paramsPtr)["handlerType"] = std::string("transferObject");
 			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(ContainerID);
+			TaskMgr::getInstance().addTask(pTask);
+
+			pTask = std::make_shared<Task>();
+			pTask->isInnerTask = true;
+			pTask->target = currentPilot->currentShip;
+			pTask->publisher = sourceObject;
+			(*pTask->paramsPtr)["handlerType"] = std::string("refreshEquipment");
 			TaskMgr::getInstance().addTask(pTask);
 			return;
 		}
