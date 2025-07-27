@@ -96,6 +96,15 @@ void AttributesComponent::setAttrValueById(int attrID, double value)
     }
 }
 
+double AttributesComponent::getAttrValueById(int attrID, double defaultValue)
+{
+    if (objectAttributes->find(attrID) != objectAttributes->end())
+    {
+        return (*objectAttributes)[attrID].value;
+    }
+    return defaultValue;
+}
+
 void AttributesComponent::OnDestroy()
 {
     dynObjectAttributesManager::getInstance()->removeAttributesByObjectID(objectID);

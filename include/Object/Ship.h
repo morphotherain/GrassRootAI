@@ -60,6 +60,9 @@ public:
 
 	// 实现 ConvertBasedOnGroupID 方法
 	static std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID, UINT objectID);
+
+	void initTaskHandlers();
+	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
 };
 
 class Frigate : public Ship {

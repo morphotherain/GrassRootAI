@@ -1,7 +1,6 @@
 ﻿#include "dynGameObjectsManager.h"
 #include "dynContainersManager.h"
 #include <unordered_set>
-#include "dynGameObjectsManager.h"
 
 unsigned int dynGameObjectsManager::getTypeIdByObjectID(int object_id)
 {

@@ -53,7 +53,7 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 0;
+			//task->taskTypeId = 0;
 			(*task->paramsPtr)["taskType"] = std::string("setApproachTarget");
 			sourceObject->addTask(task);
 			return;
@@ -93,8 +93,6 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 0;
-			(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 			targetObject->addTask(task);
 			return;
 		}
@@ -112,8 +110,7 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 0;
-			(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
+			(*task->paramsPtr)["taskType"] = std::string("jump");
 			targetObject->addTask(task);
 			return;
 		}
@@ -131,7 +128,6 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 1;
 			(*task->paramsPtr)["taskType"] = std::string("setWarpTarget");
 			sourceObject->addTask(task);
 			return;
@@ -150,7 +146,6 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 3;
 			(*task->paramsPtr)["taskType"] = std::string("addLocked");
 			sourceObject->addTask(task);
 			return;
@@ -169,7 +164,6 @@ public:
 			task->taskID = -1;
 			task->publisher = sourceObject;
 			task->target = targetObject;
-			task->taskTypeId = 4;
 			(*task->paramsPtr)["taskType"] = std::string("eraseLocked");
 			sourceObject->addTask(task);
 			return;

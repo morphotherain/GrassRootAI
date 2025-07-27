@@ -76,6 +76,9 @@
     <Filter Include="TaskHandler\SolarSystem">
       <UniqueIdentifier>{3e7b6d2c-9642-4594-a5b3-7e7678ef0ed5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TaskHandlerRegistry">
+      <UniqueIdentifier>{bfe1d3dc-274b-4593-a352-3345ed5df468}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\thirdparty\sqlite\sqlite3.c">
@@ -410,6 +413,15 @@
     </ClCompile>
     <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp">
       <Filter>TaskHandler\SolarSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Database\DataSheet\invEquipmentGroupSlotsManager.h">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\invEquipmentGroupSlotsManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TaskHandlerRegistry\TaskHandlerRegistry.cpp">
+      <Filter>TaskHandlerRegistry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -776,8 +788,11 @@
     <ClInclude Include="include\TaskHandler\SolarSystem\SolarSystemHandler.h">
       <Filter>TaskHandler\SolarSystem</Filter>
     </ClInclude>
+    <ClInclude Include="include\TaskHandlerRegistry\TaskHandlerRegistry.h">
+      <Filter>TaskHandlerRegistry</Filter>
+    </ClInclude>
     <ClInclude Include="include\UI\UIRButtonMenu.h">
-      <Filter>输入</Filter>
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

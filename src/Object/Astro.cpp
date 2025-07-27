@@ -67,6 +67,7 @@ void StarGate::Init()
 	m_pWarpGate = std::make_shared<WarpGateComponent>(objectID);
 	AddComponent<Component>(m_pWarpGate);
 	fillObjectName();
+	initTaskHandlers();
 }
 
 void StarGate::Update(UINT tick)
@@ -82,38 +83,40 @@ void StarGate::fillObjectName()
 	m_pBase->name = solarSystemName + L"（星门）";
 }
 
+void StarGate::initTaskHandlers() {
+	taskHandlers = {
+		{"", [this](const Task& task) {}},
+		{"jump", [this](const Task& task) {
+			auto publisherPtr = task.publisher.lock();
+			auto targetPtr = task.target.lock();
+			auto base = publisherPtr->GetComponent<BaseComponent>();
+			auto target_base = targetPtr->GetComponent<BaseComponent>();
+			auto tran = publisherPtr->GetComponent<SpaceTransformComponent>();
+			auto distance = m_pSpaceTran->calculateDistance(*tran);
+			if (distance < (2500) || true) {
+				UINT destID = mapJumpsManager::getInstance()->getDestinationIDByObjectId(target_base->objectID);
+				UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
+				auto pos = mapDenormalizeManager::getInstance()->getPosByObjectID(destID);
+				base->setSolarSystemID(solarSystemID);
+				tran->x = pos[0] + 12000.0f;
+				tran->y = pos[1];
+				tran->z = pos[2];
+			}
+		}}
+	};
+}
 void StarGate::handleTask(const Task& task)
 {
-	// 从 weak_ptr 中获取 shared_ptr（需检查是否有效）
 	auto publisherPtr = task.publisher.lock();
 	auto targetPtr = task.target.lock();
+	auto taskType = task.getParamOrDefault<std::string>("taskType", "");
 
-	// 检查指针有效性（避免访问已销毁的对象）
 	if (!publisherPtr || !targetPtr) {
 		return;
 	}
 
-	switch (task.taskTypeId) {
-	case 0:
-	{
-		auto base = publisherPtr->GetComponent<BaseComponent>();
-		auto target_base = targetPtr->GetComponent<BaseComponent>();
-		auto tran = publisherPtr->GetComponent<SpaceTransformComponent>();
-		auto distance = m_pSpaceTran->calculateDistance(*tran);
-		if (distance < (2500) || true) {
-			UINT destID = mapJumpsManager::getInstance()->getDestinationIDByObjectId(target_base->objectID);
-			UINT solarSystemID = mapDenormalizeManager::getInstance()->getSolarSystemIDByObjectId(destID);
-			auto pos = mapDenormalizeManager::getInstance()->getPosByObjectID(destID);
-			base->setSolarSystemID(solarSystemID);
-			tran->x = pos[0] + 12000.0f;
-			tran->y = pos[1];
-			tran->z = pos[2];
-		}
-		else {
-			break;
-		}
-		break;
-	}
-	default:;
+	auto it = taskHandlers.find(taskType);
+	if (it != taskHandlers.end()) {
+		it->second(task);  // 传递任务对象
 	}
 }

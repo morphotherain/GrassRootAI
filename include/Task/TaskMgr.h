@@ -2,6 +2,20 @@
 #include "Task.h"
 #include <stack>
 
+class TaskBatch {
+private:
+    std::vector<std::shared_ptr<Task>> tasks; // 临时收集任务
+
+public:
+    // 添加任务到批处理
+    void add(const std::shared_ptr<Task>& task) {
+        tasks.push_back(task);
+    }
+
+    // 析构时自动批量提交到TaskMgr
+    ~TaskBatch();
+};
+
 class TaskMgr {
 private:
     // 单例模式，构造函数设为私有
@@ -22,6 +36,10 @@ public:
         static TaskMgr instance;
         return instance;
     }
+    // 创建TaskBatch（此时TaskBatch已完整定义，可正常返回）
+    TaskBatch createBatch() {
+        return TaskBatch(); // 返回一个临时的批处理器
+    }
 
     // 任务入栈方法
     void addTask(const std::shared_ptr<Task>& task) {
@@ -30,6 +48,13 @@ public:
         task->isInnerTask = true;
         tasks.push(task);
     }
+    void addTasks(const std::vector<std::shared_ptr<Task>>& taskList) {
+        // 反转任务列表，让先添加的任务后入栈（从而先执行）
+        for (auto it = taskList.rbegin(); it != taskList.rend(); ++it) {
+            addTask(*it); // 复用单个入栈逻辑，确保innerID正确
+        }
+    }
+
 
     // 任务出栈方法
     std::shared_ptr<Task> popTask() {

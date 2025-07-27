@@ -2,6 +2,7 @@
 #include "UIWindowEquipment.h"
 #include "dynContainersManager.h"
 using namespace DirectX;
+#define COLUMN_WIDTH 200
 
 UIWindowEquipment::UIWindowEquipment(HINSTANCE _hInstance) : UIWindow(_hInstance)
 {
@@ -111,6 +112,7 @@ bool UIWindowEquipment::Init()
 void UIWindowEquipment::InitSlots()
 {
     m_slots.clear();
+    slotTypeMap.clear();
     std::vector<std::pair<int, int>> highEquipments = {};
     std::vector<std::pair<int, int>> midEquipments = {};
     std::vector<std::pair<int, int>> lowEquipments = {};
@@ -140,8 +142,10 @@ void UIWindowEquipment::InitSlots()
             int index = idx + (col) * 4 - 1;
             if (index >= hiSlots)break;
             std::string key = "H" + std::to_string(index + 1);
-            if (highEquipments.size() > index)
+            if (highEquipments.size() > index) {
                 m_slots[key] = (InitSlot(HIGH_SLOT, idx, highEquipments[index].second, highEquipments[index].first, col));
+                slotTypeMap[{idx, col}] = key;
+            }
             else
                 m_slots[key] = (InitSlot(HIGH_SLOT, idx, 0, -1, col));
         }
@@ -157,8 +161,10 @@ void UIWindowEquipment::InitSlots()
             int index = idx + (col) * 4 - 6;
             if (index >= medSlots)break;
             std::string key = "M" + std::to_string(index + 1);
-            if (midEquipments.size() > index)
+            if (midEquipments.size() > index) {
                 m_slots[key] = (InitSlot(MED_SLOT, idx, midEquipments[index].second, midEquipments[index].first, col));
+                slotTypeMap[{idx, col}] = key;
+            }
             else
                 m_slots[key] = (InitSlot(MED_SLOT, idx, 0, -1, col));
         }
@@ -174,8 +180,10 @@ void UIWindowEquipment::InitSlots()
             int index = idx + (col) * 4 - 11;
             if (index >= lowSlots)break;
             std::string key = "L" + std::to_string(index + 1);
-            if (lowEquipments.size() > index)
+            if (lowEquipments.size() > index) {
                 m_slots[key] = (InitSlot(LOW_SLOT, idx, lowEquipments[index].second, lowEquipments[index].first, col));
+                slotTypeMap[{idx, col}] = key;
+            }
             else
                 m_slots[key] = (InitSlot(LOW_SLOT, idx, 0, -1, col));
         }
@@ -205,7 +213,7 @@ void UIWindowEquipment::InitSlots()
 UIWindowEquipment::EquipmentSlot UIWindowEquipment::InitSlot(SlotType slotType, int index, int typeID, int objectId, int column)
 {
     std::string texturePath = "demoTex\\EVE\\media\\res\\Uprising_V21.03_Icons\\Icons\\UI\\Fitting\\dds\\";
-    int columnWidth = 200;
+    int columnWidth = COLUMN_WIDTH;
 
     EquipmentSlot temp;
     temp.index = index;
@@ -497,12 +505,12 @@ void UIWindowEquipment::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keybo
     if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
     {
         m_RButtonMenu = nullptr;
-        int index = static_cast<int>((mouseState.y - y - 64) / 36);
+        std::string type = getSlotTypeByPos(mouseState.x, mouseState.y);
 
-        if (index == 1) {
-            if (m_slots.find("H1") != m_slots.end()) {
+        if (type != "") {
+            if (m_slots.find(type) != m_slots.end()) {
                 
-                UINT targetID = m_slots["H1"].objectId;
+                UINT targetID = m_slots[type].objectId;
                 UINT currentID = SolarSystemMgr::getInstance().currentPilot->GetComponent<BaseComponent>()->objectID;
                 m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
                 m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
@@ -517,6 +525,17 @@ void UIWindowEquipment::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keybo
     }
 }
 
+std::string UIWindowEquipment::getSlotTypeByPos(int _x, int _y) {
+    int index = static_cast<int>((_y - y - 64) / 36);
+    int columnWidth = COLUMN_WIDTH;
+    int col = ((_x - x) < 44) ? -1 
+            : ((_x - x) < 44 + columnWidth)? 0 
+        : ((_x - x) < 44 + 2 * columnWidth) ? 1 : -1;
+
+    std::string result = slotTypeMap[{index, col}];
+    return result;
+}
+
 void UIWindowEquipment::handleTask(Task& task)
 {
     int taskX = task.getParamOrDefault<int>("x", 0);
@@ -527,8 +546,16 @@ void UIWindowEquipment::handleTask(Task& task)
         int objectID = task.getParamOrDefault<int>("objectID", 0);
         auto object = SolarSystemMgr::getInstance().getObjectById(objectID);
         if (object) {
-            int containerID = highContainerID;
-            dynGameObjectsManager::getInstance()->updateContainerIDByObjectID(objectID, highContainerID);
+            auto base = object->GetComponent<BaseComponent>();
+            auto task = std::make_shared<Task>();
+            task->publisher = SolarSystemMgr::getInstance().currentPilot;
+            task->target = SolarSystemMgr::getInstance().currentPilot->currentShip;
+            (*task->paramsPtr)["taskType"] = std::string("equipments");
+            (*task->paramsPtr)["equipmentTaskType"] = std::string("installEquipment");
+            (*task->paramsPtr)["objectID"] = static_cast<int>(objectID);
+            (*task->paramsPtr)["groupID"] = static_cast<int>(base->groupID);
+            TaskMgr::getInstance().addTask(task);
+
             Init();
             auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
             auto currentShip = currentPilot->currentShip;

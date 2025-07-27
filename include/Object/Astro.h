@@ -78,6 +78,8 @@ public:
 	void fillObjectName();
 
 	virtual void handleTask(const Task& task);
+	void initTaskHandlers();
+	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
 };
 
 class Astro : public GameObject

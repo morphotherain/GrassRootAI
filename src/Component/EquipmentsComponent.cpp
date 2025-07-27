@@ -1,4 +1,5 @@
 ﻿#include "EquipmentsComponent.h"
+#include "invEquipmentGroupSlotsManager.h"
 
 EquipmentsComponent::EquipmentsComponent(UINT _objectID)
 {
@@ -34,12 +35,13 @@ void EquipmentsComponent::Update(UINT tick)
 void EquipmentsComponent::handleTask(const Task& task)
 {
 	try {
-		auto slotType = std::any_cast<std::string>((*task.paramsPtr)["slotType"]);
 		auto taskType = std::any_cast<std::string>((*task.paramsPtr)["taskType"]);
-		auto slotIndex = std::any_cast<int>((*task.paramsPtr)["slotIndex"]);
+		auto equipmentTaskType = task.getParamOrDefault<std::string>("equipmentTaskType", "");
+		if (equipmentTaskType == "switch") {
+			auto slotType = std::any_cast<std::string>((*task.paramsPtr)["slotType"]);
+			auto slotIndex = std::any_cast<int>((*task.paramsPtr)["slotIndex"]);
 
-		DEBUG_("slotType, taskType, slotIndex : {}{}{}", slotType, taskType, slotIndex);
-		if (taskType == "switch") {
+			DEBUG_("slotType, taskType, slotIndex : {}{}{}", slotType, taskType, slotIndex);
 			int targetObjectID = -1;
 			if (slotType == "high") {
 				if (slotIndex >= 0 && slotIndex < static_cast<int>(m_pHighSlot->itemIDs.size())) {
@@ -64,6 +66,58 @@ void EquipmentsComponent::handleTask(const Task& task)
 			task->target = target;
 			(*task->paramsPtr)["TargetObjectId"] = m_pLocking->currentLockedTargetId;
 			TaskMgr::getInstance().addTask(task);
+		}
+
+		if (equipmentTaskType == "installEquipment") {
+			auto equipObjectID = task.getParamOrDefault<int>("objectID", -1);
+			auto groupID = task.getParamOrDefault<int>("groupID", -1) ;
+			int slot = invEquipmentGroupSlotsManager::getInstance()->getSlotByGroupID(groupID);
+            if (slot == 0) return;
+            int containerID = 0;
+			int numEquip = 0;
+			int maxNum = 0;
+            switch (slot)
+            {
+            case 0:
+                return;
+                break;
+            case 1: {
+                containerID = m_pHighSlot->containerID;
+				numEquip = m_pHighSlot->itemIDs.size();
+				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_HI_SLOTS, 0);
+                break;
+            }
+            case 2: {
+                containerID = m_pMediumSlot->containerID;
+				numEquip = m_pMediumSlot->itemIDs.size();
+				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_MED_SLOTS, 0);
+                break;
+            }
+            case 3: {
+                containerID = m_pLowSlot->containerID;
+				numEquip = m_pLowSlot->itemIDs.size();
+				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_LOW_SLOTS, 0);
+                break;
+            }
+            case 4: {
+                containerID = m_pRigSlot->containerID;
+				numEquip = m_pRigSlot->itemIDs.size();
+				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_RIG_SLOTS, 0);
+                break;
+            }
+                
+            default:
+                return;
+                break;
+            }
+			if (containerID != 0) {
+				if(maxNum > numEquip)	
+		            dynGameObjectsManager::getInstance()->updateContainerIDByObjectID(equipObjectID, containerID);
+			}
+			Refresh();
+		}
+		if (taskType == "uninstallEquipment") {
+
 		}
 	}
 	catch (const std::bad_any_cast& e) {

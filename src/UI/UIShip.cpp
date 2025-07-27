@@ -20,6 +20,11 @@ void UIShip::OnResize()
 
 void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	// 每10帧生成一个测试日志
+	if (tick % 120 == 0) {
+		m_slotEquipmentsEffect = nullptr;
+		InitEquipmentsEffect(m_slotEquipmentsEffect);
+	}
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -45,9 +50,9 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 	task->publisher = m_currentShip;
 	task->target = m_currentShip;
 	task->taskTypeId = 5;
-	(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
+	(*task->paramsPtr)["taskType"] = std::string("equipments");
 	(*task->paramsPtr)["targetObjectID"] = currentSelectLockingObjectId;
-	(*task->paramsPtr)["taskType"] = std::string("switch");
+	(*task->paramsPtr)["equipmentTaskType"] = std::string("switch");
 	while (true) {
 		(*task->paramsPtr)["slotType"] = std::string("low");
 		if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)){
@@ -652,6 +657,7 @@ void UIShip::DrawSlotRamp(DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& vie
 	for (auto& ids : ItemsIDs) {
 		for (auto id : ids) {
 			auto m_slotRampEffect = m_mapSlotRampEffect[id];
+			if (!m_slotRampEffect)continue;
 			auto object = SolarSystemMgr::getInstance().getObjectById(id);
 			auto equipmentComponent = object->GetComponent<EquipmentComponent>();
 			DrawGaugeEffect(m_slotRampEffect, windowModel, viewMatrix, projMatrix, equipmentComponent->m_activateProcess);
@@ -661,10 +667,11 @@ void UIShip::DrawSlotRamp(DirectX::XMMATRIX& windowModel, DirectX::XMMATRIX& vie
 
 void UIShip::EventLogMgr::update(UINT tick)
 {
-	// 每60帧生成一个测试日志
+	// 每10帧生成一个测试日志
 	if (tick % 10 == 0) {
 		createTestLog();
 	}
+
 
 	// 更新所有日志的透明度
 	for (auto it = logs.begin(); it != logs.end();) {

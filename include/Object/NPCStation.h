@@ -23,4 +23,6 @@ public:
 	void fillObjectName();
 
 	virtual void handleTask(const Task& task);
+	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
+	void initTaskHandlers();
 };

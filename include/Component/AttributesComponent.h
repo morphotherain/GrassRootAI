@@ -60,6 +60,7 @@ public:
     UINT objectID;
     bool shouldUpdate = false;
     void setAttrValueById(int attrID, double value);
+    double getAttrValueById(int attrID, double defaultValue);
     void storeAttributes();
 
     std::shared_ptr<std::unordered_map<int, Attribute>> typeAttributes;

@@ -23,7 +23,7 @@ struct Task {
 	Task();
 	~Task() {};
 
-	UINT taskID;
+	UINT taskID = -1;
 	UINT innerID;
 	bool isInnerTask = true;
 	std::weak_ptr<GameObject> publisher;

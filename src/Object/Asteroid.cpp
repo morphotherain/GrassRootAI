@@ -35,15 +35,26 @@ std::shared_ptr<GameObject> Asteroid::ConvertBasedOnGroupID(UINT groupID)
 
 void Asteroid::handleTask(const Task& task)
 {
-	switch (task.taskTypeId)
-	{
-	case 0:    //Add Object
-	{
-		try {
-			auto addTargetId = std::any_cast<int>((*task.paramsPtr)["addTargetId"]);
-			auto containerID = std::any_cast<int>((*task.paramsPtr)["containerID"]);
-			auto volume = std::any_cast<double>((*task.paramsPtr)["volume"]);
-			auto volumePerUnit = (*m_pAttributes->objectAttributes)[ATTR_ID_VOLUME].value;
+	auto type = task.getParamOrDefault<std::string>("taskType", "");
+	if (type == "addObject") {
+		auto addType = task.getParamOrDefault<std::string>("addType", "");
+
+		auto addTargetId = task.getParamOrDefault<int>("addTargetId", -1);
+		auto containerID = task.getParamOrDefault<int>("containerID", -1);
+		auto volume = task.getParamOrDefault<double>("volume", 0);
+		auto volumePerUnit = (*m_pAttributes->objectAttributes)[ATTR_ID_VOLUME].value;
+
+		if(addType == "add") {
+			auto addTarget = GameObjectMgr::getInstance().getObject(addTargetId);
+			if (addTarget) {
+				auto attr = addTarget->GetComponent<AttributesComponent>();
+				double itemVolume = attr->getAttrValueById(ATTR_ID_QUANTITY, 0.0);
+				itemVolume += std::floor(volume / volumePerUnit);
+				attr->setAttrValueById(ATTR_ID_QUANTITY, itemVolume);
+				attr->storeAttributes();
+			}
+		}
+		if (addType == "create") {
 			std::shared_ptr<Task> pTask = std::make_shared<Task>();
 			pTask->isInnerTask = true;
 			pTask->publisherId = objectID;
@@ -60,14 +71,6 @@ void Asteroid::handleTask(const Task& task)
 
 			TaskMgr::getInstance().addTask(pTask);
 		}
-		catch (const std::bad_any_cast& e) {
-			// 记录日志或进行错误处理
-			DEBUG_("类型转换错误: {}", e.what());
-		}
-		break;
 	}
-	
-	default:
-		break;
-	}
+
 }

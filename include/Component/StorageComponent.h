@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "StorageMacro.h"
 #include "d3dUtil.h"
+#include "TaskHandlerRegistry.h"
 #include <vector>
 
 class StorageComponent : public Component {
@@ -24,6 +25,9 @@ public:
 	UINT objectID;
 	UINT containerID;
 	std::vector<int> itemIDs;
+	TaskHandlerRegistry taskRegistry;
+	void initBaseTaskHandlers();
+	virtual void initTaskHandlers() {}
 };
 // 货柜仓
 class CargoContainerComponent : public StorageComponent {

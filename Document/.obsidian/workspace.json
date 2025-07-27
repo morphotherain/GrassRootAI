@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "任务/Component/StorageComponent - Handler.md",
+                "file": "优化编译速度.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "StorageComponent - Handler"
+              "title": "优化编译速度"
             }
           },
           {
@@ -184,11 +184,15 @@
   },
   "active": "d88fc0c7d679b494",
   "lastOpenFiles": [
+    "文档.md",
+    "优化编译速度.md",
+    "杂项/多端开发同步方法.md",
+    "玩法/玩法设计.md",
     "任务/Object/Ship/Ship - Handler.md",
+    "任务/SolarSystemMgr/SolarSystemManager - Handler.md",
     "任务/Component/StorageComponent - Handler.md",
     "任务/任务系统.md",
     "任务/Component",
-    "任务/SolarSystemMgr/SolarSystemManager - Handler.md",
     "任务/SolarSystemMgr/transferObjectHandler.md",
     "任务/SolarSystemMgr/createObjectHandler.md",
     "任务/Object/Astro",
@@ -196,9 +200,6 @@
     "任务/Object/Equipment",
     "任务/Object/Ship",
     "任务/Object",
-    "文档.md",
-    "杂项/多端开发同步方法.md",
-    "玩法/玩法设计.md",
     "剧情/游戏剧情.md",
     "剧情",
     "玩法",

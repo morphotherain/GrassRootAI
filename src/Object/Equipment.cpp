@@ -119,12 +119,10 @@ void MinerEquipments::Update(UINT tick)
 		auto ownerId = dynContainersManager::getInstance()->getObjectIDByContainerID(containerId);
 
 		std::shared_ptr<Task> task = std::make_shared<Task>();
-		task->isInnerTask = true;
-		task->taskID = 0;
 		task->publisherId = objectID;
 		task->targetId = ownerId;
-		task->taskTypeId = 7;
 		(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
+		(*task->paramsPtr)["storageTaskType"] = std::string("RequestObject");
 		(*task->paramsPtr)["volume"] = (*m_pAttributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value;
 		(*task->paramsPtr)["RequestTarget"] = m_pEquipment->m_targetObjectId;
 
