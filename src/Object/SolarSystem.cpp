@@ -117,6 +117,10 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
 		object = std::make_shared<NPCStation>(objectData.objectID);
 		break;
 	}
+	case 4: {    //材料
+		object = std::make_shared<Material>(objectData.objectID);
+		break;
+	}
 	case 5: {    //附件(克隆人飞行员)
 		return;
 		break;

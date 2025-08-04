@@ -26,7 +26,7 @@ public:
 	//当前相关
 	std::shared_ptr<SolarSystem> currentSolarSystem;
 	std::shared_ptr<Pilot> currentPilot;
-	UINT currentPilotID = 0;
+	UINT currentPilotID = 1;
 
 	//缓冲区相关
 	std::shared_ptr < std::vector<std::shared_ptr<GameObject>>> p_starGateTransferObjects;
@@ -47,6 +47,7 @@ public:
 	void InitPilots();
 
 	std::shared_ptr<GameObject> getObjectById(int id);
+	UINT getOwnerIdById(int id);
 
 private:
 	std::unordered_map<std::string, std::unique_ptr<TaskHandler>> taskHandlers;

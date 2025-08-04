@@ -55,3 +55,20 @@ bool TransferObjectHandler::handleTask(Task& task)
 	}
 	return false;
 }
+
+bool DestroyObjectHandler::handleTask(Task& task)
+{
+	try {
+		auto target = task.target.lock();
+		if (!target)
+			return false;
+		auto id = target->GetComponent<BaseComponent>()->objectID;
+		target->Destroy();
+		SolarSystemMgr::getInstance().p_mapObject->erase(id);
+		return true;
+	}
+	catch (const std::bad_any_cast& e) {
+		DEBUG_("类型转换错误: {}", e.what());
+	}
+	return false;
+}

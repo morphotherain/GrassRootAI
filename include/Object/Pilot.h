@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "GameObject.h"
 #include "Ship.h"
+#include "SkillComponent.h"
+
 class Pilot : public GameObject
 {
 public:
@@ -10,11 +12,17 @@ public:
 
 	virtual void Init();
 	virtual void Update(UINT tick);
+	virtual void handleTask(const Task& task);
+
+	void initTaskHandlers();
+	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
 
 	UINT PilotID;
+	UINT objectID;
 	UINT currentShipID = 0;
 	UINT currentSolarSystemID = 0;
-	UINT PilotObjectID;
 	std::shared_ptr<Ship> currentShip;
 	std::shared_ptr<BaseComponent> m_pBase;
+	std::shared_ptr<AttributesComponent> m_pAttributes;
+	std::shared_ptr<SkillComponent> m_pSkills;
 };

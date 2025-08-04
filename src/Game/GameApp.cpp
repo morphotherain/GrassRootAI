@@ -8,6 +8,7 @@
 #include "InvTypesManager.h"
 #include "AttributesComponent.h"
 #include "WindowManager.h"
+#include "RefiningSystem.h"
 #include "HandlerFactory.h"
 
 using namespace DirectX;
@@ -104,6 +105,13 @@ bool GameApp::Init()
 		SystemType::UIWINDOW,
 		[](const std::shared_ptr<Task>& task) {
 			WindowManager::GetInstance().handleTask(*task);
+		}
+	);
+
+	TaskMgr::getInstance().registerSystemHandler(
+		SystemType::REFINING,
+		[](const std::shared_ptr<Task>& task) {
+			RefiningSystem::getInstance().handleTask(*task);
 		}
 	);
 

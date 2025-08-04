@@ -81,16 +81,16 @@ void SolarSystemMgr::handleTask(Task& task)
 			return;
 		}
 
-		if (task.paramsPtr->find("destoryObject") != task.paramsPtr->end()) {
-			try {
-				auto id = targetPtr->GetComponent<BaseComponent>()->objectID;
-				targetPtr->Destroy();
-				p_mapObject->erase(id);
-			}
-			catch (const std::bad_any_cast& e) {
-				DEBUG_("类型转换错误: {}", e.what());
-			}
-		}
+		//if (task.paramsPtr->find("destoryObject") != task.paramsPtr->end()) {
+		//	try {
+		//		auto id = targetPtr->GetComponent<BaseComponent>()->objectID;
+		//		targetPtr->Destroy();
+		//		p_mapObject->erase(id);
+		//	}
+		//	catch (const std::bad_any_cast& e) {
+		//		DEBUG_("类型转换错误: {}", e.what());
+		//	}
+		//}
 	}
 	else
 	{
@@ -183,6 +183,23 @@ std::shared_ptr<GameObject> SolarSystemMgr::getObjectById(int id)
 		}
 	}
 	return nullptr;
+}
+
+//todo
+UINT SolarSystemMgr::getOwnerIdById(int id)
+{
+	while (getObjectById(id)) {
+		auto base = getObjectById(id)->GetComponent<BaseComponent>();
+		if (base)
+		{
+			if (base->owner != 0)
+				return base->ownerID;
+			
+		}
+		else
+			break;
+	}
+	return 0;
 }
 
 void SolarSystemMgr::getCurrentPilot()

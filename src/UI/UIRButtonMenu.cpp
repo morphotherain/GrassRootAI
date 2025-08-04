@@ -3,12 +3,16 @@ using namespace DirectX;
 
 bool UIRButtonMenu::Init()
 {
+	bool debug = true;
 	auto source_object = (*SolarSystemMgr::getInstance().p_mapObject)[source_object_id];
 	auto target_object = (*SolarSystemMgr::getInstance().p_mapObject)[target_object_id];
 	if (source_object == nullptr || target_object == nullptr)return false;
 
-	auto souce_base = source_object->GetComponent<BaseComponent>();
-	if (souce_base->categoryID == INV_CATEGORIES_SHIP) {
+	auto source_base = source_object->GetComponent<BaseComponent>();
+	auto target_base = target_object->GetComponent<BaseComponent>();
+
+	// 舰船相关
+	if (source_base->categoryID == INV_CATEGORIES_SHIP) {
 		UINT count = 0;
 		double distance = 0.0f;
 
@@ -30,40 +34,53 @@ bool UIRButtonMenu::Init()
 				addRow(std::make_shared<OrbitRow>());
 				addRow(std::make_shared<MaintainDistanceRow>());
 			}
-		}
-		if (distance < 2500)
-		{
-			auto Station = target_object->GetComponent<StationComponent>();
-			if (Station != nullptr)
+			if (distance < 2500)
 			{
-				addRow(std::make_shared<DockRow>());
+				auto Station = target_object->GetComponent<StationComponent>();
+				if (Station != nullptr)
+				{
+					addRow(std::make_shared<DockRow>());
+				}
+			}
+			if (distance < 5000000) {
+				if (source_object->GetComponent<LockingComponent>()->IsLocked(target_object_id)) {
+					addRow(std::make_shared<UnlockRow>());
+				}
+				else {
+					addRow(std::make_shared<LockRow>());
+				}
 			}
 		}
-		if (distance < 5000000) {
-			if (source_object->GetComponent<LockingComponent>()->IsLocked(target_object_id)) {
-				addRow(std::make_shared<UnlockRow>());
-			}
-			else {
-				addRow(std::make_shared<LockRow>());
-			}
-		}
-
 		auto Warp = target_object->GetComponent<WarpGateComponent>();
 		if (Warp != nullptr)
 		{
 			addRow(std::make_shared<JumpRow>());
 		}
 	}
-	if (souce_base->groupID == INV_GROUPS_CLONE) {
-		addRow(std::make_shared<RemoveEquipmentRow>());
+	// 装配,仓库相关
+	if (source_base->groupID == INV_GROUPS_CLONE) {
+		auto target_equip = target_object->GetComponent<EquipmentComponent>();
+		if(target_equip)
+			addRow(std::make_shared<RemoveEquipmentRow>());
+		auto target_spaceTran = target_object->GetComponent<SpaceTransformComponent>();
+		if (target_spaceTran == nullptr && target_base->categoryID == INV_CATEGORIES_ASTEROIDS) {
+			addRow(std::make_shared<RefiningRow>());
+		}
 	}
+	if (debug)
+	{
 
+	}
 
 	return true;
 }
 
 void UIRButtonMenu::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	for (auto row : m_Rows) {
+		row->m_button->setDelta(x, y);
+		row->m_button->UpdateUI(dt, mouse, keyboard, tick);
+	}
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();

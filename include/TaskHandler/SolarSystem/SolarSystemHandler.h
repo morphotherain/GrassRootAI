@@ -31,3 +31,18 @@ public:
         return "transferObject";
     }
 };
+
+class DestroyObjectHandler : public TaskHandler {
+public:
+    // 构造函数中自动注册到SolarSystemMgr
+    DestroyObjectHandler() {
+        // 获取单例并注册自己
+        SolarSystemMgr::getInstance().registerHandler(std::unique_ptr<DestroyObjectHandler>(this));
+    }
+
+    bool handleTask(Task& task) override;
+
+    std::string getTaskType() const override {
+        return "destroyObject";
+    }
+};

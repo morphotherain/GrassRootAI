@@ -40,6 +40,7 @@ void UIButton::OnResize()
 
 void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
+	text->setDelta(x + deltaX,y + deltaY);
 	// 更新鼠标事件，获取相对偏移量
 	Mouse::State mouseState = mouse.GetState();
 	Mouse::State lastMouseState = m_MouseTracker.GetLastState();
@@ -48,11 +49,17 @@ void UIButton::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyb
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
+	if (curCooldown > 0) {
+		curCooldown--;
+		return;
+	}
 	// 在鼠标没进入窗口前仍为ABSOLUTE模式
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
 	{
-		if (x < mouseState.x && (x + deltaX) > mouseState.x && (y + deltaY) > mouseState.y && y < mouseState.y)
+		if ((x + deltaX) < mouseState.x && (x + deltaX + width) > mouseState.x && (y + deltaY + height) > mouseState.y && (y + deltaY) < mouseState.y) {
 			*clickFlag = true;
+			curCooldown = cooldown;
+		}
 	}
 }
 
@@ -62,7 +69,7 @@ void UIButton::DrawUI()
 	DirectX::XMMATRIX viewMatrix = m_pUICamera->GetViewXM();
 	DirectX::XMMATRIX projMatrix = m_pUICamera->GetProjXM();
 
-	XMMATRIX windowModel = XMMatrixTranslation(x, y, 0.0f);
+	XMMATRIX windowModel = XMMatrixTranslation(x + deltaX, y + deltaY, 0.0f);
 
 	ConstantMVPIndex* dataPtr = m_effect->getConstantBuffer<ConstantMVPIndex>()->Map();
 	dataPtr->model = XMMatrixTranspose(windowModel);
@@ -89,7 +96,7 @@ bool UIButton::InitResource()
 	m_effect = std::make_shared<Effect>();
 
 	m_effect->addVertexShaderBuffer<PosTexIndex>(L"HLSL\\Triangle_VS.hlsl", L"HLSL\\Triangle_VS.cso");
-	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateButtonVertices(0, 0, deltaX, deltaY));
+	m_effect->getVertexBuffer<PosTexIndex>()->setVertices(GenerateButtonVertices(0, 0, width, height));
 	m_effect->addPixelShader(L"HLSL\\Triangle_PS.hlsl", L"HLSL\\Triangle_PS.cso");
 	m_effect->addTextures(textureButtonFileNames);
 	m_effect->addConstantBuffer<ConstantMVPIndex>();
@@ -119,6 +126,7 @@ void UIButton::setText(std::wstring _text)
 {
 	text = std::make_shared<UIText>();
 	text->setText(_text);
-	text->setSize(x + 10.0f, y + 2.0f, 200.0f, 200.0f);
+	text->setSize(10.0f, 2.0f, 200.0f, 200.0f);
+	text->setDelta(x+deltaX, y+deltaY);
 	text->Init();
 }

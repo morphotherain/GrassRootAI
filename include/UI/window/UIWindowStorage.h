@@ -3,6 +3,7 @@
 #include "UIWindow.h"
 #include "UIText.h"
 #include "UIButton.h"
+#include "UIRButtonMenu.h"
 
 class UIWindowStorage : public UIWindow
 {
@@ -52,6 +53,8 @@ public:
 	virtual void ParseParameters(std::unordered_map<std::string, std::any> paras);
 	void OnDragEnd(int x, int y);
 
+	int getItemByPos(int x, int y);
+
 protected:
 	void InitWindowComponent();
 
@@ -74,6 +77,7 @@ private:
 	std::shared_ptr<UIText> currentContainerUsed;
 	int offsetY = 0;
 	int currentContainerID = 0;
+	std::shared_ptr<UIRButtonMenu> m_RButtonMenu;
 	DirectX::Mouse::ButtonStateTracker m_MouseTracker;			// 鼠标状态追踪器
 	DirectX::Keyboard::KeyboardStateTracker m_KeyboardTracker;	// 键盘状态追踪器
 

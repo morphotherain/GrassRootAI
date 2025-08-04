@@ -79,6 +79,12 @@
     <Filter Include="TaskHandlerRegistry">
       <UniqueIdentifier>{bfe1d3dc-274b-4593-a352-3345ed5df468}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{59f1dee7-0543-495e-a28c-dd19f061186e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TaskHandler\RefiningSystem">
+      <UniqueIdentifier>{9871141d-9aaf-4920-8f14-5dfd7e06f3c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\thirdparty\sqlite\sqlite3.c">
@@ -414,14 +420,56 @@
     <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp">
       <Filter>TaskHandler\SolarSystem</Filter>
     </ClCompile>
-    <ClCompile Include="include\Database\DataSheet\invEquipmentGroupSlotsManager.h">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Database\DataSheet\invEquipmentGroupSlotsManager.cpp">
-      <Filter>d3d架构</Filter>
-    </ClCompile>
     <ClCompile Include="src\TaskHandlerRegistry\TaskHandlerRegistry.cpp">
       <Filter>TaskHandlerRegistry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\invEquipmentGroupSlotsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Database\DataSheet\invEquipmentGroupSlotsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\typeMaterialsManager.cpp">
+      <Filter>数据库\数据表</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\RefiningSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="include\TaskHandler\RefiningSystem\RefiningSystemHandler.h">
+      <Filter>TaskHandler\RefiningSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TaskHandler\RefiningSystem\RefiningSystemHandler.cpp">
+      <Filter>TaskHandler\RefiningSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object\Material.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\window\UIWindowSkill.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="include\UI\window\UIWindowSkill.h">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Database\DataSheet\dynPilotsSkillManager.h">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynPilotsSkillManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynPilotsManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Component\SkillComponent.h">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Database\DataSheet\dynSkillQueueManager.h">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\dynSkillQueueManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\SkillComponent.cpp">
+      <Filter>d3d架构</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -793,6 +841,18 @@
     </ClInclude>
     <ClInclude Include="include\UI\UIRButtonMenu.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\typeMaterialsManager.h">
+      <Filter>数据库\数据表</Filter>
+    </ClInclude>
+    <ClInclude Include="include\System\RefiningSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Object\Material.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\dynPilotsManager.h">
+      <Filter>输入</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

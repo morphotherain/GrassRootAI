@@ -13,7 +13,8 @@ enum SystemType : int {
 	NONE = 0,           // 明确表示0为默认值
 	SOLAR_SYSTEM,       // 1
 	MARKET,             // 2
-	UIWINDOW,             // 2
+	UIWINDOW,           // 3
+	REFINING,           // 4
     // 添加一个最大值用于确定数组大小
 	MAX_SYSTEM_TYPE
 };

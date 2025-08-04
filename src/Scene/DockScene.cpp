@@ -65,10 +65,7 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		component->UpdateUI(dt, mouse, keyboard, tick);
 	}
 
-	static int cooldown = 0;
-	if (cooldown > 0) cooldown--;
-	if (cooldown > 0)*(m_button->getClickFlag()) = false;
-	if (*m_button->getClickFlag() && cooldown == 0) {
+	if (*m_button->getClickFlag()) {
 		DEBUG_("click");
 		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
 		auto currentStationID = currentShip->GetComponent<BaseComponent>()->containerID;
@@ -96,7 +93,6 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 			currentStation->addTask(task);
 
 		*(m_button->getClickFlag()) = false;
-		cooldown = 60;
 	}
 	// ******************
 	// 更新摄像机

@@ -56,6 +56,15 @@ void UIWindowStorage::OnResize()
 {
 }
 
+int UIWindowStorage::getItemByPos(int _x, int _y) {
+	int index;
+	int offset_x = (_x - 220 - x) / colWidth;
+	int offset_y = (_y - 100 - y) / rowHeight;
+	index = offset_y * 7 + offset_x;
+	if (index >= m_itemsPair.size())index = -1;
+	return index;
+}
+
 void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
 	UIWindow::UpdateUI(dt, mouse, keyboard, tick);
@@ -75,10 +84,7 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 	if (leftButtonPressed) {
 		if ((x + 220) < mouseState.x && (x + 800) > mouseState.x && (y + 600) > mouseState.y && (y + 100) < mouseState.y)
 		{
-			int offset_x = (mouseState.x - 220 - x) / colWidth;
-			int offset_y = (mouseState.y - 100 - y) / rowHeight;
-			dragItemIndex = offset_y * 7 + offset_x;
-			if (dragItemIndex >= m_itemsPair.size())dragItemIndex = -1;
+			dragItemIndex = getItemByPos(mouseState.x, mouseState.y);
 			InitDragItemEffect();
 			InitItemImgEffect();
 		}
@@ -108,8 +114,25 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 	}
 
 
+	if (m_RButtonMenu != nullptr)
+		m_RButtonMenu->UpdateUI(dt, mouse, keyboard, tick);
 
-	
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+	{
+		m_RButtonMenu = nullptr;
+		int index  = getItemByPos(mouseState.x, mouseState.y);
+		UINT targetID = m_itemsPair[index].first;
+		UINT currentID = SolarSystemMgr::getInstance().currentPilot->GetComponent<BaseComponent>()->objectID;
+		m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
+		m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+		m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+		m_RButtonMenu->Init();
+	}
+
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)
+	{
+		m_RButtonMenu = nullptr;
+	}
 	// 在鼠标没进入窗口前仍为ABSOLUTE
 	if ((x + 200) < mouseState.x && (x + 800) > mouseState.x && (y + 600) > mouseState.y && y < mouseState.y)
 	{
@@ -117,6 +140,7 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 		if (wheelDelta != 0) {
 			if (wheelDelta > 0) {
 				offsetY += 10;
+
 			}
 			else {
 				offsetY -= 10;
@@ -236,6 +260,9 @@ void UIWindowStorage::DrawUI()
 		component->DrawUI();
 	}
 	shipCargo->Draw();
+
+	if (m_RButtonMenu != nullptr)
+		m_RButtonMenu->DrawUI();
 }
 
 void UIWindowStorage::cleanup()

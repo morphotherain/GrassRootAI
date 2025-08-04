@@ -16,8 +16,9 @@ public:
 		virtual void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) = 0;
 		void InitButton(float x, float y, UINT count) {
 			m_button = std::make_shared<UIButton>();
-			m_button->setSize(x, y + count * 25.0f, 120.0f, 25.0f); count++;
+			m_button->setSize(0.0f, count * 25.0f, 120.0f, 25.0f); count++;
 			m_button->setTex("demoTex\\UI\\Window\\RbuttonMenu.dds");
+			m_button->setDelta(x, y);
 			m_button->setText(text);
 		}
 		void setText(std::wstring _text) { text = _text; }
@@ -180,7 +181,15 @@ public:
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
 			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
 			UINT ContainerID = currentPilot->currentShip->GetComponent<CargoContainerComponent>()->containerID;
+
 			std::shared_ptr<Task> pTask = std::make_shared<Task>();
+			pTask->isInnerTask = true;
+			pTask->target = currentPilot->currentShip;
+			pTask->publisher = sourceObject;
+			(*pTask->paramsPtr)["taskType"] = std::string("refreshEquipment");
+			TaskMgr::getInstance().addTask(pTask);
+
+			pTask = std::make_shared<Task>();
 			pTask->isInnerTask = true;
 			pTask->target = targetObject;
 			pTask->publisher = sourceObject;
@@ -189,12 +198,39 @@ public:
 			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(ContainerID);
 			TaskMgr::getInstance().addTask(pTask);
 
-			pTask = std::make_shared<Task>();
-			pTask->isInnerTask = true;
-			pTask->target = currentPilot->currentShip;
-			pTask->publisher = sourceObject;
-			(*pTask->paramsPtr)["handlerType"] = std::string("refreshEquipment");
+			return;
+		}
+	};
+
+	class RefiningRow : public Row {
+	public:
+		RefiningRow() {
+			setText(L"熔炼");
+		}
+
+		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+			std::shared_ptr<Task> pTask = std::make_shared<Task>();
+			pTask->target = targetObject;
+			pTask->publisher = currentPilot;
+			pTask->targetSystem = REFINING;
+			(*pTask->paramsPtr)["handlerType"] = std::string("refiningObject");
 			TaskMgr::getInstance().addTask(pTask);
+			
+			return;
+		}
+	};
+
+	class DestroyRow : public Row {
+	public:
+		DestroyRow() {
+			setText(L"销毁");
+		}
+
+		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
+			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+			// UINT ContainerID = targetObject->GetComponent<BaseComponent>()->containerID;
+
 			return;
 		}
 	};

@@ -1,6 +1,7 @@
 ﻿// HandlerFactory.h
 #pragma once
 #include "SolarSystemHandler.h"
+#include "RefiningSystemHandler.h"
 
 class HandlerFactory {
 public:
@@ -9,7 +10,8 @@ public:
         // 创建并注册Handler（触发构造函数中的注册）
         new CreateObjectHandler();
         new TransferObjectHandler();
-        //new DestroyObjectHandler();
+        new DestroyObjectHandler();
         // ...其他Handler
+        new RefiningObjectHandler();
     }
 };

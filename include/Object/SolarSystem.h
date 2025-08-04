@@ -12,6 +12,7 @@
 #include "Astro.h"
 #include "Equipment.h"
 #include "Asteroid.h"
+#include "Material.h"
 #include "NPCStation.h"
 #include "Sector.h"
 
