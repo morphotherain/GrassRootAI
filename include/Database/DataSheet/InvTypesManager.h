@@ -18,7 +18,7 @@ public:
 	int getMinTypeIdByGroupIDIcon(int group_id);
 	int getMinTypeIdByCategoryIDIcon(int category_id);
 
-	std::vector<int> getReqSkillsById(int type_id);
+	std::map<int, int> getReqSkillsById(int type_id);
 	std::vector<int> getRequiredforById(int type_id);
 };
 

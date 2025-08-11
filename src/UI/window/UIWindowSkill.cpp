@@ -306,24 +306,28 @@ void UIWindowSkill::DrawInfo()
 		m_skillIndicator->apply();
 	}
 
-	skillAddButton->DrawUI();
+	if (skillAddButton) {
+		skillAddButton->DrawUI();
+	}
 }
 
 void UIWindowSkill::UpdateUIInfo(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard, UINT tick)
 {
-	skillAddButton->setDelta(x, y);
-	skillAddButton->UpdateUI(dt, mouse, keyboard, tick);
-	if (*(skillAddButton->getClickFlag())) {
-		*(skillAddButton->getClickFlag()) = false;
-		auto task = std::make_shared<Task>();
-		auto pilot = SolarSystemMgr::getInstance().currentPilot;
-		task->publisher = pilot;
-		task->target = pilot;
-		(*task->paramsPtr)["taskType"] = std::string("skillComponent");
-		(*task->paramsPtr)["skillTaskType"] = std::string("AddToActiveQueue");
-		(*task->paramsPtr)["skillTypeId"] = static_cast<int>(selectTypeId);
-		TaskMgr::getInstance().addTask(task);
-		//
+	if (skillAddButton) {
+		skillAddButton->setDelta(x, y);
+		skillAddButton->UpdateUI(dt, mouse, keyboard, tick);
+		if (*(skillAddButton->getClickFlag())) {
+			*(skillAddButton->getClickFlag()) = false;
+			auto task = std::make_shared<Task>();
+			auto pilot = SolarSystemMgr::getInstance().currentPilot;
+			task->publisher = pilot;
+			task->target = pilot;
+			(*task->paramsPtr)["taskType"] = std::string("skillComponent");
+			(*task->paramsPtr)["skillTaskType"] = std::string("AddToActiveQueue");
+			(*task->paramsPtr)["skillTypeId"] = static_cast<int>(selectTypeId);
+			TaskMgr::getInstance().addTask(task);
+			//
+		}
 	}
 
 }
@@ -569,8 +573,16 @@ void UIWindowSkill::switchSelectType(int typeID)
 	skillQueueTileText->switchTextFormat("Bold_M");
 	skillQueueTileText->Init();
 
+	auto pilot = SolarSystemMgr::getInstance().currentPilot;
+	auto skillComp = pilot->GetComponent<SkillComponent>();
+	int level = 0;
+
+	if (skillComp) {
+		level = skillComp->getCurrentSkillLevel(typeID);
+	}
+
 	m_skillIndicator.reset();
-	m_skillIndicator = GenerateSkillLevelIndicators(2, 330.0f + name.size() * 20.0f, 87.0f);
+	m_skillIndicator = GenerateSkillLevelIndicators(level, 330.0f + name.size() * 20.0f, 87.0f);
 
 	skillAddButton.reset();
 	skillAddButton = std::make_shared<UIButton>();
@@ -579,6 +591,11 @@ void UIWindowSkill::switchSelectType(int typeID)
 	skillAddButton->setText(L"添加+");
 	skillAddButton->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 	skillAddButton->Init();
+	skillAddButton->setDelta(x, y);
+	if (skillComp) {
+		if (!skillComp->isSkillPrerequisiteMet(typeID))
+			skillAddButton.reset();
+	}
 
 	InitSkillQueue();
 }
@@ -625,8 +642,8 @@ void UIWindowSkill::InitSkillQueue()
 	int curY = 40;
 	if (skillComp) {
 		// 定义固定的文本总长度
-		const int totalTextLength = 40; // 根据实际需要调整
-
+		const int totalTextLength = 47; // 根据实际需要调整
+		auto remainTimeMap = skillComp->getCumulativeCompletionTimes();
 		for (auto skill : *(skillComp->getSkillQueue())) {
 			skillQueueEffect temp;
 			temp.skill = skill;
@@ -634,7 +651,7 @@ void UIWindowSkill::InitSkillQueue()
 			int level = skill.level;
 			int type = skill.skillTypeId;
 			int process = skill.process;
-			int remainTime = (skill.factor * 256000 * level - skill.process) / skillPointsPerSecond;
+			int remainTime = remainTimeMap[skill.priority];
 			temp.m_skillIndicator = GenerateSkillLevelIndicators(level, 655.0f, 155.0f + curY);
 
 			std::wstring name = InvTypesManager::getInstance()->getNameByTypeId(type);
@@ -649,7 +666,7 @@ void UIWindowSkill::InitSkillQueue()
 			std::wstring timeStr = FormatTime(remainTime);
 
 			// 4. 计算需要填充的空格，使总长度固定
-			int spaceCount = totalTextLength - (leftPart.length() + timeStr.length());
+			int spaceCount = totalTextLength - (leftPart.length() + timeStr.length() + name.length());
 			std::wstring spaces;
 			if (spaceCount > 0) {
 				spaces = std::wstring(spaceCount, L' ');
@@ -673,7 +690,7 @@ void UIWindowSkill::InitSkillQueue()
 	}
 	if (m_SkillQueueEffects.size()) {
 		auto skillRemoveButton = std::make_shared<UIButton>();
-		skillRemoveButton->setSize(725.0f, 145.0f + curY - skillColHeight, 22.0f, 22.0f);
+		skillRemoveButton->setSize(725.0f, 150.0f + curY - skillColHeight, 22.0f, 22.0f);
 		skillRemoveButton->setText(L"x");
 		skillRemoveButton->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
 		skillRemoveButton->Init();
