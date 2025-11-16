@@ -471,6 +471,15 @@
     <ClCompile Include="src\Component\SkillComponent.cpp">
       <Filter>d3d架构</Filter>
     </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\industryActivitiesManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\industryActivityMaterialsManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Database\DataSheet\industryActivityProductsManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thirdparty\sqlite\sqlite3.h">
@@ -852,6 +861,15 @@
       <Filter>输入</Filter>
     </ClInclude>
     <ClInclude Include="include\Database\DataSheet\dynPilotsManager.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\industryActivitiesManager.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\industryActivityMaterialsManager.h">
+      <Filter>输入</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\DataSheet\industryActivityProductsManager.h">
       <Filter>输入</Filter>
     </ClInclude>
   </ItemGroup>

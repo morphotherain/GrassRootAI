@@ -9,6 +9,7 @@
 #include "UIWindowEquipment.h"
 #include "UIWindowMarket.h"
 #include "UIWindowSkill.h"
+#include "UIWindowIndusty.h"
 
 using namespace DirectX;
 
@@ -31,6 +32,7 @@ void WindowManager::Initialize(int width, int height, std::shared_ptr<Camera> ca
 	RegisterWindowTypeT<UIWindowEquipment>("equipment");
 	RegisterWindowTypeT<UIWindowMarket>("market");
 	RegisterWindowTypeT<UIWindowSkill>("skill");
+	RegisterWindowTypeT<UIWindowIndusty>("industry");
 	DEBUG_("WindowManager初始化完成");
 }
 
@@ -89,8 +91,16 @@ void WindowManager::Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& k
 	}
 	// 检测 3 键按下
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad4)) {
-		DEBUG_("打开equipment窗口");
+		DEBUG_("打开industry窗口");
 		// 触发打开窗口
+		WindowMessage msg;
+		msg.windowType = "industry";
+		msg.parameters["z_order"] = (m_maxWindowZOrder++);
+		WindowMessagingSystem::GetInstance().Enqueue(msg);
+	}
+	// 临时：将技能窗口改为数字键5
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::NumPad5)) {
+		DEBUG_("打开skill窗口");
 		WindowMessage msg;
 		msg.windowType = "skill";
 		msg.parameters["z_order"] = (m_maxWindowZOrder++);

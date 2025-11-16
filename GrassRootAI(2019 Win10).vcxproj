@@ -211,6 +211,9 @@
     <ClCompile Include="src\Database\DataSheet\dynPilotsSkillManager.cpp" />
     <ClCompile Include="src\Database\DataSheet\dynSkillQueueManager.cpp" />
     <ClCompile Include="src\Database\DataSheet\eveBracketsManager.cpp" />
+    <ClCompile Include="src\Database\DataSheet\industryActivitiesManager.cpp" />
+    <ClCompile Include="src\Database\DataSheet\industryActivityMaterialsManager.cpp" />
+    <ClCompile Include="src\Database\DataSheet\industryActivityProductsManager.cpp" />
     <ClCompile Include="src\Database\DataSheet\invCategoriesManager.cpp" />
     <ClCompile Include="src\Database\DataSheet\invEquipmentGroupSlotsManager.cpp" />
     <ClCompile Include="src\Database\DataSheet\invGroupsManager.cpp" />
@@ -328,6 +331,9 @@
     <ClInclude Include="include\Database\DataSheet\dynObjectAttributesManager.h" />
     <ClInclude Include="include\Database\DataSheet\dynPilotsManager.h" />
     <ClInclude Include="include\Database\DataSheet\eveBracketsManager.h" />
+    <ClInclude Include="include\Database\DataSheet\industryActivitiesManager.h" />
+    <ClInclude Include="include\Database\DataSheet\industryActivityMaterialsManager.h" />
+    <ClInclude Include="include\Database\DataSheet\industryActivityProductsManager.h" />
     <ClInclude Include="include\Database\DataSheet\invCategoriesManager.h" />
     <ClInclude Include="include\Database\DataSheet\invGroupsManager.h" />
     <ClInclude Include="include\Database\DataSheet\InvTypesManager.h" />
