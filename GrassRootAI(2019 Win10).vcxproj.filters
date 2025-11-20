@@ -480,6 +480,9 @@
     <ClCompile Include="src\Database\DataSheet\industryActivityProductsManager.cpp">
       <Filter>d3d架构</Filter>
     </ClCompile>
+    <ClCompile Include="src\Database\SaveGameManager.cpp">
+      <Filter>d3d架构</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thirdparty\sqlite\sqlite3.h">
@@ -538,6 +541,9 @@
     </ClInclude>
     <ClInclude Include="include\Component\EquipmentsComponent.h">
       <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Database\SaveGameManager.h">
+      <Filter>d3d架构</Filter>
     </ClInclude>
     <ClInclude Include="include\D3D\D3DManager.h">
       <Filter>d3d架构</Filter>

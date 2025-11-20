@@ -10,6 +10,7 @@
 #include "WindowManager.h"
 #include "RefiningSystem.h"
 #include "HandlerFactory.h"
+#include "SaveGameManager.h"
 
 using namespace DirectX;
 
@@ -29,6 +30,15 @@ void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
 	}
 
 	currentScene = std::move(newScene);
+
+	// 如果是主菜单场景，注入“开始游戏”回调
+	if (auto mainScene = dynamic_cast<MainScene*>(currentScene.get()))
+	{
+		mainScene->setStartGameCallback([this]() {
+			this->StartNewGame();
+		});
+	}
+
 	if (currentScene) {
 		currentScene->setd3dResource(
 			*m_pd3dDevice1.GetAddressOf(),
@@ -72,56 +82,11 @@ bool GameApp::Init()
 	// 初始化鼠标，键盘不需要
 	m_pMouse->SetWindow(m_hMainWnd);
 	m_pMouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
-
-	INFO_("初始化 AttributeMgr");
-	AttributeMgr::getInstance().Init();
-
-	INFO_("初始化 SolarSystemMgr");
-	SolarSystemMgr::getInstance().Init();
-
-	SolarSystemMgr::getInstance().getCurrentPilot();
-
-	SolarSystemMgr::getInstance().setCurrentPilot();
-	
-	auto& taskMgr = TaskMgr::getInstance();
-	auto& solarSystemMgr = SolarSystemMgr::getInstance();
-
-	// 捕获局部引用而非静态调用
-	taskMgr.registerSystemHandler(
-		SystemType::NONE,
-		[&solarSystemMgr](const std::shared_ptr<Task>& task) {
-			solarSystemMgr.handleTask(*task); // 使用捕获的引用
-		}
-	);
-
-	TaskMgr::getInstance().registerSystemHandler(
-		SystemType::SOLAR_SYSTEM,
-		[](const std::shared_ptr<Task>& task) {
-			SolarSystemMgr::getInstance().handleTask(*task);
-		}
-	);
-
-	TaskMgr::getInstance().registerSystemHandler(
-		SystemType::UIWINDOW,
-		[](const std::shared_ptr<Task>& task) {
-			WindowManager::GetInstance().handleTask(*task);
-		}
-	);
-
-	TaskMgr::getInstance().registerSystemHandler(
-		SystemType::REFINING,
-		[](const std::shared_ptr<Task>& task) {
-			RefiningSystem::getInstance().handleTask(*task);
-		}
-	);
-
-	// 初始化Handler（触发构造函数注册）
-	HandlerFactory::initializeHandlers();
-	
-
+	// 此时还未加载或创建任何存档，仅进入主菜单界面。
+	m_gameState = GameState::MainMenu;
 
 	INFO_("切换到主界面");
-	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+	SwitchToScene(std::make_unique<MainScene>(AppInst()));
 
 	INFO_("GameApp 初始化完成");
 	return true;
@@ -198,92 +163,100 @@ void GameApp::OnResize()
 void GameApp::UpdateScene(float dt)
 {
 	tick++;
-	int switchScene = 0;
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
-	SolarSystemMgr::getInstance().Update(tick);
-	TaskMgr::getInstance().distributeTasksFromTaskMgr();
 
-	auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
-	UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
-	UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
-	UINT currentSolarSystemID = SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID();
-	bool needSwitch = solarSystemID != currentSolarSystemID;
-
-	if (tick % 100 == 0 || needSwitch)
+	// 仅在进入游戏后才驱动 SolarSystem 等与存档相关的系统
+	if (m_gameState == GameState::InGame)
 	{
-		while (true)
+		int switchScene = 0;
+
+		SolarSystemMgr::getInstance().Update(tick);
+		TaskMgr::getInstance().distributeTasksFromTaskMgr();
+
+		auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
+		if (currentPilot && currentPilot->currentShip)
 		{
-			if (currentSceneID == 4) {
-				switchScene = 3;
-				break;
+			UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
+			UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
+			UINT currentSolarSystemID = SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID();
+			bool needSwitch = solarSystemID != currentSolarSystemID;
+
+			if (tick % 100 == 0 || needSwitch)
+			{
+				while (true)
+				{
+					if (currentSceneID == 4) {
+						switchScene = 3;
+						break;
+					}
+
+					if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
+						if (currentSceneID != 4) {
+							switchScene = 4;
+						}
+						auto nextSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+						auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
+						auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
+						if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
+							// 找到了对应的太阳系，获取其值
+							nextSolarSystem = it->second;
+						}
+						else {
+							nextSolarSystem.reset();
+							nextSolarSystem = SolarSystemMgr::getInstance().loadSolarSystem(solarSystemID);
+						}
+						SolarSystemMgr::getInstance().currentSolarSystem = nextSolarSystem;
+						SolarSystemMgr::getInstance().setCurrentPilot();
+						currentSolarSystem->clearCurrentPilots();
+						currentSolarSystem->clearCurrentSector();
+
+						break;
+					}
+
+					if (ContainerID == 0) {
+						if (currentSceneID != 3)
+							switchScene = 3;
+						break;
+					}
+					if (ContainerID != 0) {
+						if (currentSceneID != 2)
+							switchScene = 2;
+						break;
+					}
+					break;
+				}
 			}
 
-			if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
-				if (currentSceneID != 4) {
-					switchScene = 4;
-				}
-				auto nextSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
-				auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
-				auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
-				if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
-					// 找到了对应的太阳系，获取其值
-					nextSolarSystem = it->second;
-				}
-				else {
-					nextSolarSystem.reset();
-					nextSolarSystem = SolarSystemMgr::getInstance().loadSolarSystem(solarSystemID);
-				}
-				SolarSystemMgr::getInstance().currentSolarSystem = nextSolarSystem;
-				SolarSystemMgr::getInstance().setCurrentPilot();
-				currentSolarSystem->clearCurrentPilots();
-				currentSolarSystem->clearCurrentSector();
-
+			switch (switchScene)
+			{
+			case 1:
+			{
+				SwitchToScene(std::make_unique<MainScene>(AppInst()));
+				currentSceneID = 1;
 				break;
 			}
-
-			if (ContainerID == 0) {
-				if (currentSceneID != 3)
-					switchScene = 3;
+			case 2:
+			{
+				SwitchToScene(std::make_unique<DockScene>(AppInst()));
+				currentSceneID = 2;
 				break;
 			}
-			if (ContainerID != 0) {
-				if (currentSceneID != 2)
-					switchScene = 2;
+			case 3:
+			{
+				SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+				currentSceneID = 3;
 				break;
 			}
-			break;
+			case 4:
+			{
+				SwitchToScene(std::make_unique<StargateLoadingScene>(AppInst()));
+				currentSceneID = 4;
+				break;
+			}
+			default:;
+			}
 		}
 	}
-
-	switch (switchScene)
-	{
-	case 1:
-	{
-		SwitchToScene(std::make_unique<MainScene>(AppInst()));
-		currentSceneID = 1;
-		break;
-	}
-	case 2:
-	{
-		SwitchToScene(std::make_unique<DockScene>(AppInst()));
-		currentSceneID = 2;
-		break;
-	}
-	case 3:
-	{
-		SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
-		currentSceneID = 3;
-		break;
-	}
-	case 4:
-	{
-		SwitchToScene(std::make_unique<StargateLoadingScene>(AppInst()));
-		currentSceneID = 4;
-		break;
-	}
-	default:;
-	}
-	return;
 }
 
 void GameApp::DrawScene()
@@ -300,4 +273,84 @@ bool GameApp::InitEffect()
 bool GameApp::InitResource()
 {
 	return true;
+}
+
+void GameApp::StartNewGame()
+{
+	// 如果已经在游戏中，忽略重复请求
+	if (m_gameState == GameState::InGame)
+	{
+		return;
+	}
+
+	INFO_("开始新游戏：从模板存档创建新存档并初始化游戏系统");
+
+	// 1. 通过模板存档创建新存档文件，并在 saveSlots 中登记
+	int slotID = -1;
+	if (!SaveGameManager::getInstance()->createNewSaveFromTemplate(
+		"save/initial",
+		"新建存档",
+		"dev",
+		slotID))
+	{
+		ERROR_("创建新存档失败");
+		return;
+	}
+
+	// 2. 按 slotID 加载存档（ATTACH + 创建 dyn 视图）
+	if (!SaveGameManager::getInstance()->loadSaveBySlotID(slotID))
+	{
+		ERROR_("加载新存档失败，slotID = {}", slotID);
+		return;
+	}
+
+	// 3. 现在 dyn* 表已经指向当前存档，可以安全地初始化各种依赖存档数据的管理器
+	INFO_("初始化 AttributeMgr");
+	AttributeMgr::getInstance().Init();
+
+	INFO_("初始化 SolarSystemMgr");
+	SolarSystemMgr::getInstance().Init();
+	SolarSystemMgr::getInstance().getCurrentPilot();
+	SolarSystemMgr::getInstance().setCurrentPilot();
+
+	// 4. 注册各系统的任务处理器
+	auto& taskMgr = TaskMgr::getInstance();
+	auto& solarSystemMgr = SolarSystemMgr::getInstance();
+
+	// 捕获局部引用而非静态调用
+	taskMgr.registerSystemHandler(
+		SystemType::NONE,
+		[&solarSystemMgr](const std::shared_ptr<Task>& task) {
+			solarSystemMgr.handleTask(*task);
+		}
+	);
+
+	TaskMgr::getInstance().registerSystemHandler(
+		SystemType::SOLAR_SYSTEM,
+		[](const std::shared_ptr<Task>& task) {
+			SolarSystemMgr::getInstance().handleTask(*task);
+		}
+	);
+
+	TaskMgr::getInstance().registerSystemHandler(
+		SystemType::UIWINDOW,
+		[](const std::shared_ptr<Task>& task) {
+			WindowManager::GetInstance().handleTask(*task);
+		}
+	);
+
+	TaskMgr::getInstance().registerSystemHandler(
+		SystemType::REFINING,
+		[](const std::shared_ptr<Task>& task) {
+			RefiningSystem::getInstance().handleTask(*task);
+		}
+	);
+
+	// 初始化Handler（触发构造函数注册）
+	HandlerFactory::initializeHandlers();
+
+	// 5. 切换状态为“游戏中”，并进到 SpaceScene
+	m_gameState = GameState::InGame;
+	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+	currentSceneID = 3;
 }

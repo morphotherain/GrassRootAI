@@ -276,6 +276,7 @@
     <ClCompile Include="src\TaskHandler\SolarSystem\SolarSystemHandler.cpp" />
     <ClCompile Include="src\Task\Task.cpp" />
     <ClCompile Include="src\Task\TaskMgr.cpp" />
+    <ClCompile Include="src\Database\SaveGameManager.cpp" />
     <ClCompile Include="src\UI\UIBase.cpp" />
     <ClCompile Include="src\UI\UIButton.cpp" />
     <ClCompile Include="src\UI\UIRButtonMenu.cpp" />
@@ -322,6 +323,7 @@
     <ClInclude Include="include\D3D\DXTrace.h" />
     <ClInclude Include="include\D3D\GameTimer.h" />
     <ClInclude Include="include\Database\DatabaseManager.h" />
+    <ClInclude Include="include\Database\SaveGameManager.h" />
     <ClInclude Include="include\Database\DataSheet\demoManager.h" />
     <ClInclude Include="include\Database\DataSheet\dogmaAttributesManager.h" />
     <ClInclude Include="include\Database\DataSheet\dogmaTypeAttributesManager.h" />

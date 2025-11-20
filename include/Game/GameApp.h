@@ -10,6 +10,9 @@
 class GameApp : public D3DApp
 {
 public:
+	// 游戏整体状态
+	enum class GameState { MainMenu, InGame };
+
 	// 摄像机模式
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
 
@@ -33,6 +36,9 @@ public:
 	// 在GameApp类中修改SwitchToScene方法为模板函数
 	void SwitchToScene(std::unique_ptr<Scene> newScene);
 
+	// 从主菜单开始一个新的游戏：创建/加载存档，初始化各系统，然后切换到游戏场景。
+	void StartNewGame();
+
 private:
 	bool InitEffect();
 	bool InitResource();
@@ -55,6 +61,9 @@ private:
 	std::unique_ptr<Scene> currentScene; //当前的界面
 	UINT currentSceneID = 0;
 	UINT tick = 0;
+
+	// 当前游戏状态（主菜单 / 游戏中）
+	GameState m_gameState = GameState::MainMenu;
 };
 
 #endif
