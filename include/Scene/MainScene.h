@@ -9,10 +9,6 @@ class UIRenderContext;
 class UISystem;
 class UINavigationStack;
 
-#ifndef UIF_USE_LEGACY_MAIN_MENU
-#define UIF_USE_LEGACY_MAIN_MENU 0
-#endif
-
 class MainScene : public Scene
 {
 public:
@@ -37,10 +33,6 @@ public:
 
 private:
 	std::shared_ptr<Effect> m_effect;
-
-#if UIF_USE_LEGACY_MAIN_MENU
-	std::shared_ptr<UIButton> m_startButton;
-#endif
 
 	UIGameplayHost m_gameplayHost;
 

@@ -116,6 +116,30 @@ std::shared_ptr<SolarSystem> SolarSystemMgr::loadSolarSystem(int id)
 	return p_solarSystem;
 }
 
+void SolarSystemMgr::switchToSolarSystem(UINT solarSystemID)
+{
+	auto previousSolarSystem = currentSolarSystem;
+	std::shared_ptr<SolarSystem> nextSolarSystem = currentSolarSystem;
+
+	auto it = SolarSystems.find(solarSystemID);
+	if (it != SolarSystems.end())
+	{
+		nextSolarSystem = it->second;
+	}
+	else
+	{
+		nextSolarSystem = loadSolarSystem(solarSystemID);
+	}
+
+	currentSolarSystem = nextSolarSystem;
+	setCurrentPilot();
+	if (previousSolarSystem)
+	{
+		previousSolarSystem->clearCurrentPilots();
+		previousSolarSystem->clearCurrentSector();
+	}
+}
+
 void SolarSystemMgr::distributeTasksFromTaskMgr()
 {
 }

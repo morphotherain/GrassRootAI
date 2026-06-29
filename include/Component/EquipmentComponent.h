@@ -3,7 +3,6 @@
 #include "Component.h"
 #include "AttributesComponent.h"
 #include "StorageComponent.h"
-#include "d3dUtil.h"
 
 class EquipmentComponent : public Component {
 public:

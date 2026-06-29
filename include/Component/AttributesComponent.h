@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Component.h"
-#include "d3dUtil.h"
 #include <unordered_map>
 #include "AttributeMacro.h"
 #include "dogmaAttributesManager.h"

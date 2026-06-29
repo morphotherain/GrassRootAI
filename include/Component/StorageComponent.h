@@ -2,7 +2,6 @@
 
 #include "Component.h"
 #include "StorageMacro.h"
-#include "d3dUtil.h"
 #include "TaskHandlerRegistry.h"
 #include <vector>
 

@@ -1,4 +1,5 @@
 #include "GameApp.h"
+#include "SceneTransitionService.h"
 #include "d3dUtil.h"
 #include "DXTrace.h"
 #include <vector>
@@ -108,6 +109,7 @@ bool GameApp::Init()
 
 	INFO_("切换到主界面");
 	SwitchToScene(std::make_unique<MainScene>(AppInst()));
+	m_currentSceneId = SceneId::Main;
 
 	INFO_("GameApp 初始化完成");
 	return true;
@@ -181,6 +183,31 @@ void GameApp::OnResize()
 	D3DManager::getInstance().setd2dResource(m_pd2dRenderTarget.Get(), m_pColorBrush.Get(), m_pTextFormat.Get());
 }
 
+void GameApp::SwitchToSceneId(SceneId sceneId)
+{
+	switch (sceneId)
+	{
+	case SceneId::Main:
+		SwitchToScene(std::make_unique<MainScene>(AppInst()));
+		m_currentSceneId = SceneId::Main;
+		break;
+	case SceneId::Dock:
+		SwitchToScene(std::make_unique<DockScene>(AppInst()));
+		m_currentSceneId = SceneId::Dock;
+		break;
+	case SceneId::Space:
+		SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+		m_currentSceneId = SceneId::Space;
+		break;
+	case SceneId::StargateLoading:
+		SwitchToScene(std::make_unique<StargateLoadingScene>(AppInst()));
+		m_currentSceneId = SceneId::StargateLoading;
+		break;
+	default:
+		break;
+	}
+}
+
 void GameApp::UpdateScene(float dt)
 {
 	tick++;
@@ -190,92 +217,26 @@ void GameApp::UpdateScene(float dt)
 	// 仅在进入游戏后才驱动 SolarSystem 等与存档相关的系统
 	if (m_gameState == GameState::InGame)
 	{
-		int switchScene = 0;
-
 		SolarSystemMgr::getInstance().Update(tick);
 		TaskMgr::getInstance().distributeTasksFromTaskMgr();
 
 		auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
 		if (currentPilot && currentPilot->currentShip)
 		{
-			UINT ContainerID = currentPilot->currentShip->GetComponent<BaseComponent>()->containerID;
-			UINT solarSystemID = currentPilot->currentShip->GetComponent<BaseComponent>()->solarSystemID;
-			UINT currentSolarSystemID = SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID();
-			bool needSwitch = solarSystemID != currentSolarSystemID;
-
-			if (tick % 100 == 0 || needSwitch)
+			auto* base = currentPilot->currentShip->GetComponent<BaseComponent>();
+			if (base && SolarSystemMgr::getInstance().currentSolarSystem)
 			{
-				while (true)
+				SceneTransitionContext ctx{
+					m_currentSceneId,
+					tick,
+					base->containerID,
+					base->solarSystemID,
+					SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()
+				};
+				if (auto nextScene = SceneTransitionService::EvaluateTransition(ctx))
 				{
-					if (currentSceneID == 4) {
-						switchScene = 3;
-						break;
-					}
-
-					if (solarSystemID != SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()) {
-						if (currentSceneID != 4) {
-							switchScene = 4;
-						}
-						auto nextSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
-						auto currentSolarSystem = SolarSystemMgr::getInstance().currentSolarSystem;
-						auto it = SolarSystemMgr::getInstance().SolarSystems.find(solarSystemID);
-						if (it != SolarSystemMgr::getInstance().SolarSystems.end()) {
-							// 找到了对应的太阳系，获取其值
-							nextSolarSystem = it->second;
-						}
-						else {
-							nextSolarSystem.reset();
-							nextSolarSystem = SolarSystemMgr::getInstance().loadSolarSystem(solarSystemID);
-						}
-						SolarSystemMgr::getInstance().currentSolarSystem = nextSolarSystem;
-						SolarSystemMgr::getInstance().setCurrentPilot();
-						currentSolarSystem->clearCurrentPilots();
-						currentSolarSystem->clearCurrentSector();
-
-						break;
-					}
-
-					if (ContainerID == 0) {
-						if (currentSceneID != 3)
-							switchScene = 3;
-						break;
-					}
-					if (ContainerID != 0) {
-						if (currentSceneID != 2)
-							switchScene = 2;
-						break;
-					}
-					break;
+					SwitchToSceneId(*nextScene);
 				}
-			}
-
-			switch (switchScene)
-			{
-			case 1:
-			{
-				SwitchToScene(std::make_unique<MainScene>(AppInst()));
-				currentSceneID = 1;
-				break;
-			}
-			case 2:
-			{
-				SwitchToScene(std::make_unique<DockScene>(AppInst()));
-				currentSceneID = 2;
-				break;
-			}
-			case 3:
-			{
-				SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
-				currentSceneID = 3;
-				break;
-			}
-			case 4:
-			{
-				SwitchToScene(std::make_unique<StargateLoadingScene>(AppInst()));
-				currentSceneID = 4;
-				break;
-			}
-			default:;
 			}
 		}
 	}
@@ -343,7 +304,7 @@ bool GameApp::EnterGameFromSlot(int slotID)
 
 	m_gameState = GameState::InGame;
 	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
-	currentSceneID = 3;
+	m_currentSceneId = SceneId::Space;
 	INFO_("已进入游戏，slotID = {}", slotID);
 	return true;
 }
@@ -369,7 +330,7 @@ void GameApp::ReturnToMainMenu()
 	m_gameState = GameState::MainMenu;
 	tick = 0;
 	SwitchToScene(std::make_unique<MainScene>(AppInst()));
-	currentSceneID = 1;
+	m_currentSceneId = SceneId::Main;
 }
 
 void GameApp::InitializeGameSystems()

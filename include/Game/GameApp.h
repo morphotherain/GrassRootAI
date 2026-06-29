@@ -6,6 +6,7 @@
 #include "MainScene.h"
 #include "SpaceScene.h"
 #include "StargateLoadingScene.h"
+#include "SceneId.h"
 
 class GameApp : public D3DApp
 {
@@ -58,6 +59,7 @@ private:
 	bool InitResource();
 	void InitializeGameSystems();
 	void ProcessDeferredActions();
+	void SwitchToSceneId(SceneId sceneId);
 
 private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
@@ -75,7 +77,7 @@ private:
 	ComPtr<ID3D11ShaderResourceView> textureArraySRV;
 
 	std::unique_ptr<Scene> currentScene; //当前的界面
-	UINT currentSceneID = 0;
+	SceneId m_currentSceneId = SceneId::None;
 	UINT tick = 0;
 
 	// 当前游戏状态（主菜单 / 游戏中）

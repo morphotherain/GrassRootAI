@@ -15,10 +15,6 @@
 #include "D3DManager.h"
 #include "logger_manager.h"
 
-#if UIF_USE_LEGACY_MAIN_MENU
-#include "UIButton.h"
-#endif
-
 using namespace DirectX;
 
 MainScene::MainScene(HINSTANCE _hInstance) : Scene(_hInstance)
@@ -54,35 +50,16 @@ bool MainScene::InitUIF()
 
 bool MainScene::Init()
 {
-#if UIF_USE_LEGACY_MAIN_MENU
-	m_startButton = std::make_shared<UIButton>();
-	m_startButton->setSize(800.0f, 500.0f, 320.0f, 48.0f);
-	m_startButton->setTex("demoTex\\UI\\Window\\window_line.dds");
-	m_startButton->setText(L"开始新游戏");
-	AddUIComponent(m_startButton);
-#endif
-
 	if (!InitEffect())
 		return false;
 
 	if (!InitResource())
 		return false;
 
-#if UIF_USE_LEGACY_MAIN_MENU
-	for (auto& component : uiComponents) {
-		component->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
-		component->Init();
-	}
-#endif
-
 	if (!InitUIF())
 	{
 		ERROR_("UIF 主菜单加载失败");
-#if UIF_USE_LEGACY_MAIN_MENU
-		return true;
-#else
 		return false;
-#endif
 	}
 
 	return true;
@@ -168,32 +145,7 @@ void MainScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	if (m_uifEnabled)
 	{
 		UpdateUIFInput(dt, mouse, keyboard);
-		return;
 	}
-
-#if UIF_USE_LEGACY_MAIN_MENU
-	Mouse::State mouseState = mouse.GetState();
-	m_MouseTracker.Update(mouseState);
-	Keyboard::State keyState = keyboard.GetState();
-	m_KeyboardTracker.Update(keyState);
-
-	for (auto& component : uiComponents) {
-		component->UpdateUI(dt, mouse, keyboard, tick);
-	}
-
-	if (m_startButton && *m_startButton->getClickFlag() && m_gameplayHost.onQuickStartNewGame)
-	{
-		m_gameplayHost.onQuickStartNewGame();
-	}
-
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Enter) && m_gameplayHost.onQuickStartNewGame)
-	{
-		m_gameplayHost.onQuickStartNewGame();
-	}
-
-	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Escape))
-		SendMessage(m_hMainWnd, WM_DESTROY, 0, 0);
-#endif
 	(void)tick;
 }
 
@@ -207,34 +159,7 @@ void MainScene::DrawScene()
 			UIDevOverlay::Instance().Draw(*m_uifContext);
 		}
 		D3DManager::getInstance().present(true);
-		return;
 	}
-
-#if UIF_USE_LEGACY_MAIN_MENU
-	assert(m_pd3dImmediateContext);
-	assert(m_pSwapChain);
-
-	static float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_pd3dImmediateContext->ClearRenderTargetView(m_pRenderTargetView.Get(), white);
-	m_pd3dImmediateContext->ClearDepthStencilView(m_pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	DirectX::XMMATRIX viewMatrix = m_pCamera->GetViewXM();
-	DirectX::XMMATRIX projMatrix = m_pCamera->GetProjXM();
-
-	ConstantMVPIndex* dataPtr = m_effect->getConstantBuffer<ConstantMVPIndex>()->Map();
-	dataPtr->model = XMMatrixTranspose(XMMatrixIdentity());
-	dataPtr->view = XMMatrixTranspose(viewMatrix);
-	dataPtr->projection = XMMatrixTranspose(projMatrix);
-	dataPtr->TexIndex = 0;
-	m_effect->getConstantBuffer<ConstantMVPIndex>()->Unmap();
-	m_effect->apply();
-
-	for (auto& component : uiComponents) {
-		component->DrawUI();
-	}
-
-	HR(m_pSwapChain->Present(1, 0));
-#endif
 }
 
 void MainScene::cleanup()

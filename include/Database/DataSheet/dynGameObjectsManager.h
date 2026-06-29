@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "DatabaseManager.h"
 #include <vector>
-#include "d3dUtil.h"
 
 #include "InvCategoriesMacro.h"
 #include "InvGroupsMacro.h"

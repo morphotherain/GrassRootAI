@@ -4,7 +4,6 @@
 #include "AttributesComponent.h"
 #include "EquipmentComponent.h"
 #include "StorageComponent.h"
-#include "d3dUtil.h"
 
 class MinerComponent : public Component {
 public:

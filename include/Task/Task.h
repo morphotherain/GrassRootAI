@@ -1,11 +1,12 @@
 ﻿#pragma once
-#include "D3DManager.h"
+#include "logger_manager.h"
 #include <vector>
 #include <memory>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <any>
+#include <unordered_map>
 
 class GameObject;
 

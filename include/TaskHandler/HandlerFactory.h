@@ -2,16 +2,16 @@
 #pragma once
 #include "SolarSystemHandler.h"
 #include "RefiningSystemHandler.h"
+#include "SolarSystemMgr.h"
+#include "RefiningSystem.h"
+#include <memory>
 
 class HandlerFactory {
 public:
-    // 初始化所有Handler
     static void initializeHandlers() {
-        // 创建并注册Handler（触发构造函数中的注册）
-        new CreateObjectHandler();
-        new TransferObjectHandler();
-        new DestroyObjectHandler();
-        // ...其他Handler
-        new RefiningObjectHandler();
+        SolarSystemMgr::getInstance().registerHandler(std::make_unique<CreateObjectHandler>());
+        SolarSystemMgr::getInstance().registerHandler(std::make_unique<TransferObjectHandler>());
+        SolarSystemMgr::getInstance().registerHandler(std::make_unique<DestroyObjectHandler>());
+        RefiningSystem::getInstance().registerHandler(std::make_unique<RefiningObjectHandler>());
     }
 };

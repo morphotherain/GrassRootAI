@@ -4,7 +4,6 @@
 #include "StorageMacro.h"
 #include "AttributesComponent.h"
 #include "BaseComponent.h"
-#include "d3dUtil.h"
 #include "TaskHandlerRegistry.h"
 #include <vector>
 #include <memory>

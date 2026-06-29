@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Component.h"
-#include "d3dUtil.h"
 #include "AttributesComponent.h"
 #include "SpaceTransformComponent.h"
 #include <unordered_map>

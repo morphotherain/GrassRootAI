@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Component.h"
-#include "d3dUtil.h"
 
 class StationComponent : public Component {
 public:

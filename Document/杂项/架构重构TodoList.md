@@ -6,9 +6,9 @@
 >
 > **原则**：一个 PR / 一次提交只做一件事；每项有「完成标准」，做完可以停，不强行连锁大改。
 >
-> **当前主线**：Phase A ✅ → Phase B ✅ → **Phase C 🟡**。存档 UI 导航栈已落地，待你本地冒烟验收。
+> **当前主线**：Phase A/B/C ✅ → Phase 1 ✅ → **Phase 2 🟡**（2.1–2.4、2.6 ✅）。**下一步**：Phase 7.1（Archetype）或 Phase 3。
 >
-> **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**（依赖 B 的窗口加载能力）；Phase 0–2 约 **1 周**；Phase 3–6 长期按需。
+> **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**；Phase 0–2 约 **1 周**；Phase 3–6 长期按需；**Phase 7** 与 Phase 2.4 衔接，分阶段做、不必一次换 EnTT。
 
 ---
 
@@ -18,16 +18,17 @@
 |-------|------|------|------|
 | **A** | **完善存档系统（补完半成品）** | 3–5 天 | ✅ 已完成（2026-06-29，已测） |
 | **B** | **新 UI 框架（节点树 + 源文件加载）** | 2–3 周 | ✅ **已完成**（2026-06-29） |
-| **C** | **主界面存档管理窗口** | 1 周 | 🟡 **进行中**（导航栈 + 存档 Screen 已实现） |
+| **C** | **主界面存档管理窗口** | 1 周 | ✅ **已完成**（2026-06-29，UIF 导航 + 存读删 UI） |
 | 0 | 安全网 | 0.5 天 | 🟡 进行中 |
-| 1 | P0 快速清理 | 1–2 天 | ⬜ 未开始 |
-| 2 | P1 边界抽取 | 3–5 天 | ⬜ 未开始 |
+| 1 | P0 快速清理 | 1–2 天 | ✅ **已完成**（2026-06-29） |
+| 2 | P1 边界抽取 | 3–5 天 | 🟡 **近完成**（2.1–2.4、2.6 ✅；2.5 可选） |
 | 3 | P1 Task 系统加固 | 2–3 天 | ⬜ 未开始 |
 | 4 | P2 旧 UI 解耦 | 按需，每项 1–2 天 | ⬜ 未开始 |
 | 5 | P2 数据层 | 低优先级 | ⬜ 未开始 |
 | 6 | 长期重构 | 1–2 周+ | ⬜ 未开始 |
+| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | ⬜ 未开始 |
 
-> **背景**：commit `64448a8` 起的「半成品警示」在 Phase A/B 已解除：存档状态机 + UIF 主菜单 + 新建进游戏已通；**读档/删档 UI** 仍待 Phase C。
+> **背景**：commit `64448a8` 起的「半成品警示」已解除：存档状态机 + UIF 主菜单 + 新建/读档/删档 UI 闭环已通；A.4 临时 `UIButton` 回退已移除。
 
 ---
 
@@ -65,17 +66,17 @@
 - [x] 完成标准：能新建进游戏、能回主菜单、再新建不串档
 - [x] 预估：1 天
 
-### A.4 临时入口（旧 UI，仅用于开发验证）
+### A.4 临时入口（旧 UI，已移除）
 
-- [x] MainScene 接最小「开始新游戏」按钮（或 Enter 键），调用 `EnterGameFromSlot` / 新建流程（现由 UIF `game.start_new` + 延迟切场景；失败时回退 `UIButton`）
+- [x] MainScene 接最小「开始新游戏」按钮（或 Enter 键），调用 `EnterGameFromSlot` / 新建流程
 - [x] 修 `UIButton::Init()` 误 `return false`
-- [x] **明确标注**：临时方案，Phase C 完成后可删
+- [x] Phase C 完成后删除 `UIF_USE_LEGACY_MAIN_MENU` / `UIButton` 回退路径
 - [x] 完成标准：从 MainScene 能进 SpaceScene；作为 Phase B/C 前的冒烟基准
 - [x] 预估：半天
 
 ### A.5 存档系统回归清单
 
-- [x] 新建档 → 玩 → 回主菜单 → 再读档（新建路径已测；读档 UI 待 Phase C，API 已就绪）
+- [x] 新建档 → 玩 → 回主菜单 → 再读档（Phase C UI 路径已测）
 - [x] 连续新建两个档，slotID 不冲突（主库 slotID 2–5 已验证）
 - [x] `save/initial` 模板缺失时有明确 ERROR 日志
 - [x] 完成标准：手动路径可复现；写入 A.1 文档
@@ -153,7 +154,7 @@
 
 ---
 
-## Phase C — 主界面存档管理窗口 🟡
+## Phase C — 主界面存档管理窗口 ✅
 
 目标：在 MainScene 上用**新 UI 框架（Phase B）**做存档管理界面，打通：
 
@@ -187,7 +188,7 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 - [x] **新建**：`save_create.ui.json` + 文本输入 → `createNewSaveFromTemplate` → `EnterGameFromSlot`
 - [x] **读取**：选中 slot → `loadSaveBySlotID` → `EnterGameFromSlot`
 - [x] **删除**：确认框 → `deleteSaveSlot` → 刷新列表
-- [ ] 完成标准：三条路径均从 UI 走通，不依赖键盘快捷键（**待你本地冒烟**）
+- [x] 完成标准：三条路径均从 UI 走通，不依赖键盘快捷键
 - [x] 预估：1–2 天
 
 ### C.4 窗口包装与导航
@@ -202,14 +203,15 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 - [x] MainScene 移除 A.4 临时按钮路径（默认 UIF-only）
 - [x] `EnterGameFromSlot` / 新建 / 删档 由 `UIGameplayHost` 回调触发
-- [ ] 完成标准：Phase 0.2 冒烟路径「新建档 → 太空 → …」从主菜单 UI 启动（**待验收**）
+- [x] 完成标准：Phase 0.2 冒烟路径「新建档 → 太空 → …」从主菜单 UI 启动
 - [x] 预估：半天
 
 ### C.6 存档管理回归
 
-- [ ] 同 Phase A.5 路径，但全部走主界面 UI
-- [ ] 完成标准：可交付的「主菜单 → 进游戏」闭环
-- [ ] 预估：2h
+- [x] 同 Phase A.5 路径，但全部走主界面 UI（新建 / 读档 / 删档 / F10 回主菜单）
+- [x] 移除 A.4 `UIF_USE_LEGACY_MAIN_MENU` 回退代码
+- [x] 完成标准：可交付的「主菜单 → 进游戏」闭环
+- [x] 预估：2h
 
 ---
 
@@ -238,38 +240,38 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 1.1 Task 去渲染依赖
 
-- [ ] 改什么：`include/Task/Task.h` 去掉 `#include "D3DManager.h"`
-- [ ] 不改什么：Task 字段、TaskMgr 逻辑
-- [ ] 完成标准：编译通过；Task 相关文件不再 include D3D
-- [ ] 预估：30min
+- [x] 改什么：`include/Task/Task.h` 去掉 `#include "D3DManager.h"`，改引 `logger_manager.h`
+- [x] 不改什么：Task 字段、TaskMgr 逻辑
+- [x] 完成标准：编译通过；Task 相关文件不再 include D3D
+- [x] 预估：30min
 
 ### 1.2 修 Handler 自注册（ownership bug）
 
-- [ ] 改什么：
+- [x] 改什么：
   - `SolarSystemHandler.h` / `RefiningSystemHandler.h` 构造器去掉 `unique_ptr(this)`
   - `HandlerFactory::initializeHandlers()` 里 `make_unique<XxxHandler>()` + 显式 `registerHandler(std::move(...))`
-- [ ] 不改什么：`handleTask` 实现
-- [ ] 完成标准：Handler 生命周期由 Factory 持有；无构造自注册
-- [ ] 预估：2–3h
+- [x] 不改什么：`handleTask` 实现
+- [x] 完成标准：Handler 生命周期由 Mgr 持有；无构造自注册
+- [x] 预估：2–3h
 
 ### 1.3 清理 DataSheet 多余 include（单文件单 PR）
 
-- [ ] 改什么：逐个 manager `.h/.cpp`，去掉 `#include "d3dUtil.h"`（若未用 D3D 类型）
-- [ ] 策略：**一次只改 3–5 个文件**，编译验证后再下一批
-- [ ] 完成标准：该批文件编译通过，无新增 warning
-- [ ] 预估：每批 30min，共 4–5 批
+- [x] 改什么：`dynGameObjectsManager.h`、`DatabaseManager.h` 去掉 `#include "d3dUtil.h"`
+- [x] 策略：**一次只改 3–5 个文件**，编译验证后再下一批（其余 manager 本无 d3dUtil）
+- [x] 完成标准：该批文件编译通过，无新增 warning
+- [x] 预估：每批 30min，共 4–5 批
 
 ### 1.4 清理 Component 多余 include（单文件单 PR）
 
-- [ ] 改什么：Component 头文件中无必要的 `d3dUtil.h`（`RenderComponent` 等保留）
-- [ ] 策略：同 1.3，按文件分批
-- [ ] 预估：2–3 批，每批 30min
+- [x] 改什么：11 个 Component 头去掉无必要的 `d3dUtil.h`（`RenderComponent` 保留）
+- [x] 策略：同 1.3，按文件分批
+- [x] 预估：2–3 批，每批 30min
 
 ### 1.5 去掉 vcxproj 里 `.h` 当 `.cpp` 编译
 
-- [ ] 改什么：`GrassRootAI(2019 Win10).vcxproj` 中误列为 `ClCompile` 的 `.h`（确认不是 C++20 module 实验后移除）
-- [ ] 完成标准：仅 `.cpp` 参与编译；行为不变
-- [ ] 预估：1h
+- [x] 改什么：`GrassRootAI(2019 Win10).vcxproj` 中 6 个误列 `ClCompile` 的 `.h` 移除（修复 LNK4042 重复符号）
+- [x] 完成标准：仅 `.cpp` 参与编译；行为不变
+- [x] 预估：1h
 
 ---
 
@@ -277,50 +279,52 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 2.1 定义 SceneId 枚举
 
-- [ ] 改什么：新建 `include/Scene/SceneId.h`，`enum class SceneId { Main, Dock, Space, StargateLoading }`
-- [ ] 替换：`GameApp` 里 `currentSceneID` 的 1/2/3/4
-- [ ] 不改什么：切换条件逻辑
-- [ ] 完成标准：无 magic number 1–4；编译 + 场景切换正常
-- [ ] 预估：1h
+- [x] 改什么：新建 `include/Scene/SceneId.h`，`enum class SceneId { Main, Dock, Space, StargateLoading }`
+- [x] 替换：`GameApp` 里 `currentSceneID` 的 1/2/3/4 → `m_currentSceneId`
+- [x] 不改什么：切换条件逻辑
+- [x] 完成标准：无 magic number 1–4；编译 + 场景切换正常
+- [x] 预估：1h
 
 ### 2.2 抽取 SceneTransitionService（只搬逻辑，不改规则）
 
-- [ ] 改什么：
+- [x] 改什么：
   - 新建 `SceneTransitionService.h/.cpp`
-  - 从 `GameApp::UpdateScene` **剪切** containerID / solarSystemID / currentSceneID 判断 → `EvaluateTransition(...)` 返回 `std::optional<SceneId>`
-  - `GameApp` 只负责 `switch (id) { SwitchToScene(...) }`
-- [ ] 不改什么：跳转条件本身
-- [ ] 完成标准：`GameApp::UpdateScene` 场景部分 ≤30 行；跳转行为与改前一致
-- [ ] 预估：半天
+  - 从 `GameApp::UpdateScene` **剪切** containerID / solarSystemID / `m_currentSceneId` 判断 → `EvaluateTransition(...)` 返回 `std::optional<SceneId>`
+  - `GameApp` 只负责 `SwitchToSceneId(...)`
+- [x] 不改什么：跳转条件本身
+- [x] 完成标准：`GameApp::UpdateScene` 场景部分 ≤30 行；跳转行为与改前一致
+- [x] 预估：半天
 
 ### 2.3 抽取星门加载中的 SolarSystem 切换逻辑
 
-- [ ] 改什么：2.2 里 `loadSolarSystem` / `setCurrentPilot` / `clearCurrentPilots` 块 → `SolarSystemMgr::switchToSolarSystem(id)` 单方法
-- [ ] 不改什么：load 实现细节
-- [ ] 完成标准：`SceneTransitionService` 不再直接操作多个 Mgr 字段
-- [ ] 预估：2–3h
+- [x] 改什么：星门跨系 `loadSolarSystem` / `setCurrentPilot` / `clearCurrentPilots` 块 → `SolarSystemMgr::switchToSolarSystem(id)`
+- [x] 不改什么：load 实现细节
+- [x] 完成标准：`SceneTransitionService` 不再直接操作多个 Mgr 字段
+- [x] 预估：2–3h
 
 ### 2.4 抽取 ObjectFactory（只搬 switch）
 
-- [ ] 改什么：
+- [x] 改什么：
   - 新建 `ObjectFactory.h/.cpp`
   - `SolarSystem::addGameObject` 的 categoryID switch → `ObjectFactory::CreateFromDynObject(...)`
-- [ ] 不改什么：`ConvertBasedOnGroupID`、`Init()` 调用顺序
-- [ ] 完成标准：`SolarSystem::addGameObject` ≤20 行；新类型只改 Factory
-- [ ] 预估：半天
+- [x] 不改什么：`ConvertBasedOnGroupID`、`Init()` 调用顺序
+- [x] 完成标准：`SolarSystem::addGameObject` ≤20 行；新类型只改 Factory
+- [x] 预估：半天
+- [x] **衔接 Phase 7.1**：Factory 是 Archetype 组装的前置，先搬 switch 再填配方表
 
 ### 2.5 Ship::ConvertBasedOnGroupID 迁入 Factory（可选，独立 PR）
 
 - [ ] 改什么：groupID 二次转换逻辑并入 Factory 或 `ObjectFactory::RefineByGroupID`
 - [ ] 完成标准：`SolarSystem` / `Ship` 不再含 category/group switch
 - [ ] 预估：2–3h
+- [ ] **衔接 Phase 7.1b**
 
 ### 2.6 SolarSystem 内联 SQL 迁到 Manager
 
-- [ ] 改什么：`SolarSystem::getDenormalizesBySolarSystemID()` 的 SQL → `mapDenormalizeManager` 新方法
-- [ ] 不改什么：返回数据结构
-- [ ] 完成标准：`SolarSystem.cpp` 无 raw SQL
-- [ ] 预估：1–2h
+- [x] 改什么：`SolarSystem::getDenormalizesBySolarSystemID()` 的 SQL → `mapDenormalizeManager::queryStaticObjectsBySolarSystemID`
+- [x] 不改什么：返回数据结构、`addGameObject` 流程
+- [x] 完成标准：`SolarSystem.cpp` 无 raw SQL
+- [x] 预估：1–2h
 
 ---
 
@@ -347,7 +351,12 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 - [ ] 完成标准：与代码一致；新功能先更文档再写代码
 - [ ] 预估：持续，每项 30min
 
----
+### 3.4 Entity Task 统一 dispatch（与 Phase 7.7 联动）
+
+- [ ] 改什么：`GameObject::dispatchTask(task)` 统一入口 → 按 `taskType` 路由到 Component / `TaskHandlerRegistry`
+- [ ] 不改什么：各 Component 的 `handleTask` 实现
+- [ ] 完成标准：逐步删掉 `Ship::initTaskHandlers` / `Pilot::initTaskHandlers` 里重复 lambda
+- [ ] 预估：1–2 天（与 7.7 可合并 PR，按 Entity 类型分批）
 
 ## Phase 4 — P2 UI 解耦（按窗口拆，每个 1–2 天）
 
@@ -410,13 +419,117 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ---
 
+## Phase 7 — Entity/Component 模型优化（渐进，非 EnTT 重写）
+
+> **定位**：当前是 **OOP Entity + Component 混合体**，不是纯 ECS；目标是在不推翻 `GameObject` / `shared_ptr` 的前提下，收敛双轨指针、Update 编排、Task 路由与 DB 边界。
+>
+> **依赖**：Phase 2.4 / 2.5（ObjectFactory）先做；Phase 3 与 7.7 可并行。
+>
+> **不做什么**：不引入 EnTT / flecs；不一次性去掉所有 Entity 子类；不做 SOA 数据导向 ECS。
+
+### 现状债务（评估摘要，2026-06-29）
+
+| 问题 | 现状 | 风险 |
+|------|------|------|
+| 双轨组件引用 | `Ship` 等既 `AddComponent` 又持 `m_pBase` 等成员；`PhysicsComponent` 手工连 `SpaceTran` | 改一处漏一处 |
+| `GetComponent` | `vector` + `dynamic_cast` 线性扫描 | 对象/调用增多后性能与类型安全差 |
+| `ResolveDependencies` | 用 `typeid(...).hash_code()` 比对 | 理论上不安全；`InjectDependency` cast 链脆弱 |
+| Update 编排 | 基类遍历 Component vs `Ship::Update` 手工顺序 | 行为分散，新类型复制粘贴 |
+| 持久化 | `BaseComponent::Update` 每 tick `store()` | SQLite 写放大 |
+| Task 路由 | TaskMgr Handler + Entity `taskHandlers` + Component `handleTask` 三套 | 调试难、重复 lambda |
+| DB 耦合 | Component 构造/Update 直连 `dynGameObjectsManager` 等 | 难单测、难纯内存模拟 |
+| Pilot 建模 | `Pilot` 继承 `GameObject` | 控制器与场景实体混淆 |
+
+### 7.0（可选）现状与目标架构一页文档
+
+- [ ] 改什么：`Document/` 下「Entity/Component 模型」：现状图、Archetype 表、System 列表、与 Phase 2.4 Factory 关系
+- [ ] 完成标准：新人能对照 `Ship::Init` / `SolarSystem::addGameObject` 理解改法
+- [ ] 预估：2h
+
+### 7.1 Archetype 配方 + ObjectFactory 组装
+
+- [ ] **7.1a** 定义 `EntityArchetype` 枚举或表：`Ship`、`Astro`、`NPCStation`、`Mineral`、`Equipment`…
+- [ ] **7.1b** 每个 Archetype 对应组件清单（如 Ship = Base + Attributes + SpaceTransform + Physics + Equipments + Storages + Locking）
+- [ ] **7.1c** `ObjectFactory::CreateFromDynObject` 内按 Archetype 一次性 `AddComponent`，替代各子类 `Init()` 里 40 行复制
+- [ ] 依赖：Phase **2.4**、**2.5**
+- [ ] 完成标准：新增 category 类型只改 Factory + 配方表；`SolarSystem::addGameObject` 无 category switch
+- [ ] 预估：1–2 天
+
+### 7.2 去掉 Entity 双轨组件指针
+
+- [ ] 改什么：`Ship` / `Pilot` / `Equipment` 等删除 `m_pBase`、`m_pAttributes`… 成员（或 Init 后仅保留只读缓存 struct，禁止双路径创建）
+- [ ] 改什么：`PhysicsComponent` 改走 `ResolveDependencies` 注入 `SpaceTransformComponent`，去掉 `m_pPhysics->SpaceTran = …` 手工赋值
+- [ ] 不改什么：对外行为、组件集合
+- [ ] 完成标准：组件只存在于 `GameObject` 的 `components` 袋；grep 无 `make_shared<XComponent>` 后又 `AddComponent` 以外的重复持有（Init 缓存除外）
+- [ ] 预估：1–2 天（按 Entity 类型分批 PR）
+
+### 7.3 组件袋：`GetComponent` O(1) 或 Init 缓存
+
+- [ ] 改什么：`GameObject` 增加 `unordered_map<type_index, shared_ptr<Component>>` 或 Archetype 已知时的 `ComponentBundle` 成员
+- [ ] 不改什么：现有 `GetComponent<T>()` 对外签名（内部换实现）
+- [ ] 完成标准：热路径不再每帧 `dynamic_cast` 扫描；编译通过
+- [ ] 预估：半天–1 天
+
+### 7.4 修复 `ResolveDependencies`
+
+- [ ] 改什么：`typeid(*depComponent) == depType`（或 `type_index` 直接比较），禁止 `hash_code`
+- [ ] 改什么：`InjectDependency` 可改为按 `type_index` 分发表，减少 `dynamic_pointer_cast` 链
+- [ ] 完成标准：`EquipmentsComponent` 等依赖注入单测/日志可验证；无 hash 比对
+- [ ] 预估：2–3h
+
+### 7.5 轻量 System 层（非完整 ECS）
+
+- [ ] 改什么：从 `Ship::Update` / `SolarSystem::Update` 抽出按职责的 System，例如：
+  - `MovementSystem`（Physics + SpaceTransform）
+  - `AttributeDirtyFlushSystem`（见 7.6）
+  - `SectorSpatialSystem`（已有 sector 逻辑收拢）
+- [ ] 不改什么：单帧内调用顺序与改前一致
+- [ ] 完成标准：`SolarSystem::Update` 编排 System 列表；`Ship::Update` 只保留跃迁等实体特有状态机
+- [ ] 预估：2–3 天
+
+### 7.6 持久化：脏标记 + 批量 flush
+
+- [ ] 改什么：`BaseComponent` / `AttributesComponent` 改内存 + `MarkDirty(objectID, fieldMask)`，去掉每 tick `store()`
+- [ ] 改什么：`AttributeSyncSystem` 或 `SaveGameManager` 侧在 F10 回菜单 / 每 N tick / `OnDestroy` 批量写 dyn
+- [ ] 完成标准：`BaseComponent::Update` 不再每帧 hit SQLite；回主菜单后 dyn 数据仍正确
+- [ ] 预估：1–2 天
+
+### 7.7 Task 统一 dispatch（与 Phase 3.4 联动）
+
+- [ ] 改什么：`GameObject::dispatchTask` → `ComponentTaskRouter` / 各 Component `TaskHandlerRegistry`
+- [ ] 改什么：删掉 `Ship::initTaskHandlers`、`Pilot::initTaskHandlers` 重复 map（按 Entity 类型分批）
+- [ ] 不改什么：TaskMgr 全局 Handler（create/transfer/destroy）与 Refining 路径
+- [ ] 完成标准：Entity 内 Task 只有一条入口；新 taskType 只注册一处
+- [ ] 预估：1–2 天
+
+### 7.8 Component 与 DataSheet 边界
+
+- [ ] 改什么：抽 `IGameObjectRepository` / `IAttributeRepository` 接口；Component 只调接口，Manager 在 Sim 层注入
+- [ ] 策略：先做 `BaseComponent` + `AttributesComponent` 试点，再按需扩
+- [ ] 完成标准：Component `.h` 不再 include 具体 `dyn*Manager.h`（试点范围内）
+- [ ] 预估：2–3 天
+
+### 7.9（可选）Pilot 从 GameObject 拆为 PlayerController
+
+- [ ] 改什么：`Pilot` 不再继承 `GameObject`；作为「控制 currentShip 的会话对象」由 `SolarSystemMgr` 持有
+- [ ] 完成标准：`Pilot` 无 `AddComponent`；技能/任务仍可用
+- [ ] 预估：2–3 天（独立 PR，优先级低）
+
+### 7.10 回归清单
+
+- [ ] 新建档 → 太空 → 锁定/跃迁/装备 → 进站出站 → 星门跳转
+- [ ] 删/创建对象 Task（create/transfer/destroy）仍正常
+- [ ] F10 回主菜单再读档，dyn 对象/属性一致
+
+---
+
 ## Phase 6 — 长期（整块做，别半吊子）
 
 | # | 任务 | 为何单独成 Phase | 预估 |
 |---|------|------------------|------|
 | 6.1 | CMake target 分层（Platform / Core / Data / Sim / UI） | 要配合 include 禁令，工作量大 | 1–2 周 |
 | 6.2 | Singleton → 构造注入（从 GameApp 往下传） | 动全局 wiring | 2+ 周 |
-| 6.3 | 真 ECS（去掉 Ship 双轨组件指针） | 动核心对象模型 | 2+ 周 |
+| 6.3 | Entity/Component 模型收敛 | 动核心对象模型；**细则见 Phase 7** | 2–4 周（渐进） |
 | 6.4 | Task 参数全面 typed 化 | 依赖 Phase 3 逐步覆盖 | 持续 |
 
 > Phase 6 **等 Phase 1–2 做完再开**；否则边改边界边改全局 wiring，容易失控。
@@ -430,11 +543,15 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 ```
 Phase A ✅
   ↓
-Phase B 🟡（B.4 增删/重载 + B.7 DrawUIQuad → 验收勾完）
+Phase B ✅
   ↓
-Phase C.1–C.5 主界面存档 UI
+Phase C ✅
   ↓
-Phase C.6 回归 + 移除 A.4 临时 UIButton 回退
+Phase 1 ✅（Task 去 D3D、Handler ownership、include 清理、vcxproj 修 .h 误编译）
+  ↓
+Phase 2 🟡（2.5 可选）
+  ↓
+Phase 7.1（Archetype 配方，基于 ObjectFactory）
 ```
 
 ### 架构债务（与主线并行或后置）
@@ -446,9 +563,13 @@ Phase 0（冒烟，部分已完成）
   ↓
 2.1 → 2.2 → 2.3 → 2.4 → 2.6
   ↓
+Phase 7.1–7.4（Factory + 双轨指针 + GetComponent + 依赖注入）
+  ↓
+Phase 7.5–7.8（System 层、脏标记、Task dispatch、DB 边界）
+  ↓
 （开发新功能时）3.1；旧 UI 触碰时 Phase 4 按需
   ↓
-Phase 5–6 有空再说
+Phase 5–6 有空再说；7.9 Pilot 拆分按需
 ```
 
 > **注意**：Phase 4（旧 UI 解耦）在 Phase B 启动后优先级降低——新界面用新框架，旧窗口「碰到了再拆」。
@@ -473,7 +594,7 @@ Phase 5–6 有空再说
 | GenericChain（属性链） | SolarSystemMgr / SolarSystem |
 | SaveGameManager | UI 胖窗口（UIShip、Market、Skill、Map） |
 | Camera | DataSheet 23 个 manager 重复 |
-| Task 系统（概念层，见 [[任务系统]]） | Object + Component 半成品 ECS |
+| Task 系统（概念层，见 [[任务系统]]） | Object + Component 混合体（见 **Phase 7** 债务表） |
 | WindowManager 工厂思路 | 跨层 include（Task→D3D、UIBase→SolarSystemMgr） |
 
 主要混乱来源：**没有编译期模块墙** + **UI / GameApp 当 God orchestrator**。
@@ -488,3 +609,7 @@ Phase 5–6 有空再说
 | 2026-06-29 | 新增 Phase A/B/C：完善存档系统、新 UI 节点树框架、主界面存档管理；明确 `64448a8` 半成品背景 |
 | 2026-06-29 | Phase A 标记完成（已测）；Phase B 更正为进行中（曾误标完成） |
 | 2026-06-29 | Phase B 标记完成；Phase C 导航栈 + 存档 UI Screen 落地 |
+| 2026-06-29 | Phase C 标记完成；C.6 回归清单写入 [[存档系统流程]]；移除 A.4 `UIF_USE_LEGACY_MAIN_MENU` 回退 |
+| 2026-06-29 | Phase 1 完成：Task 去 D3D、Handler Factory 注册、Component/Database include 清理、vcxproj 去掉 .h 误编译 |
+| 2026-06-29 | Phase 2.2–2.4、2.6：`SceneTransitionService`、`switchToSolarSystem`、`ObjectFactory`、mapDenormalize SQL 迁移 |
+| 2026-06-29 | 新增 **Phase 7** Entity/Component 模型优化清单（Archetype、System 层、脏标记、Task dispatch 等） |

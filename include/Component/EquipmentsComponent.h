@@ -5,7 +5,6 @@
 #include "AttributesComponent.h"
 #include "LockingComponent.h"
 #include "StorageComponent.h"
-#include "d3dUtil.h"
 
 class EquipmentsComponent : public Component {
 public:

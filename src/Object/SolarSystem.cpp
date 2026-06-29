@@ -2,6 +2,8 @@
 #include "InvTypesManager.h"
 #include "invGroupsManager.h"
 #include "eveBracketsManager.h"
+#include "ObjectFactory.h"
+#include "mapDenormalizeManager.h"
 
 void SolarSystem::Init()
 {
@@ -42,58 +44,18 @@ void SolarSystem::Update(UINT tick)
 
 void SolarSystem::getDenormalizesBySolarSystemID()
 {
-	// 获取数据库实例
-	DatabaseManager* dbManager = DatabaseManager::getInstance();
-	sqlite3* db = dbManager->getDatabase();
+	auto rows = mapDenormalizeManager::getInstance()->queryStaticObjectsBySolarSystemID(
+		static_cast<int>(m_solarSystem.solarSystemID));
 
-	// SQL 查询语句，获取所有恒星系的 x, y, z, solarSystemName 和 luminosity
-	std::string sql = "SELECT x, y, z, nameID, regionID ,constellationID ,solarSystemID,radius,itemID,mapDenormalize.typeID,celestialIndex,orbitIndex, invtypes.groupID, invGroups.categoryID FROM mapDenormalize JOIN invtypes ON mapDenormalize.typeID = invtypes.typeID JOIN invGroups ON invtypes.groupID = invGroups.groupID WHERE solarSystemID = " + std::to_string(m_solarSystem.solarSystemID) + ";";
-
-	sqlite3_stmt* stmt;
-	int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-	if (rc != SQLITE_OK) {
-		auto temp = sqlite3_errmsg(db);
-		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
-	}
-
-	// 迭代查询结果并将数据存储到 solarSystems 结构中
-	while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-		auto p_denormalize = std::make_shared<DenormalizeData>();
-		dynGameObject objectData;
-
-		// 获取各列数据，确保列索引与 SELECT 语句的顺序匹配
-		p_denormalize->x = sqlite3_column_double(stmt, 0);
-		p_denormalize->y = sqlite3_column_double(stmt, 1);
-		p_denormalize->z = sqlite3_column_double(stmt, 2);
-		p_denormalize->nameID = sqlite3_column_int(stmt, 3); // 获取 wstring 类型的名称
-		p_denormalize->regionID = sqlite3_column_int(stmt, 4);
-		p_denormalize->constellationID = sqlite3_column_int(stmt, 5);
-		p_denormalize->solarSystemID = sqlite3_column_int(stmt, 6);
-		p_denormalize->radius = sqlite3_column_double(stmt, 7);
-		p_denormalize->itemID = sqlite3_column_int(stmt, 8);
-		p_denormalize->typeID = sqlite3_column_int(stmt, 9);
-		p_denormalize->celestialIndex = sqlite3_column_int(stmt, 10);
-		p_denormalize->orbitIndex = sqlite3_column_int(stmt, 11);
-		p_denormalize->fillDisplayName();
+	for (auto& row : rows)
+	{
+		auto p_denormalize = std::make_shared<DenormalizeData>(row.denormalize);
 		m_denormalizes.push_back(p_denormalize);
-
-		objectData.x = p_denormalize->x;
-		objectData.y = p_denormalize->y;
-		objectData.z = p_denormalize->z;
-		objectData.SolarSystemID = p_denormalize->solarSystemID;
-		objectData.ContainerID = p_denormalize->solarSystemID;
-		objectData.objectID = p_denormalize->itemID;
-		objectData.typeID = p_denormalize->typeID;
-		objectData.groupID = sqlite3_column_int(stmt, 12);
-		objectData.categoryID = sqlite3_column_int(stmt, 13);
-		objectData.name = p_denormalize->name;
-		addGameObject(objectData);
+		addGameObject(row.gameObject);
 	}
 
-	// 释放语句资源
-	sqlite3_finalize(stmt);
-
-	for (auto p_denormalize : m_denormalizes) {
+	for (auto p_denormalize : m_denormalizes)
+	{
 		p_denormalize->groupID = InvTypesManager::getInstance()->getGroupByTypeId(p_denormalize->typeID);
 		p_denormalize->bracketID = invGroupsManager::getInstance()->getBracketIDByGroupId(p_denormalize->groupID);
 		p_denormalize->dds_path = eveBracketsManager::getInstance()->getPathByTypeId(p_denormalize->bracketID);
@@ -102,54 +64,25 @@ void SolarSystem::getDenormalizesBySolarSystemID()
 
 void SolarSystem::addGameObject(dynGameObject& objectData)
 {
-	auto it = p_mapObject->find(objectData.objectID);
-	if (it != p_mapObject->end()) {
+	if (p_mapObject->find(objectData.objectID) != p_mapObject->end())
+	{
 		return;
 	}
 
-	std::shared_ptr<GameObject> object;
-	switch (objectData.categoryID) {
-	case 2: {    //天体
-		object = std::make_shared<Astro>(objectData.objectID);
-		break;
-	}
-	case 3: {    //NPC 空间站
-		object = std::make_shared<NPCStation>(objectData.objectID);
-		break;
-	}
-	case 4: {    //材料
-		object = std::make_shared<Material>(objectData.objectID);
-		break;
-	}
-	case 5: {    //附件(克隆人飞行员)
-		return;
-		break;
-	}
-	case 6: {    //舰船(含太空舱
-		object = std::make_shared<Ship>(objectData.objectID);
-		break;
-	}
-	case 7: {    //舰装
-		object = std::make_shared<Equipment>(objectData.objectID);
-		break;
-	}
-	case 25: {    //小行星
-		object = std::make_shared<Asteroid>(objectData.objectID);
-		break;
-	}
-	default: {
+	auto object = ObjectFactory::CreateFromDynObject(objectData);
+	if (!object)
+	{
 		return;
 	}
-	}
-	auto p_object = object->ConvertBasedOnGroupID(objectData.groupID);
-	if (p_object != nullptr)object = p_object;
-	object->Init();
+
 	(*p_mapObject)[objectData.objectID] = object;
 	object->objectID = objectData.objectID;
-	if (object->GetComponent<SpaceTransformComponent>() != nullptr) {
+	if (object->GetComponent<SpaceTransformComponent>() != nullptr)
+	{
 		space_objects.push_back(object);
 	}
-	if (object->GetComponent<BaseComponent>() != nullptr) {
+	if (object->GetComponent<BaseComponent>() != nullptr)
+	{
 		auto base = object->GetComponent<BaseComponent>();
 		base->objectID = objectData.objectID;
 		base->typeID = objectData.typeID;
@@ -158,7 +91,8 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
 		base->solarSystemID = objectData.SolarSystemID;
 		base->groupID = objectData.groupID;
 		base->categoryID = objectData.categoryID;
-		if (objectData.name != L"" && base->name == L"") {
+		if (objectData.name != L"" && base->name == L"")
+		{
 			base->name = objectData.name;
 		}
 	}

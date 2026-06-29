@@ -40,6 +40,7 @@ public:
 	void handleTask(Task& task);
 
 	std::shared_ptr<SolarSystem> loadSolarSystem(int id);
+	void switchToSolarSystem(UINT solarSystemID);
 
 	void distributeTasksFromTaskMgr();
 	void handleStarGateTransferObjects();

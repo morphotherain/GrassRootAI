@@ -5,7 +5,6 @@
 #include <fstream>
 #include <string>
 #include "SingletonBase.h"
-#include "d3dUtil.h"
 #include "logger_manager.h"
 
 class DatabaseManager : public SingletonBase<DatabaseManager> {

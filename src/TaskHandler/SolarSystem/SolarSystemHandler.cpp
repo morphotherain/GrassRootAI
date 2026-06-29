@@ -1,4 +1,9 @@
 ﻿#include "SolarSystemHandler.h"
+#include "SolarSystemMgr.h"
+#include "dynGameObjectsManager.h"
+#include "AttributesComponent.h"
+#include "BaseComponent.h"
+#include "GameObject.h"
 #include "dynContainersManager.h"
 
 bool CreateObjectHandler::handleTask(Task& task)

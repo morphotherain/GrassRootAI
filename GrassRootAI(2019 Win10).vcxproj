@@ -167,14 +167,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\Component\SkillComponent.h" />
-    <ClCompile Include="include\Database\DataSheet\dynPilotsSkillManager.h" />
-    <ClCompile Include="include\Database\DataSheet\dynSkillQueueManager.h" />
-    <ClCompile Include="include\Database\DataSheet\invEquipmentGroupSlotsManager.h" />
-    <ClCompile Include="include\TaskHandler\RefiningSystem\RefiningSystemHandler.h" />
     <ClCompile Include="include\thirdparty\sqlite\shell.c" />
     <ClCompile Include="include\thirdparty\sqlite\sqlite3.c" />
-    <ClCompile Include="include\UI\window\UIWindowSkill.h" />
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\Camera\Transform.cpp" />
     <ClCompile Include="src\Component\AttributesComponent.cpp" />
@@ -243,6 +237,7 @@
     <ClCompile Include="src\Effect\EffectComponent.cpp" />
     <ClCompile Include="src\Effect\RenderProxy.cpp" />
     <ClCompile Include="src\Game\GameApp.cpp" />
+    <ClCompile Include="src\Game\SceneTransitionService.cpp" />
     <ClCompile Include="src\GenericChain\AttributeCalculator.cpp" />
     <ClCompile Include="src\GenericChain\AttributeCalculatorManager.cpp" />
     <ClCompile Include="src\GenericChain\CustomNode.cpp" />
@@ -263,6 +258,7 @@
     <ClCompile Include="src\Object\Sector.cpp" />
     <ClCompile Include="src\Object\Ship.cpp" />
     <ClCompile Include="src\Object\SolarSystem.cpp" />
+    <ClCompile Include="src\Object\ObjectFactory.cpp" />
     <ClCompile Include="src\Object\SolarSystemMgr.cpp" />
     <ClCompile Include="src\Scene\demoScene.cpp" />
     <ClCompile Include="src\Scene\DockScene.cpp" />
@@ -388,6 +384,7 @@
     <ClInclude Include="include\Effect\EffectComponent.h" />
     <ClInclude Include="include\Effect\RenderProxy.h" />
     <ClInclude Include="include\Game\GameApp.h" />
+    <ClInclude Include="include\Game\SceneTransitionService.h" />
     <ClInclude Include="include\Game\version.h" />
     <ClInclude Include="include\GenericChain\AttributeCalculator.h" />
     <ClInclude Include="include\GenericChain\AttributeCalculatorManager.h" />
@@ -407,6 +404,7 @@
     <ClInclude Include="include\Object\Astro.h" />
     <ClInclude Include="include\Object\Equipment.h" />
     <ClInclude Include="include\Object\GameObject.h" />
+    <ClInclude Include="include\Object\ObjectFactory.h" />
     <ClInclude Include="include\Object\GamePlayer.h" />
     <ClInclude Include="include\Object\Material.h" />
     <ClInclude Include="include\Object\NPCStation.h" />
@@ -419,6 +417,7 @@
     <ClInclude Include="include\Scene\DockScene.h" />
     <ClInclude Include="include\Scene\MainScene.h" />
     <ClInclude Include="include\Scene\Scene.h" />
+    <ClInclude Include="include\Scene\SceneId.h" />
     <ClInclude Include="include\Scene\SpaceScene.h" />
     <ClInclude Include="include\Scene\StargateLoadingScene.h" />
     <ClInclude Include="include\System\RefiningSystem.h" />
