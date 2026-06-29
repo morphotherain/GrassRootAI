@@ -1,20 +1,22 @@
-﻿#include "GameObject.h"
+﻿#pragma once
+#include "GameObject.h"
+#include "BaseComponent.h"
+#include "SpaceTransformComponent.h"
+#include "StationComponent.h"
 #include <functional>
 #include <string>
 #include <unordered_map>
 
-class Task;
+struct Task;
 
 class NPCStation : public GameObject {
 public:
 	NPCStation() = default;
-	NPCStation(UINT _objectID) :objectID(_objectID) {};
+	explicit NPCStation(UINT _objectID) { objectID = _objectID; }
 	~NPCStation() = default;
 
 	virtual void Init();
 	virtual void Update(UINT tick);
-
-	UINT objectID;
 
 	void fillObjectName();
 

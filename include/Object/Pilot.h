@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "GameObject.h"
 #include "Ship.h"
+#include "SkillComponent.h"
 
 class Pilot : public GameObject
 {

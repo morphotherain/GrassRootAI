@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "UIBase.h"
 #include "UIButton.h"
+#include "StorageComponent.h"
 
 class UIRButtonMenu : public UIBase
 {

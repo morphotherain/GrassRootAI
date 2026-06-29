@@ -6,7 +6,7 @@
 >
 > **原则**：一个 PR / 一次提交只做一件事；每项有「完成标准」，做完可以停，不强行连锁大改。
 >
-> **当前主线**：Phase 2 ✅（2.5 可选）→ **Phase 7 🟡**（7.1 ✅）。**下一步**：7.4 依赖注入修复 或 7.2 去双轨指针。
+> **当前主线**：Phase 2 ✅（2.5 可选）→ **Phase 7 🟡**（7.1 / 7.2 / 7.4 ✅）。**下一步**：7.3 GetComponent O(1) 或 7.5 System 层。
 >
 > **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**；Phase 0–2 约 **1 周**；Phase 3–6 长期按需；**Phase 7** 与 Phase 2.4 衔接，分阶段做、不必一次换 EnTT。
 
@@ -26,7 +26,7 @@
 | 4 | P2 旧 UI 解耦 | 按需，每项 1–2 天 | ⬜ 未开始 |
 | 5 | P2 数据层 | 低优先级 | ⬜ 未开始 |
 | 6 | 长期重构 | 1–2 周+ | ⬜ 未开始 |
-| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | 🟡 进行中（7.1 ✅） |
+| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | 🟡 进行中（7.1 / 7.2 / 7.4 ✅） |
 
 > **背景**：commit `64448a8` 起的「半成品警示」已解除：存档状态机 + UIF 主菜单 + 新建/读档/删档 UI 闭环已通；A.4 临时 `UIButton` 回退已移除。
 
@@ -431,7 +431,7 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 | 问题 | 现状 | 风险 |
 |------|------|------|
-| 双轨组件引用 | `Ship` 等既 `AddComponent` 又持 `m_pBase` 等成员；`PhysicsComponent` 手工连 `SpaceTran` | 改一处漏一处 |
+| 双轨组件引用 | ~~`Ship` 等既 `AddComponent` 又持 `m_pBase` 等成员~~ → 7.2 已统一 `GetComponent` | 改一处漏一处（已缓解） |
 | `GetComponent` | `vector` + `dynamic_cast` 线性扫描 | 对象/调用增多后性能与类型安全差 |
 | `ResolveDependencies` | 用 `typeid(...).hash_code()` 比对 | 理论上不安全；`InjectDependency` cast 链脆弱 |
 | Update 编排 | 基类遍历 Component vs `Ship::Update` 手工顺序 | 行为分散，新类型复制粘贴 |
@@ -614,4 +614,4 @@ Phase 5–6 有空再说；7.9 Pilot 拆分按需
 | 2026-06-29 | Phase 1 完成：Task 去 D3D、Handler Factory 注册、Component/Database include 清理、vcxproj 去掉 .h 误编译 |
 | 2026-06-29 | Phase 2.2–2.4、2.6：`SceneTransitionService`、`switchToSolarSystem`、`ObjectFactory`、mapDenormalize SQL 迁移 |
 | 2026-06-29 | Phase 7.1：`EntityArchetype` + `EntityComponentAssembler` 集中组件组装 |
-| 2026-06-29 | 新增 **Phase 7** Entity/Component 模型优化清单（Archetype、System 层、脏标记、Task dispatch 等） |
+| 2026-06-29 | Phase 7.2 / 7.4 完成；修复 7.2 后 include 传递链与 NPCStation 进游戏崩溃 |

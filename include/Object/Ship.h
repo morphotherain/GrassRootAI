@@ -1,12 +1,19 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include "BaseComponent.h"
+#include "SpaceTransformComponent.h"
+#include "AttributesComponent.h"
+#include "EquipmentsComponent.h"
+#include "PhysicsComponent.h"
+#include "StorageComponent.h"
+#include "LockingComponent.h"
 #include <DirectXMath.h>
 #include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
-class Task;
+struct Task;
 
 enum class ShipWarpState
 {

@@ -1,5 +1,10 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include "BaseComponent.h"
+#include "AttributesComponent.h"
+#include "EquipmentComponent.h"
+#include "MinerComponent.h"
+#include "WeaponComponent.h"
 
 class Equipment : public GameObject
 {

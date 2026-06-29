@@ -1,6 +1,7 @@
 ﻿#include "SolarSystemMgr.h"
 #include "dynContainersManager.h"
 #include "GameObject.h"
+#include "BaseComponent.h"
 
 void SolarSystemMgr::Init()
 {

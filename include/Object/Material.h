@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "GameObject.h"
+#include "BaseComponent.h"
 #include "AttributesComponent.h"
 
 class Mineral : public GameObject

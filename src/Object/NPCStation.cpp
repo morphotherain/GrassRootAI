@@ -3,12 +3,13 @@
 #include "PhysicsComponent.h"
 #include "SpaceTransformComponent.h"
 #include "InvTypesManager.h"
+#include "Task.h"
 
 void NPCStation::Init()
 {
 	if (auto* spaceTran = GetComponent<SpaceTransformComponent>())
 	{
-	 spaceTran->radius = 10000.0f;
+		spaceTran->radius = 10000.0f;
 	}
 	initTaskHandlers();
 }
@@ -26,45 +27,45 @@ void NPCStation::fillObjectName()
 	}
 }
 
-void NPCStation::initTaskHandlers() {
-	taskHandlers = {
-		{"", [this](const Task& task) {}},
-		{"dock", [this](const Task& task) {
-			auto publisherPtr = task.publisher.lock();
-			if (!publisherPtr)
-				return;
-			auto* base = publisherPtr->GetComponent<BaseComponent>();
-			auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
-			auto* stationTran = GetComponent<SpaceTransformComponent>();
-			auto* stationBase = GetComponent<BaseComponent>();
-			if (!base || !tran || !stationTran || !stationBase)
-				return;
+void NPCStation::initTaskHandlers()
+{
+	taskHandlers.clear();
+	taskHandlers.emplace("", [this](const Task& task) {});
+	taskHandlers.emplace("dock", [this](const Task& task) {
+		auto publisherPtr = task.publisher.lock();
+		if (!publisherPtr)
+			return;
+		auto* base = publisherPtr->GetComponent<BaseComponent>();
+		auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
+		auto* stationTran = GetComponent<SpaceTransformComponent>();
+		auto* stationBase = GetComponent<BaseComponent>();
+		if (!base || !tran || !stationTran || !stationBase)
+			return;
 
-			auto distance = stationTran->calculateDistance(*tran);
-			if (distance < (2500)) {
-				base->containerID = stationBase->objectID;
-			}
-		}},
-		{"undock", [this](const Task& task) {
-			auto publisherPtr = task.publisher.lock();
-			if (!publisherPtr)
-				return;
-			auto* base = publisherPtr->GetComponent<BaseComponent>();
-			auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
-			auto* physics = publisherPtr->GetComponent<PhysicsComponent>();
-			auto* stationTran = GetComponent<SpaceTransformComponent>();
-			if (!base || !tran || !physics || !stationTran)
-				return;
+		auto distance = stationTran->calculateDistance(*tran);
+		if (distance < (2500)) {
+			base->containerID = stationBase->objectID;
+		}
+	});
+	taskHandlers.emplace("undock", [this](const Task& task) {
+		auto publisherPtr = task.publisher.lock();
+		if (!publisherPtr)
+			return;
+		auto* base = publisherPtr->GetComponent<BaseComponent>();
+		auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
+		auto* physics = publisherPtr->GetComponent<PhysicsComponent>();
+		auto* stationTran = GetComponent<SpaceTransformComponent>();
+		if (!base || !tran || !physics || !stationTran)
+			return;
 
-			base->containerID = 0;
-			tran->x = stationTran->x + 10000.0f;
-			tran->y = stationTran->y;
-			tran->z = stationTran->z;
-			physics->reset();
-			physics->velocity = { 100.0f, 0.0f, 0.0f };
-			physics->target_velocity = { 100.0f, 0.0f, 0.0f };
-		}}
-	};
+		base->containerID = 0;
+		tran->x = stationTran->x + 10000.0f;
+		tran->y = stationTran->y;
+		tran->z = stationTran->z;
+		physics->reset();
+		physics->velocity = { 100.0f, 0.0f, 0.0f };
+		physics->target_velocity = { 100.0f, 0.0f, 0.0f };
+	});
 }
 
 void NPCStation::handleTask(const Task& task)

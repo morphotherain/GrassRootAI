@@ -8,6 +8,7 @@
 #include "mapDenormalizeManager.h"
 #include "InvTypesManager.h"
 #include "AttributesComponent.h"
+#include "BaseComponent.h"
 #include "WindowManager.h"
 #include "RefiningSystem.h"
 #include "HandlerFactory.h"

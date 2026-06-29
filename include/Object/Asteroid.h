@@ -1,6 +1,8 @@
 ﻿
 #pragma once
 #include "GameObject.h"
+#include "BaseComponent.h"
+#include "SpaceTransformComponent.h"
 #include "AttributesComponent.h"
 
 class Asteroid : public GameObject
