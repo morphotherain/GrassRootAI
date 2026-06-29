@@ -11,7 +11,7 @@ class GameApp : public D3DApp
 {
 public:
 	// 游戏整体状态
-	enum class GameState { MainMenu, InGame };
+	enum class GameState { MainMenu, Loading, InGame };
 
 	// 摄像机模式
 	enum class CameraMode { FirstPerson, ThirdPerson, Free };
@@ -39,9 +39,25 @@ public:
 	// 从主菜单开始一个新的游戏：创建/加载存档，初始化各系统，然后切换到游戏场景。
 	void StartNewGame();
 
+	// 加载已有存档槽并进入游戏
+	bool EnterGameFromSlot(int slotID);
+
+	// 结束当前游戏会话并返回主菜单
+	void ReturnToMainMenu();
+
+	// 延迟到本帧 UpdateScene 结束后再执行，避免在 UI Update 栈内切场景
+	void RequestStartNewGame();
+	void RequestReturnToMainMenu();
+	void RequestEnterGameFromSlot(int slotID);
+	void RequestCreateAndEnterGame(const std::string& displayName);
+
+	GameState GetGameState() const { return m_gameState; }
+
 private:
 	bool InitEffect();
 	bool InitResource();
+	void InitializeGameSystems();
+	void ProcessDeferredActions();
 
 private:
 	ComPtr<ID3D11InputLayout> m_pVertexLayout;	// 顶点输入布局
@@ -64,6 +80,13 @@ private:
 
 	// 当前游戏状态（主菜单 / 游戏中）
 	GameState m_gameState = GameState::MainMenu;
+
+	bool m_pendingStartNewGame = false;
+	bool m_pendingReturnToMainMenu = false;
+	bool m_pendingEnterGameFromSlot = false;
+	bool m_pendingCreateAndEnterGame = false;
+	int m_pendingSlotID = -1;
+	std::string m_pendingDisplayName;
 };
 
 #endif

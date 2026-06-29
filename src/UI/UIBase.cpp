@@ -1,4 +1,5 @@
 ﻿#include "UIBase.h"
+#include "VertexData.h"
 
 using namespace DirectX;
 
@@ -17,16 +18,12 @@ void UIBase::setcameraResource(int ClientWidth, int ClientHeight, std::shared_pt
 
 std::vector<PosTexIndex> UIBase::GenerateRectVertex(std::vector<PosTexIndex>& vertices, float _x, float _y, float _deltaX, float _deltaY, float TexID)
 {
-	// 第一个三角形
-	vertices.push_back({ XMFLOAT3(_x, (_y + _deltaY), -0.0f),             XMFLOAT2(0.0f, 1.0f), TexID });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
-
-	// 第二个三角形
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y + _deltaY), -0.0f),       XMFLOAT2(1.0f, 1.0f), TexID });
-	vertices.push_back({ XMFLOAT3(_x, (_y), -0.0f),       XMFLOAT2(0.0f, 0.0f), TexID });
-	vertices.push_back({ XMFLOAT3((_x + _deltaX), (_y), -0.0f), XMFLOAT2(1.0f, 0.0f), TexID });
-
+	auto quad = GenerateUIVertices(_x, _y, _deltaX, _deltaY);
+	for (auto& v : quad)
+	{
+		v.index = TexID;
+		vertices.push_back(v);
+	}
 	return vertices;
 }
 

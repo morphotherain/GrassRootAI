@@ -24,6 +24,9 @@ public:
 	void AddWindow(std::shared_ptr<UIWindow> window, std::string windowType);
 	void handleTask(Task& task);
 
+	// 返回主菜单时清空浮窗状态
+	void Reset();
+
 private:
 	WindowManager();
 	WindowManager(const WindowManager&) = delete;

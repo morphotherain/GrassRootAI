@@ -10,3 +10,16 @@ void TaskMgr::registerSystemHandler(int systemType, const std::function<void(con
 {
 	systemHandlers[systemType] = handler;
 }
+
+void TaskMgr::ResetRuntime()
+{
+	while (!tasks.empty())
+	{
+		tasks.pop();
+	}
+	innerID = 0;
+	for (auto& handler : systemHandlers)
+	{
+		handler = nullptr;
+	}
+}

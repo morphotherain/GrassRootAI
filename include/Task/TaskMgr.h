@@ -74,16 +74,19 @@ public:
     // 注册系统处理器
     void registerSystemHandler(int systemType, const std::function<void(const std::shared_ptr<Task>&)>& handler);
 
-    // 分发任务到注册的系统
-    void distributeTasksFromTaskMgr() {
-        while (!tasks.empty()) {
-            auto task = popTask();
-            if (task) {
-                // 检查任务的目标系统
-                const auto& handler = systemHandlers[task->targetSystem];
-                handler(task);
-            }
-        }
-    }
+    // 清空运行时任务栈与已注册的 system handlers（返回主菜单时调用）
+    void ResetRuntime();
+
+	// 分发任务到注册的系统
+	void distributeTasksFromTaskMgr() {
+		while (!tasks.empty()) {
+			auto task = popTask();
+			if (task) {
+				// 检查任务的目标系统
+				const auto& handler = systemHandlers[task->targetSystem];
+				handler(task);
+			}
+		}
+	}
 
 };

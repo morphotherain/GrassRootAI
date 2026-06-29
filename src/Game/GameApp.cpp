@@ -11,6 +11,8 @@
 #include "RefiningSystem.h"
 #include "HandlerFactory.h"
 #include "SaveGameManager.h"
+#include "TaskMgr.h"
+#include "logger_manager.h"
 
 using namespace DirectX;
 
@@ -31,11 +33,30 @@ void GameApp::SwitchToScene(std::unique_ptr<Scene> newScene) {
 
 	currentScene = std::move(newScene);
 
-	// 如果是主菜单场景，注入“开始游戏”回调
+	// 如果是主菜单场景，注入存档 UI 回调
 	if (auto mainScene = dynamic_cast<MainScene*>(currentScene.get()))
 	{
-		mainScene->setStartGameCallback([this]() {
-			this->StartNewGame();
+		UIGameplayHost host;
+		host.onQuickStartNewGame = [this]() {
+			this->RequestStartNewGame();
+		};
+		host.onEnterGameFromSlot = [this](int slotId) {
+			this->RequestEnterGameFromSlot(slotId);
+		};
+		host.onCreateAndEnterGame = [this](const std::string& displayName) {
+			this->RequestCreateAndEnterGame(displayName);
+		};
+		host.onDeleteSaveSlot = [](int slotId) {
+			return SaveGameManager::getInstance()->deleteSaveSlot(slotId);
+		};
+		mainScene->SetGameplayHost(std::move(host));
+	}
+
+	// 游戏中场景：注入返回主菜单回调（DEV：F10）
+	if (auto spaceScene = dynamic_cast<SpaceScene*>(currentScene.get()))
+	{
+		spaceScene->setReturnToMainMenuCallback([this]() {
+			this->RequestReturnToMainMenu();
 		});
 	}
 
@@ -164,6 +185,7 @@ void GameApp::UpdateScene(float dt)
 {
 	tick++;
 	currentScene->UpdateScene(dt, *m_pMouse, *m_pKeyboard, tick);
+	ProcessDeferredActions();
 
 	// 仅在进入游戏后才驱动 SolarSystem 等与存档相关的系统
 	if (m_gameState == GameState::InGame)
@@ -277,7 +299,6 @@ bool GameApp::InitResource()
 
 void GameApp::StartNewGame()
 {
-	// 如果已经在游戏中，忽略重复请求
 	if (m_gameState == GameState::InGame)
 	{
 		return;
@@ -285,7 +306,6 @@ void GameApp::StartNewGame()
 
 	INFO_("开始新游戏：从模板存档创建新存档并初始化游戏系统");
 
-	// 1. 通过模板存档创建新存档文件，并在 saveSlots 中登记
 	int slotID = -1;
 	if (!SaveGameManager::getInstance()->createNewSaveFromTemplate(
 		"save/initial",
@@ -297,14 +317,63 @@ void GameApp::StartNewGame()
 		return;
 	}
 
-	// 2. 按 slotID 加载存档（ATTACH + 创建 dyn 视图）
+	if (!EnterGameFromSlot(slotID))
+	{
+		ERROR_("进入新游戏失败，slotID = {}", slotID);
+	}
+}
+
+bool GameApp::EnterGameFromSlot(int slotID)
+{
+	if (m_gameState == GameState::InGame)
+	{
+		ReturnToMainMenu();
+	}
+
+	m_gameState = GameState::Loading;
+
 	if (!SaveGameManager::getInstance()->loadSaveBySlotID(slotID))
 	{
-		ERROR_("加载新存档失败，slotID = {}", slotID);
+		ERROR_("加载存档失败，slotID = {}", slotID);
+		m_gameState = GameState::MainMenu;
+		return false;
+	}
+
+	InitializeGameSystems();
+
+	m_gameState = GameState::InGame;
+	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
+	currentSceneID = 3;
+	INFO_("已进入游戏，slotID = {}", slotID);
+	return true;
+}
+
+void GameApp::ReturnToMainMenu()
+{
+	if (m_gameState == GameState::MainMenu)
+	{
 		return;
 	}
 
-	// 3. 现在 dyn* 表已经指向当前存档，可以安全地初始化各种依赖存档数据的管理器
+	INFO_("返回主菜单");
+
+	WindowManager::GetInstance().Reset();
+	SolarSystemMgr::getInstance().Shutdown();
+	TaskMgr::getInstance().ResetRuntime();
+
+	if (!SaveGameManager::getInstance()->detachCurrentSaveDatabase())
+	{
+		ERROR_("分离存档数据库失败");
+	}
+
+	m_gameState = GameState::MainMenu;
+	tick = 0;
+	SwitchToScene(std::make_unique<MainScene>(AppInst()));
+	currentSceneID = 1;
+}
+
+void GameApp::InitializeGameSystems()
+{
 	INFO_("初始化 AttributeMgr");
 	AttributeMgr::getInstance().Init();
 
@@ -313,11 +382,9 @@ void GameApp::StartNewGame()
 	SolarSystemMgr::getInstance().getCurrentPilot();
 	SolarSystemMgr::getInstance().setCurrentPilot();
 
-	// 4. 注册各系统的任务处理器
 	auto& taskMgr = TaskMgr::getInstance();
 	auto& solarSystemMgr = SolarSystemMgr::getInstance();
 
-	// 捕获局部引用而非静态调用
 	taskMgr.registerSystemHandler(
 		SystemType::NONE,
 		[&solarSystemMgr](const std::shared_ptr<Task>& task) {
@@ -325,32 +392,110 @@ void GameApp::StartNewGame()
 		}
 	);
 
-	TaskMgr::getInstance().registerSystemHandler(
+	taskMgr.registerSystemHandler(
 		SystemType::SOLAR_SYSTEM,
 		[](const std::shared_ptr<Task>& task) {
 			SolarSystemMgr::getInstance().handleTask(*task);
 		}
 	);
 
-	TaskMgr::getInstance().registerSystemHandler(
+	taskMgr.registerSystemHandler(
 		SystemType::UIWINDOW,
 		[](const std::shared_ptr<Task>& task) {
 			WindowManager::GetInstance().handleTask(*task);
 		}
 	);
 
-	TaskMgr::getInstance().registerSystemHandler(
+	taskMgr.registerSystemHandler(
 		SystemType::REFINING,
 		[](const std::shared_ptr<Task>& task) {
 			RefiningSystem::getInstance().handleTask(*task);
 		}
 	);
 
-	// 初始化Handler（触发构造函数注册）
 	HandlerFactory::initializeHandlers();
+}
 
-	// 5. 切换状态为“游戏中”，并进到 SpaceScene
-	m_gameState = GameState::InGame;
-	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
-	currentSceneID = 3;
+void GameApp::RequestStartNewGame()
+{
+	m_pendingStartNewGame = true;
+}
+
+void GameApp::RequestReturnToMainMenu()
+{
+	m_pendingReturnToMainMenu = true;
+}
+
+void GameApp::RequestEnterGameFromSlot(int slotID)
+{
+	m_pendingSlotID = slotID;
+	m_pendingEnterGameFromSlot = true;
+}
+
+void GameApp::RequestCreateAndEnterGame(const std::string& displayName)
+{
+	m_pendingDisplayName = displayName;
+	m_pendingCreateAndEnterGame = true;
+}
+
+void GameApp::ProcessDeferredActions()
+{
+	if (m_pendingReturnToMainMenu)
+	{
+		m_pendingReturnToMainMenu = false;
+		ReturnToMainMenu();
+		return;
+	}
+
+	if (m_pendingEnterGameFromSlot)
+	{
+		m_pendingEnterGameFromSlot = false;
+		const int slotID = m_pendingSlotID;
+		if (!EnterGameFromSlot(slotID))
+		{
+			if (auto* mainScene = dynamic_cast<MainScene*>(currentScene.get()))
+			{
+				mainScene->SetNavigationBusy(false);
+			}
+		}
+		return;
+	}
+
+	if (m_pendingCreateAndEnterGame)
+	{
+		m_pendingCreateAndEnterGame = false;
+		const std::string displayName = m_pendingDisplayName;
+		m_pendingDisplayName.clear();
+
+		int slotID = -1;
+		if (!SaveGameManager::getInstance()->createNewSaveFromTemplate(
+			"save/initial",
+			displayName.empty() ? "新建存档" : displayName,
+			"dev",
+			slotID))
+		{
+			ERROR_("创建新存档失败");
+			if (auto* mainScene = dynamic_cast<MainScene*>(currentScene.get()))
+			{
+				mainScene->SetNavigationBusy(false);
+			}
+			return;
+		}
+
+		if (!EnterGameFromSlot(slotID))
+		{
+			ERROR_("进入新游戏失败，slotID = {}", slotID);
+			if (auto* mainScene = dynamic_cast<MainScene*>(currentScene.get()))
+			{
+				mainScene->SetNavigationBusy(false);
+			}
+		}
+		return;
+	}
+
+	if (m_pendingStartNewGame)
+	{
+		m_pendingStartNewGame = false;
+		StartNewGame();
+	}
 }

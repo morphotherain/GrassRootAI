@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "id": "save_delete_confirm",
+  "root": {
+    "id": "root",
+    "type": "Panel",
+    "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+    "visible": true,
+    "children": [
+      {
+        "id": "dim",
+        "type": "Panel",
+        "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+        "visible": true,
+        "children": []
+      },
+      {
+        "id": "dialog_bg",
+        "type": "Sprite",
+        "atlas": "ui_window",
+        "frame": "window_body",
+        "rect": { "x": 610, "y": 360, "w": 700, "h": 240 },
+        "visible": true
+      },
+      {
+        "id": "confirm_message",
+        "type": "Text",
+        "text": "确定删除此存档？",
+        "rect": { "x": 640, "y": 400, "w": 640, "h": 80 },
+        "visible": true
+      },
+      {
+        "id": "btn_confirm",
+        "type": "Button",
+        "action": "save.delete.confirm",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "删除",
+        "rect": { "x": 640, "y": 500, "w": 180, "h": 44 },
+        "visible": true
+      },
+      {
+        "id": "btn_cancel",
+        "type": "Button",
+        "action": "nav.back",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "取消",
+        "rect": { "x": 840, "y": 500, "w": 180, "h": 44 },
+        "visible": true
+      }
+    ]
+  }
+}

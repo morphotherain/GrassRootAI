@@ -53,6 +53,15 @@ public:
     // includeDeleted 为 false 时忽略 isDeleted = 1 的记录
     std::vector<SaveSlotInfo> listSaveSlots(bool includeDeleted = false);
 
+    // 按 slotID 查询单条存档槽信息（不含已软删记录）
+    bool getSaveSlotInfo(int slotID, SaveSlotInfo& outInfo);
+
+    // 更新指定槽位的 lastPlayedTime 为当前时间
+    bool updateLastPlayedTime(int slotID);
+
+    // 软删除存档槽（isDeleted = 1，不删除磁盘上的 .save 文件）
+    bool deleteSaveSlot(int slotID);
+
     // 仅在主库 saveSlots 中新增一条记录，不负责实际在磁盘上创建 / 初始化存档数据库文件。
     // 一般做法是：外部先创建好存档数据库文件（包含所有 dyn* 表），然后调用本函数登记。
     bool registerExistingSave(const std::string& fileName,

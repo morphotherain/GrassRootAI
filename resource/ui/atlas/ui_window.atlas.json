@@ -1,0 +1,114 @@
+{
+  "id": "ui_window",
+  "description": "旧 UIWindow / 各窗口界面常用 DDS 积木，F11 左下角面板可点击创建 Sprite",
+  "frames": {
+    "main_background": {
+      "texture": "demoTex\\MainScene\\background.dds",
+      "w": 1920,
+      "h": 1080
+    },
+
+    "window_body": {
+      "texture": "demoTex\\UI\\Window\\window_body.dds",
+      "w": 480,
+      "h": 320
+    },
+    "window_title": {
+      "texture": "demoTex\\UI\\Window\\window_title.dds",
+      "w": 480,
+      "h": 27
+    },
+    "window_line": {
+      "texture": "demoTex\\UI\\Window\\window_line.dds",
+      "w": 320,
+      "h": 48
+    },
+    "window_line_h": {
+      "texture": "demoTex\\UI\\Window\\window_line.dds",
+      "w": 320,
+      "h": 2
+    },
+    "window_line_v": {
+      "texture": "demoTex\\UI\\Window\\window_line.dds",
+      "w": 2,
+      "h": 120
+    },
+    "window_deepblue": {
+      "texture": "demoTex\\UI\\Window\\window_deepblue.dds",
+      "w": 480,
+      "h": 32
+    },
+    "window_black": {
+      "texture": "demoTex\\UI\\Window\\window_black.dds",
+      "w": 64,
+      "h": 24
+    },
+    "window_select": {
+      "texture": "demoTex\\UI\\Window\\window_select.dds",
+      "w": 160,
+      "h": 48
+    },
+    "window_min": {
+      "texture": "demoTex\\UI\\Window\\window_min.dds",
+      "w": 27,
+      "h": 27
+    },
+    "window_max": {
+      "texture": "demoTex\\UI\\Window\\window_max.dds",
+      "w": 27,
+      "h": 27
+    },
+    "window_close": {
+      "texture": "demoTex\\UI\\Window\\window_close.dds",
+      "w": 27,
+      "h": 27
+    },
+
+    "item_back": {
+      "texture": "demoTex\\UI\\Window\\Item_back.dds",
+      "w": 64,
+      "h": 64
+    },
+    "item_back_select": {
+      "texture": "demoTex\\UI\\Window\\Item_back_select.dds",
+      "w": 64,
+      "h": 64
+    },
+
+    "em_resist": {
+      "texture": "demoTex\\UI\\Window\\em_resist.dds",
+      "w": 32,
+      "h": 32
+    },
+    "therm_resist": {
+      "texture": "demoTex\\UI\\Window\\therm_resist.dds",
+      "w": 32,
+      "h": 32
+    },
+    "kinetic_resist": {
+      "texture": "demoTex\\UI\\Window\\kinetic_resist.dds",
+      "w": 32,
+      "h": 32
+    },
+    "explosive_resist": {
+      "texture": "demoTex\\UI\\Window\\explosive_resist.dds",
+      "w": 32,
+      "h": 32
+    },
+    "cpu_energy_bar": {
+      "texture": "demoTex\\UI\\Window\\cpu_energy_bar.dds",
+      "w": 200,
+      "h": 16
+    },
+    "fitting_stencil": {
+      "texture": "demoTex\\UI\\Window\\fittingStencil.dds",
+      "w": 64,
+      "h": 64
+    },
+    "rbutton_menu": {
+      "texture": "demoTex\\UI\\Window\\RbuttonMenu.dds",
+      "w": 120,
+      "h": 32
+    }
+  }
+}

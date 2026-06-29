@@ -1,6 +1,8 @@
 #include "d3dApp.h"
 #include "d3dUtil.h"
 #include "DXTrace.h"
+#include "UIDevOverlay.h"
+#include "UIInputRouter.h"
 #include <sstream>
 
 namespace
@@ -364,6 +366,16 @@ LRESULT D3DApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_SYSKEYUP:
 		m_pKeyboard->ProcessMessage(msg, wParam, lParam);
 		return 0;
+
+	case WM_CHAR:
+	{
+		const wchar_t ch = static_cast<wchar_t>(wParam);
+		if (!UIDevOverlay::Instance().OnChar(ch))
+		{
+			UIInputRouter::Instance().OnChar(ch);
+		}
+		return 0;
+	}
 
 	case WM_ACTIVATEAPP:
 		m_pMouse->ProcessMessage(msg, wParam, lParam);

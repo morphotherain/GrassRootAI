@@ -13,6 +13,10 @@ struct PosTexIndex
 	static const D3D11_INPUT_ELEMENT_DESC inputLayout[3];
 };
 std::vector<PosTexIndex>  GenerateVertices(float x, float y, float delta_x, float delta_y);
+// 屏幕 UI 四边形，绕序与 UIBase::GenerateRectVertex / UIButton 一致
+std::vector<PosTexIndex> GenerateUIVertices(float x, float y, float delta_x, float delta_y);
+std::vector<PosTexIndex> GenerateUIVerticesUV(float x, float y, float delta_x, float delta_y,
+	float u0, float v0, float u1, float v1);
 
 struct PointVertexPosColor
 {

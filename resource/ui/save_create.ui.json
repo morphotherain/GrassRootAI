@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "id": "save_create",
+  "root": {
+    "id": "root",
+    "type": "Panel",
+    "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+    "visible": true,
+    "children": [
+      {
+        "id": "bg",
+        "type": "Sprite",
+        "atlas": "ui_window",
+        "frame": "window_body",
+        "rect": { "x": 560, "y": 280, "w": 800, "h": 320 },
+        "visible": true
+      },
+      {
+        "id": "title",
+        "type": "Text",
+        "text": "新建存档",
+        "rect": { "x": 860, "y": 300, "w": 200, "h": 40 },
+        "visible": true
+      },
+      {
+        "id": "label_name",
+        "type": "Text",
+        "text": "存档名称（可直接输入）：",
+        "rect": { "x": 600, "y": 360, "w": 400, "h": 32 },
+        "visible": true
+      },
+      {
+        "id": "input_display_name",
+        "type": "Text",
+        "text": "新建存档",
+        "rect": { "x": 600, "y": 400, "w": 720, "h": 36 },
+        "visible": true
+      },
+      {
+        "id": "btn_confirm",
+        "type": "Button",
+        "action": "save.create.confirm",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "创建并进入",
+        "rect": { "x": 600, "y": 480, "w": 200, "h": 44 },
+        "visible": true
+      },
+      {
+        "id": "btn_cancel",
+        "type": "Button",
+        "action": "nav.back",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "取消",
+        "rect": { "x": 820, "y": 480, "w": 200, "h": 44 },
+        "visible": true
+      },
+      {
+        "id": "loading_overlay",
+        "type": "Panel",
+        "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+        "visible": false,
+        "children": [
+          {
+            "id": "loading_text",
+            "type": "Text",
+            "text": "加载中…",
+            "rect": { "x": 860, "y": 520, "w": 200, "h": 40 },
+            "visible": true
+          }
+        ]
+      }
+    ]
+  }
+}

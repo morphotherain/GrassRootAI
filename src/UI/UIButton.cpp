@@ -31,7 +31,7 @@ bool UIButton::Init()
 		return false;
 
 	clickFlag = std::make_shared<bool>(false);
-	return false;
+	return true;
 }
 
 void UIButton::OnResize()

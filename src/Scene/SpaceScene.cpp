@@ -121,6 +121,13 @@ void SpaceScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard&
 	Keyboard::State keyState = keyboard.GetState();
 	m_KeyboardTracker.Update(keyState);
 
+	// DEV：F10 返回主菜单（Phase A 临时入口）
+	if (m_KeyboardTracker.IsKeyPressed(Keyboard::F10) && m_onReturnToMainMenu)
+	{
+		m_onReturnToMainMenu();
+		return;
+	}
+
 	// 获取子类
 	auto cam3st = std::dynamic_pointer_cast<ThirdPersonCamera>(m_pCamera);
 	auto cam3stLocal = std::dynamic_pointer_cast<ThirdPersonCamera>(m_pLocalCamera);

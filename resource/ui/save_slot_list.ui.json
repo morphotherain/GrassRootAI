@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "id": "save_slot_list",
+  "root": {
+    "id": "root",
+    "type": "Panel",
+    "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+    "visible": true,
+    "children": [
+      {
+        "id": "bg",
+        "type": "Sprite",
+        "atlas": "ui_window",
+        "frame": "main_background",
+        "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+        "visible": true
+      },
+      {
+        "id": "title",
+        "type": "Text",
+        "text": "存档列表",
+        "rect": { "x": 810, "y": 80, "w": 300, "h": 48 },
+        "visible": true
+      },
+      {
+        "id": "slot_list_container",
+        "type": "Panel",
+        "rect": { "x": 560, "y": 160, "w": 800, "h": 520 },
+        "visible": true,
+        "children": []
+      },
+      {
+        "id": "empty_hint",
+        "type": "Text",
+        "text": "暂无存档",
+        "rect": { "x": 860, "y": 380, "w": 200, "h": 40 },
+        "visible": false
+      },
+      {
+        "id": "btn_load",
+        "type": "Button",
+        "action": "save.load",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "读取选中",
+        "rect": { "x": 560, "y": 720, "w": 180, "h": 44 },
+        "visible": false
+      },
+      {
+        "id": "btn_delete",
+        "type": "Button",
+        "action": "save.delete",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "删除选中",
+        "rect": { "x": 760, "y": 720, "w": 180, "h": 44 },
+        "visible": false
+      },
+      {
+        "id": "btn_new_save",
+        "type": "Button",
+        "action": "nav.open.save_create",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "新建存档",
+        "rect": { "x": 960, "y": 720, "w": 180, "h": 44 },
+        "visible": true
+      },
+      {
+        "id": "btn_back",
+        "type": "Button",
+        "action": "nav.back",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "text": "返回",
+        "rect": { "x": 1180, "y": 720, "w": 180, "h": 44 },
+        "visible": true
+      },
+      {
+        "id": "loading_overlay",
+        "type": "Panel",
+        "rect": { "x": 0, "y": 0, "w": 1920, "h": 1080 },
+        "visible": false,
+        "children": [
+          {
+            "id": "loading_text",
+            "type": "Text",
+            "text": "加载中…",
+            "rect": { "x": 860, "y": 520, "w": 200, "h": 40 },
+            "visible": true
+          }
+        ]
+      }
+    ]
+  }
+}

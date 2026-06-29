@@ -8,6 +8,7 @@
 #include "UIWindowOverview.h"
 #include "UIRButtonMenu.h"
 #include "UIShip.h"
+#include <functional>
 
 class SpaceScene : public Scene
 {
@@ -32,6 +33,9 @@ public:
 	virtual void DrawScene();
 	virtual void cleanup();
 
+	// DEV：F10 返回主菜单，由 GameApp 注入
+	void setReturnToMainMenuCallback(std::function<void()> cb) { m_onReturnToMainMenu = std::move(cb); }
+
 	bool InitResource();
 	bool InitEffect();
 private:
@@ -55,4 +59,6 @@ private:
 	std::shared_ptr<UISkyBox> m_skybox;
 
 	std::vector<std::shared_ptr<UIText>> m_denormalizeTexts; // 用于存储星域名称文本对象
+
+	std::function<void()> m_onReturnToMainMenu;
 };

@@ -1,0 +1,57 @@
+{
+  "id": "dev_main_menu",
+  "root": {
+    "children": [
+      {
+        "id": "bg",
+        "atlas": "ui_window",
+        "frame": "main_background",
+        "rect": {
+          "h": 1119.0,
+          "w": 1936.0,
+          "x": -4.0,
+          "y": 0.0
+        },
+        "type": "Sprite",
+        "visible": true
+      },
+      {
+        "id": "title",
+        "rect": {
+          "h": 62.16666793823242,
+          "w": 403.3333435058594,
+          "x": 766.3333129882813,
+          "y": 124.33333587646484
+        },
+        "text": "GrassRootAI",
+        "type": "Text",
+        "visible": true
+      },
+      {
+        "action": "game.start_new",
+        "id": "btn_new",
+        "atlas": "ui_window",
+        "frame": "window_line",
+        "rect": {
+          "h": 49.733333587646484,
+          "w": 322.6666564941406,
+          "x": 806.6666870117188,
+          "y": 518.0555419921875
+        },
+        "text": "开始新游戏",
+        "type": "Button",
+        "visible": true
+      }
+    ],
+    "id": "root",
+    "rect": {
+      "h": 1119.0,
+      "w": 1936.0,
+      "x": 0.0,
+      "y": 0.0
+    },
+    "type": "Panel",
+    "visible": true
+  },
+  "version": 1
+}

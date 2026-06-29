@@ -190,7 +190,141 @@ bool SaveGameManager::loadSaveBySlotID(int slotID)
     CreateDynViewsIfNotExists(m_db);
 
     m_currentSlotID = slotID;
+    updateLastPlayedTime(slotID);
     return true;
+}
+
+bool SaveGameManager::getSaveSlotInfo(int slotID, SaveSlotInfo& outInfo)
+{
+    if (!m_db)
+    {
+        std::cerr << "SaveGameManager::getSaveSlotInfo: database handle is null." << std::endl;
+        return false;
+    }
+
+    const char* sql =
+        "SELECT slotID, fileName, displayName, createTime, lastPlayedTime, gameVersion, isDeleted "
+        "FROM saveSlots "
+        "WHERE slotID = ? AND isDeleted = 0;";
+
+    sqlite3_stmt* stmt = nullptr;
+    int           rc = sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "SaveGameManager::getSaveSlotInfo: prepare failed: " << sqlite3_errmsg(m_db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, slotID);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    outInfo.slotID = sqlite3_column_int(stmt, 0);
+
+    const unsigned char* fileNameText = sqlite3_column_text(stmt, 1);
+    if (fileNameText)
+    {
+        outInfo.fileName = reinterpret_cast<const char*>(fileNameText);
+    }
+
+    const unsigned char* displayNameText = sqlite3_column_text(stmt, 2);
+    if (displayNameText)
+    {
+        outInfo.displayName = reinterpret_cast<const char*>(displayNameText);
+    }
+
+    outInfo.createTime = static_cast<long long>(sqlite3_column_int64(stmt, 3));
+    outInfo.lastPlayedTime = static_cast<long long>(sqlite3_column_int64(stmt, 4));
+
+    const unsigned char* gameVersionText = sqlite3_column_text(stmt, 5);
+    if (gameVersionText)
+    {
+        outInfo.gameVersion = reinterpret_cast<const char*>(gameVersionText);
+    }
+
+    outInfo.isDeleted = (sqlite3_column_int(stmt, 6) != 0);
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+bool SaveGameManager::updateLastPlayedTime(int slotID)
+{
+    if (!m_db)
+    {
+        std::cerr << "SaveGameManager::updateLastPlayedTime: database handle is null." << std::endl;
+        return false;
+    }
+
+    const char* sql =
+        "UPDATE saveSlots SET lastPlayedTime = strftime('%s','now') "
+        "WHERE slotID = ? AND isDeleted = 0;";
+
+    sqlite3_stmt* stmt = nullptr;
+    int           rc = sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "SaveGameManager::updateLastPlayedTime: prepare failed: " << sqlite3_errmsg(m_db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, slotID);
+
+    rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        std::cerr << "SaveGameManager::updateLastPlayedTime: update failed for slotID=" << slotID << std::endl;
+        return false;
+    }
+
+    return sqlite3_changes(m_db) > 0;
+}
+
+bool SaveGameManager::deleteSaveSlot(int slotID)
+{
+    if (!m_db)
+    {
+        std::cerr << "SaveGameManager::deleteSaveSlot: database handle is null." << std::endl;
+        return false;
+    }
+
+    if (m_currentSlotID == slotID && hasAttachedSave())
+    {
+        std::cerr << "SaveGameManager::deleteSaveSlot: cannot delete currently loaded save slot." << std::endl;
+        return false;
+    }
+
+    const char* sql =
+        "UPDATE saveSlots SET isDeleted = 1 "
+        "WHERE slotID = ? AND isDeleted = 0;";
+
+    sqlite3_stmt* stmt = nullptr;
+    int           rc = sqlite3_prepare_v2(m_db, sql, -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "SaveGameManager::deleteSaveSlot: prepare failed: " << sqlite3_errmsg(m_db) << std::endl;
+        return false;
+    }
+
+    sqlite3_bind_int(stmt, 1, slotID);
+
+    rc = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        std::cerr << "SaveGameManager::deleteSaveSlot: update failed for slotID=" << slotID << std::endl;
+        return false;
+    }
+
+    return sqlite3_changes(m_db) > 0;
 }
 
 std::vector<SaveSlotInfo> SaveGameManager::listSaveSlots(bool includeDeleted)

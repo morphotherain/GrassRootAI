@@ -28,6 +28,12 @@ public:
 		return true;
 	}
 
+	void Clear() {
+		while (!m_messages.empty()) {
+			m_messages.pop();
+		}
+	}
+
 private:
 	std::queue<WindowMessage> m_messages;
 };

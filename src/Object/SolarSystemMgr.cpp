@@ -1,5 +1,6 @@
 ﻿#include "SolarSystemMgr.h"
 #include "dynContainersManager.h"
+#include "GameObject.h"
 
 void SolarSystemMgr::Init()
 {
@@ -221,4 +222,28 @@ void SolarSystemMgr::setCurrentPilot()
 {
 	currentSolarSystem->setCurrentPilots(currentPilot);
 	currentSolarSystem->setCurrentSector();
+}
+
+void SolarSystemMgr::Shutdown()
+{
+	taskHandlers.clear();
+	SolarSystems.clear();
+	Pilots.clear();
+	currentSolarSystem.reset();
+	currentPilot.reset();
+	currentPilotID = 1;
+
+	if (p_mapObject)
+	{
+		p_mapObject->clear();
+	}
+	p_mapObject.reset();
+
+	if (p_starGateTransferObjects)
+	{
+		p_starGateTransferObjects->clear();
+	}
+	p_starGateTransferObjects.reset();
+
+	GameObjectMgr::getInstance().setObjectMap(std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>());
 }

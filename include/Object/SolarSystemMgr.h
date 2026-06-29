@@ -44,6 +44,8 @@ public:
 	void distributeTasksFromTaskMgr();
 	void handleStarGateTransferObjects();
 
+	void Shutdown();
+
 	void InitPilots();
 
 	std::shared_ptr<GameObject> getObjectById(int id);

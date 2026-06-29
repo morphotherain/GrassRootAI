@@ -30,6 +30,37 @@ std::vector<PosTexIndex>  GenerateVertices(float x, float y, float deltaX, float
 	return vertices;
 }
 
+std::vector<PosTexIndex> GenerateUIVertices(float x, float y, float deltaX, float deltaY)
+{
+	std::vector<PosTexIndex> vertices;
+	vertices.reserve(6);
+
+	const float texId = 0.0f;
+	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f), XMFLOAT2(0.0f, 1.0f), texId });
+	vertices.push_back({ XMFLOAT3(x, y, 0.0f), XMFLOAT2(0.0f, 0.0f), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 1.0f), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(1.0f, 1.0f), texId });
+	vertices.push_back({ XMFLOAT3(x, y, 0.0f), XMFLOAT2(0.0f, 0.0f), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f), XMFLOAT2(1.0f, 0.0f), texId });
+	return vertices;
+}
+
+std::vector<PosTexIndex> GenerateUIVerticesUV(float x, float y, float deltaX, float deltaY,
+	float u0, float v0, float u1, float v1)
+{
+	std::vector<PosTexIndex> vertices;
+	vertices.reserve(6);
+
+	const float texId = 0.0f;
+	vertices.push_back({ XMFLOAT3(x, (y + deltaY), 0.0f), XMFLOAT2(u0, v1), texId });
+	vertices.push_back({ XMFLOAT3(x, y, 0.0f), XMFLOAT2(u0, v0), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(u1, v1), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), (y + deltaY), 0.0f), XMFLOAT2(u1, v1), texId });
+	vertices.push_back({ XMFLOAT3(x, y, 0.0f), XMFLOAT2(u0, v0), texId });
+	vertices.push_back({ XMFLOAT3((x + deltaX), y, 0.0f), XMFLOAT2(u1, v0), texId });
+	return vertices;
+}
+
 // 点的顶点布局描述
 const D3D11_INPUT_ELEMENT_DESC PointVertexPosColor::inputLayout[3] =
 {
