@@ -458,11 +458,11 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 7.2 去掉 Entity 双轨组件指针
 
-- [ ] 改什么：`Ship` / `Pilot` / `Equipment` 等删除 `m_pBase`、`m_pAttributes`… 成员（或 Init 后仅保留只读缓存 struct，禁止双路径创建）
-- [ ] 改什么：`PhysicsComponent` 改走 `ResolveDependencies` 注入 `SpaceTransformComponent`，去掉 `m_pPhysics->SpaceTran = …` 手工赋值
-- [ ] 不改什么：对外行为、组件集合
-- [ ] 完成标准：组件只存在于 `GameObject` 的 `components` 袋；grep 无 `make_shared<XComponent>` 后又 `AddComponent` 以外的重复持有（Init 缓存除外）
-- [ ] 预估：1–2 天（按 Entity 类型分批 PR）
+- [x] 改什么：`Ship` / `Pilot` / `Equipment` / `Astro` / `NPCStation` / `Asteroid` / `Mineral` 头文件删除 `m_pBase` 等成员；`.cpp` 统一 `GetComponent<T>()`
+- [x] 改什么：`PhysicsComponent` 经 `ResolveDependencies` 注入 `SpaceTransform`，去掉 `Ship::Init` 手工赋值
+- [x] 改什么：`Pilot` 组件改由 `EntityArchetype::Pilot` + Assembler 组装（不再 Init 里双路径 `make_shared`）
+- [x] 完成标准：组件只存在于 `GameObject::components`；子类 Init 只做业务逻辑
+- [x] 预估：1–2 天
 
 ### 7.3 组件袋：`GetComponent` O(1) 或 Init 缓存
 

@@ -1,9 +1,9 @@
 ﻿#include "GameObject.h"
-#include "BaseComponent.h"
-#include "PhysicsComponent.h"
-#include "SpaceTransformComponent.h"
-#include "StationComponent.h"
+#include <functional>
+#include <string>
+#include <unordered_map>
 
+class Task;
 
 class NPCStation : public GameObject {
 public:
@@ -15,10 +15,6 @@ public:
 	virtual void Update(UINT tick);
 
 	UINT objectID;
-
-	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-	std::shared_ptr<StationComponent>m_pStation;
 
 	void fillObjectName();
 

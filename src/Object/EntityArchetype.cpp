@@ -5,6 +5,7 @@
 #include "NPCStation.h"
 #include "Asteroid.h"
 #include "Material.h"
+#include "Pilot.h"
 
 EntityArchetype ResolveEntityArchetype(GameObject& object)
 {
@@ -24,6 +25,10 @@ EntityArchetype ResolveEntityArchetype(GameObject& object)
 	if (dynamic_cast<Mineral*>(&object))
 	{
 		return EntityArchetype::Mineral;
+	}
+	if (dynamic_cast<Pilot*>(&object))
+	{
+		return EntityArchetype::Pilot;
 	}
 	if (dynamic_cast<EnergyWeaponEquipments*>(&object))
 	{

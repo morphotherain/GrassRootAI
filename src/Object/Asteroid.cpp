@@ -1,7 +1,8 @@
 ﻿#include "Asteroid.h"
-#include "mapJumpsManager.h"
-#include "mapDenormalizeManager.h"
-#include "mapSolarSystemsManager.h"
+#include "BaseComponent.h"
+#include "SpaceTransformComponent.h"
+#include "InvTypesManager.h"
+#include "TaskMgr.h"
 
 Asteroid::~Asteroid()
 {
@@ -9,43 +10,44 @@ Asteroid::~Asteroid()
 
 void Asteroid::Init()
 {
-	m_pBase = GetComponentShared<BaseComponent>();
-	m_pAttributes = GetComponentShared<AttributesComponent>();
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	if (m_pSpaceTran->x == 0.0f && m_pSpaceTran->y == 0.0f && m_pSpaceTran->z == 0.0f)
+	auto spaceTran = std::make_shared<SpaceTransformComponent>(objectID);
+	if (spaceTran->x == 0.0f && spaceTran->y == 0.0f && spaceTran->z == 0.0f)
 	{
-		m_pSpaceTran.reset();
+		spaceTran.reset();
 	}
 	else
 	{
-		AddComponent<Component>(m_pSpaceTran);
+		AddComponent<Component>(spaceTran);
 	}
-	if (m_pBase)
+
+	if (auto* base = GetComponent<BaseComponent>())
 	{
-		m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+		base->name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 	}
 }
 
 std::shared_ptr<GameObject> Asteroid::ConvertBasedOnGroupID(UINT groupID)
 {
 	switch (groupID) {
-	case 462: {
-		return std::make_shared<Veldspar>(objectID);
-	}
+	case 462: return std::make_shared<Veldspar>(objectID);
 	}
 	return nullptr;
 }
 
 void Asteroid::handleTask(const Task& task)
 {
+	auto* attributes = GetComponent<AttributesComponent>();
+	auto* base = GetComponent<BaseComponent>();
+	if (!attributes || !base)
+		return;
+
 	auto type = task.getParamOrDefault<std::string>("taskType", "");
 	if (type == "addObject") {
 		auto addType = task.getParamOrDefault<std::string>("addType", "");
-
 		auto addTargetId = task.getParamOrDefault<int>("addTargetId", -1);
 		auto containerID = task.getParamOrDefault<int>("containerID", -1);
 		auto volume = task.getParamOrDefault<double>("volume", 0);
-		auto volumePerUnit = (*m_pAttributes->objectAttributes)[ATTR_ID_VOLUME].value;
+		auto volumePerUnit = (*attributes->objectAttributes)[ATTR_ID_VOLUME].value;
 
 		if(addType == "add") {
 			auto addTarget = GameObjectMgr::getInstance().getObject(addTargetId);
@@ -64,16 +66,15 @@ void Asteroid::handleTask(const Task& task)
 			pTask->targetSystem = SOLAR_SYSTEM;
 			(*pTask->paramsPtr)["createObject"] = 0;
 			(*pTask->paramsPtr)["handlerType"] = std::string("createObject");
-			(*pTask->paramsPtr)["typeID"] = static_cast<int>(m_pBase->typeID);
+			(*pTask->paramsPtr)["typeID"] = static_cast<int>(base->typeID);
 			(*pTask->paramsPtr)["OwnerID"] = 0;
 			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(containerID);
-			std::vector<Attribute> attributes = {
+			std::vector<Attribute> attributesVec = {
 				{ATTR_ID_QUANTITY, std::floor(volume / volumePerUnit) },
 			};
-			(*pTask->paramsPtr)["attributes"] = attributes;
+			(*pTask->paramsPtr)["attributes"] = attributesVec;
 
 			TaskMgr::getInstance().addTask(pTask);
 		}
 	}
-
 }

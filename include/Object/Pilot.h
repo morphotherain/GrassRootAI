@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "GameObject.h"
 #include "Ship.h"
-#include "SkillComponent.h"
 
 class Pilot : public GameObject
 {
@@ -22,7 +21,4 @@ public:
 	UINT currentShipID = 0;
 	UINT currentSolarSystemID = 0;
 	std::shared_ptr<Ship> currentShip;
-	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<AttributesComponent> m_pAttributes;
-	std::shared_ptr<SkillComponent> m_pSkills;
 };

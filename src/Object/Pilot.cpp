@@ -1,4 +1,8 @@
 ﻿#include "Pilot.h"
+#include "EntityComponentAssembler.h"
+#include "EntityArchetype.h"
+#include "BaseComponent.h"
+#include "SkillComponent.h"
 #include "dynGameObjectsManager.h"
 #include "dynContainersManager.h"
 
@@ -11,32 +15,38 @@ Pilot::Pilot(UINT _objectID, UINT _PilotID) :objectID(_objectID), PilotID(_Pilot
 
 void Pilot::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttributes);
-	m_pSkills = std::make_shared<SkillComponent>(objectID, m_pBase->ownerID);
-	AddComponent<Component>(m_pSkills);
-
+	EntityComponentAssembler::Assemble(*this, EntityArchetype::Pilot, objectID);
 	ResolveDependencies();
 	initTaskHandlers();
 }
 
 void Pilot::Update(UINT tick)
 {
-	m_pBase->needStore = true;
-	if (tick % 60 == 0) {
-		if (m_pBase->needStore) {
-			m_pBase->store();
+	if (auto* base = GetComponent<BaseComponent>())
+	{
+		base->needStore = true;
+		if (tick % 60 == 0 && base->needStore)
+		{
+			base->store();
 		}
-		m_pSkills->Update(tick);
+	}
+	if (tick % 60 == 0)
+	{
+		if (auto* skills = GetComponent<SkillComponent>())
+		{
+			skills->Update(tick);
+		}
 	}
 }
+
 void Pilot::initTaskHandlers() {
 	taskHandlers = {
 		{"", [this](const Task& task) {}},
 		{"skillComponent", [this](const Task& task) {
-			m_pSkills->handleTask(task);
+			if (auto* skills = GetComponent<SkillComponent>())
+			{
+				skills->handleTask(task);
+			}
 		}},
 	};
 }
@@ -53,6 +63,6 @@ void Pilot::handleTask(const Task& task)
 
 	auto it = taskHandlers.find(taskType);
 	if (it != taskHandlers.end()) {
-		it->second(task);  // 传递任务对象
+		it->second(task);
 	}
 }

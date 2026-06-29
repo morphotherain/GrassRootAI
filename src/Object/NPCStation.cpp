@@ -1,13 +1,14 @@
 ﻿#include "NPCStation.h"
+#include "BaseComponent.h"
+#include "PhysicsComponent.h"
+#include "SpaceTransformComponent.h"
+#include "InvTypesManager.h"
 
 void NPCStation::Init()
 {
-	m_pBase = GetComponentShared<BaseComponent>();
-	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
-	m_pStation = GetComponentShared<StationComponent>();
-	if (m_pSpaceTran)
+	if (auto* spaceTran = GetComponent<SpaceTransformComponent>())
 	{
-		m_pSpaceTran->radius = 10000.0f;
+	 spaceTran->radius = 10000.0f;
 	}
 	initTaskHandlers();
 }
@@ -19,35 +20,53 @@ void NPCStation::Update(UINT tick)
 
 void NPCStation::fillObjectName()
 {
-	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	if (auto* base = GetComponent<BaseComponent>())
+	{
+		base->name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
+	}
 }
+
 void NPCStation::initTaskHandlers() {
 	taskHandlers = {
 		{"", [this](const Task& task) {}},
 		{"dock", [this](const Task& task) {
 			auto publisherPtr = task.publisher.lock();
-			auto base = publisherPtr->GetComponent<BaseComponent>();
-			auto tran = publisherPtr->GetComponent<SpaceTransformComponent>();
-			auto distance = m_pSpaceTran->calculateDistance(*tran);
+			if (!publisherPtr)
+				return;
+			auto* base = publisherPtr->GetComponent<BaseComponent>();
+			auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
+			auto* stationTran = GetComponent<SpaceTransformComponent>();
+			auto* stationBase = GetComponent<BaseComponent>();
+			if (!base || !tran || !stationTran || !stationBase)
+				return;
+
+			auto distance = stationTran->calculateDistance(*tran);
 			if (distance < (2500)) {
-				base->containerID = m_pBase->objectID;
+				base->containerID = stationBase->objectID;
 			}
 		}},
 		{"undock", [this](const Task& task) {
 			auto publisherPtr = task.publisher.lock();
-			auto base = publisherPtr->GetComponent<BaseComponent>();
-			auto tran = publisherPtr->GetComponent<SpaceTransformComponent>();
-			auto physics = publisherPtr->GetComponent<PhysicsComponent>();
+			if (!publisherPtr)
+				return;
+			auto* base = publisherPtr->GetComponent<BaseComponent>();
+			auto* tran = publisherPtr->GetComponent<SpaceTransformComponent>();
+			auto* physics = publisherPtr->GetComponent<PhysicsComponent>();
+			auto* stationTran = GetComponent<SpaceTransformComponent>();
+			if (!base || !tran || !physics || !stationTran)
+				return;
+
 			base->containerID = 0;
-			tran->x = m_pSpaceTran->x + 10000.0f;
-			tran->y = m_pSpaceTran->y;
-			tran->z = m_pSpaceTran->z;
+			tran->x = stationTran->x + 10000.0f;
+			tran->y = stationTran->y;
+			tran->z = stationTran->z;
 			physics->reset();
 			physics->velocity = { 100.0f, 0.0f, 0.0f };
 			physics->target_velocity = { 100.0f, 0.0f, 0.0f };
 		}}
 	};
 }
+
 void NPCStation::handleTask(const Task& task)
 {
 	auto publisherPtr = task.publisher.lock();
@@ -60,6 +79,6 @@ void NPCStation::handleTask(const Task& task)
 
 	auto it = taskHandlers.find(taskType);
 	if (it != taskHandlers.end()) {
-		it->second(task);  // 传递任务对象
+		it->second(task);
 	}
 }

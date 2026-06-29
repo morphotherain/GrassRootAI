@@ -12,6 +12,7 @@
 #include "EquipmentComponent.h"
 #include "WeaponComponent.h"
 #include "MinerComponent.h"
+#include "SkillComponent.h"
 
 void EntityComponentAssembler::Assemble(GameObject& object, EntityArchetype archetype, std::uint32_t objectID)
 {
@@ -38,6 +39,15 @@ void EntityComponentAssembler::Assemble(GameObject& object, EntityArchetype arch
 		object.AddComponent<Component>(std::make_shared<BaseComponent>(objectID));
 		object.AddComponent<Component>(std::make_shared<AttributesComponent>(objectID));
 		break;
+
+	case EntityArchetype::Pilot:
+	{
+		auto base = std::make_shared<BaseComponent>(objectID);
+		object.AddComponent<Component>(base);
+		object.AddComponent<Component>(std::make_shared<AttributesComponent>(objectID));
+		object.AddComponent<Component>(std::make_shared<SkillComponent>(objectID, base->ownerID));
+		break;
+	}
 
 	case EntityArchetype::Ship:
 		object.AddComponent<Component>(std::make_shared<BaseComponent>(objectID));

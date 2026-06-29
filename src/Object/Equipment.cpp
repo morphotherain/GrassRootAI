@@ -1,64 +1,52 @@
 ﻿#include "Equipment.h"
+#include "BaseComponent.h"
+#include "AttributesComponent.h"
+#include "EquipmentComponent.h"
+#include "WeaponComponent.h"
+#include "MinerComponent.h"
+#include "InvTypesManager.h"
 #include "mapJumpsManager.h"
 #include "mapDenormalizeManager.h"
 #include "mapSolarSystemsManager.h"
 #include "dynContainersManager.h"
-
-
+#include "dynGameObjectsManager.h"
+#include "TaskMgr.h"
 
 std::shared_ptr<GameObject> Equipment::ConvertBasedOnGroupID(UINT groupID)
 {
 	switch (groupID){
-	case 46: {
-		return std::make_shared<ThrustEquipments>(objectID);        //推进改良设备
-		break;
+	case 46: return std::make_shared<ThrustEquipments>(objectID);
+	case 53: return std::make_shared<EnergyWeaponEquipments>(objectID);
+	case 54: return std::make_shared<MinerEquipments>(objectID);
+	case 546: return std::make_shared<MiningImprovementEquipments>(objectID);
 	}
-	case 53: {
-		return std::make_shared<EnergyWeaponEquipments>(objectID);        //能量武器
-		break;
-	}
-	case 54: {
-		return std::make_shared<MinerEquipments>(objectID);        //采矿激光器
-		break;
-	}
-	case 546: {
-		return std::make_shared<MiningImprovementEquipments>(objectID);        //采矿改良设备
-		break;
-	}
-	
-	}
-
 	return nullptr;
 }
 
 void Equipment::Init()
 {
-	m_pBase = GetComponentShared<BaseComponent>();
-	m_pAttributes = GetComponentShared<AttributesComponent>();
-	m_pEquipment = GetComponentShared<EquipmentComponent>();
-
 	ResolveDependencies();
 
-	if (m_pBase)
+	if (auto* base = GetComponent<BaseComponent>())
 	{
-		m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+		base->name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
 	}
 }
 
 void Equipment::Update(UINT tick)
 {
-
 	if (tick % 3 != 0)
 		return;
 
-	m_pEquipment->Update(tick);
+	if (auto* equipment = GetComponent<EquipmentComponent>())
+	{
+		equipment->Update(tick);
+	}
 }
 
 void EnergyWeaponEquipments::Init()
 {
 	Equipment::Init();
-
-	m_pWeapon = GetComponentShared<WeaponComponent>();
 	ResolveDependencies();
 }
 
@@ -66,14 +54,13 @@ void EnergyWeaponEquipments::handleTask(const Task& task)
 {
 	try {
 		auto TargetObjectId = std::any_cast<int>((*task.paramsPtr)["TargetObjectId"]);
-
 		auto target = GameObjectMgr::getInstance().getObject(TargetObjectId);
-		if (target) {
-			m_pEquipment->Switch(TargetObjectId);
+		if (target && GetComponent<EquipmentComponent>())
+		{
+			GetComponent<EquipmentComponent>()->Switch(TargetObjectId);
 		}
 	}
 	catch (const std::bad_any_cast& e) {
-		// 记录日志或进行错误处理
 		DEBUG_("类型转换错误: {}", e.what());
 	}
 	DEBUG_(task.to_string());
@@ -84,24 +71,29 @@ void EnergyWeaponEquipments::Update(UINT tick)
 	if (tick % 3 != 0)
 		return;
 
-	m_pEquipment->Update(tick);
-	if (m_pEquipment->m_beginActive) {
-		m_pWeapon->applyDamage();
+	auto* equipment = GetComponent<EquipmentComponent>();
+	auto* weapon = GetComponent<WeaponComponent>();
+	if (!equipment)
 		return;
+
+	equipment->Update(tick);
+	if (equipment->m_beginActive && weapon) {
+		weapon->applyDamage();
 	}
 }
 
 void MinerEquipments::Init()
 {
 	Equipment::Init();
-
-	m_pMiner = GetComponentShared<MinerComponent>();
 	ResolveDependencies();
 }
 
 void MinerEquipments::handleTask(const Task& task)
 {
-	m_pMiner->handleTask(task);
+	if (auto* miner = GetComponent<MinerComponent>())
+	{
+		miner->handleTask(task);
+	}
 }
 
 void MinerEquipments::Update(UINT tick)
@@ -109,8 +101,13 @@ void MinerEquipments::Update(UINT tick)
 	if (tick % 3 != 0)
 		return;
 
-	m_pEquipment->Update(tick);
-	if (m_pEquipment->m_endActive) {
+	auto* equipment = GetComponent<EquipmentComponent>();
+	auto* attributes = GetComponent<AttributesComponent>();
+	if (!equipment)
+		return;
+
+	equipment->Update(tick);
+	if (equipment->m_endActive && attributes) {
 		auto containerId = dynGameObjectsManager::getInstance()->getContainerIdByObjectID(objectID);
 		auto ownerId = dynContainersManager::getInstance()->getObjectIDByContainerID(containerId);
 
@@ -119,16 +116,19 @@ void MinerEquipments::Update(UINT tick)
 		task->targetId = ownerId;
 		(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
 		(*task->paramsPtr)["storageTaskType"] = std::string("RequestObject");
-		(*task->paramsPtr)["volume"] = (*m_pAttributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value;
-		(*task->paramsPtr)["RequestTarget"] = m_pEquipment->m_targetObjectId;
+		(*task->paramsPtr)["volume"] = (*attributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value;
+		(*task->paramsPtr)["RequestTarget"] = equipment->m_targetObjectId;
 
 		TaskMgr::getInstance().addTask(task);
 
-		DEBUG_("(*m_pAttributes->typeAttributes)[ATTR_ID_MINING_AMOUNT] : {}", (*m_pAttributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value);
+		DEBUG_("(*attributes->typeAttributes)[ATTR_ID_MINING_AMOUNT] : {}", (*attributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value);
 	}
 }
 
 void ThrustEquipments::handleTask(const Task& task)
 {
-	m_pEquipment->keep_active = !m_pEquipment->keep_active;
+	if (auto* equipment = GetComponent<EquipmentComponent>())
+	{
+		equipment->keep_active = !equipment->keep_active;
+	}
 }

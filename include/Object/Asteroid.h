@@ -1,8 +1,6 @@
 ﻿
 #pragma once
 #include "GameObject.h"
-#include "BaseComponent.h"
-#include "SpaceTransformComponent.h"
 #include "AttributesComponent.h"
 
 class Asteroid : public GameObject
@@ -10,7 +8,6 @@ class Asteroid : public GameObject
 public:
 	Asteroid() = default;
 	Asteroid(UINT _objectID) :objectID(_objectID) {};
-	//~Asteroid() = default;
 	~Asteroid();
 
 	virtual void Init();
@@ -18,13 +15,7 @@ public:
 	virtual void handleTask(const Task& task);
 
 	UINT objectID;
-
-	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<SpaceTransformComponent>m_pSpaceTran;
-	std::shared_ptr<AttributesComponent> m_pAttributes;
-
 };
-
 
 class Veldspar : public Asteroid {
 public:

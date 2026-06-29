@@ -9,6 +9,7 @@ enum class EntityArchetype : std::uint8_t
 	StarGate,
 	NPCStation,
 	Mineral,
+	Pilot,
 	Ship,
 	Equipment,
 	EnergyWeaponEquipment,

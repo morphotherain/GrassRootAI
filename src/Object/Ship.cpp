@@ -1,46 +1,26 @@
 ﻿#include "Ship.h"
 #include "InvTypesManager.h"
+#include "BaseComponent.h"
+#include "AttributesComponent.h"
+#include "EquipmentsComponent.h"
+#include "SpaceTransformComponent.h"
+#include "PhysicsComponent.h"
+#include "StorageComponent.h"
+#include "LockingComponent.h"
 using namespace DirectX;
 
-// 实现 ConvertBasedOnGroupID 方法
 std::shared_ptr<GameObject> Ship::ConvertBasedOnGroupID(UINT groupID, UINT objectID) {
 	switch (groupID) {
-	case 25: {
-		return std::make_shared<Frigate>(objectID);
-	}
-	case 26: {
-		return std::make_shared<Cruiser>(objectID);
-	}
-	case 27: {
-		return std::make_shared<Battleship>(objectID);
-	}
-	case 29: {
-		return std::make_shared<Capsule>(objectID);
-	}
+	case 25: return std::make_shared<Frigate>(objectID);
+	case 26: return std::make_shared<Cruiser>(objectID);
+	case 27: return std::make_shared<Battleship>(objectID);
+	case 29: return std::make_shared<Capsule>(objectID);
 	}
 	return nullptr;
 }
 
 void Ship::Init()
 {
-	m_pBase = GetComponentShared<BaseComponent>();
-	m_pAttributes = GetComponentShared<AttributesComponent>();
-	m_pEquipments = GetComponentShared<EquipmentsComponent>();
-	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
-	m_pPhysics = GetComponentShared<PhysicsComponent>();
-	m_pPilotStorage = GetComponentShared<PilotStorageComponent>();
-	m_pCargoStorage = GetComponentShared<CargoContainerComponent>();
-	m_pHighSlotStorage = GetComponentShared<HighSlotComponent>();
-	m_pMediumSlotStorage = GetComponentShared<MediumSlotComponent>();
-	m_pLowSlotStorage = GetComponentShared<LowSlotComponent>();
-	m_pRigSlotStorage = GetComponentShared<RigSlotComponent>();
-	m_pLocking = GetComponentShared<LockingComponent>();
-
-	if (m_pPhysics && m_pSpaceTran)
-	{
-		m_pPhysics->SpaceTran = m_pSpaceTran;
-	}
-
 	ResolveDependencies();
 	fillObjectName();
 	initTaskHandlers();
@@ -53,31 +33,37 @@ void Ship::Update(UINT tick)
 		handleApproach(approachTarget.lock());
 		handleWarp(warpTarget.lock());
 	}
-	m_pSpaceTran->needStore = true;
-	//m_pBase->needStore = true;
-	if (tick % 60 == 0) {
-		if (m_pSpaceTran->needStore) {
-			m_pSpaceTran->store();
+
+	auto* spaceTran = GetComponent<SpaceTransformComponent>();
+	auto* physics = GetComponent<PhysicsComponent>();
+	auto* base = GetComponent<BaseComponent>();
+	auto* locking = GetComponent<LockingComponent>();
+	auto* equipments = GetComponent<EquipmentsComponent>();
+	auto* attributes = GetComponent<AttributesComponent>();
+
+	if (spaceTran)
+	{
+		spaceTran->needStore = true;
+		if (tick % 60 == 0 && spaceTran->needStore)
+		{
+			spaceTran->store();
 		}
-		/*if (m_pBase->needStore) {
-			m_pBase->store();
-		}*/
 	}
-	m_pPhysics->Update(tick);
-	m_pBase->Update(tick);
-	m_pLocking->Update(tick);
-	m_pEquipments->Update(tick);
-
-	m_pAttributes->Update(tick);
+	if (physics) physics->Update(tick);
+	if (base) base->Update(tick);
+	if (locking) locking->Update(tick);
+	if (equipments) equipments->Update(tick);
+	if (attributes) attributes->Update(tick);
 	updateEquipments(tick);
-
 }
 
 void Ship::fillObjectName()
 {
-	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	if (auto* base = GetComponent<BaseComponent>())
+	{
+		base->name = InvTypesManager::getInstance()->getNameByTypeId(base->typeID);
+	}
 }
-
 
 void Ship::initTaskHandlers() {
 	taskHandlers = {
@@ -96,36 +82,51 @@ void Ship::initTaskHandlers() {
 		}},
 		{"addLocked", [this](const Task& task) {
 			auto targetPtr = task.target.lock();
-			if (targetPtr) {
-				m_pLocking->AddLocked(targetPtr->objectID);
+			if (targetPtr && GetComponent<LockingComponent>())
+			{
+				GetComponent<LockingComponent>()->AddLocked(targetPtr->objectID);
 				DEBUG_("发布锁定任务");
 			}
 		}},
 		{"eraseLocked", [this](const Task& task) {
 			auto targetPtr = task.target.lock();
-			if (targetPtr) {
-				m_pLocking->EraseLocked(targetPtr->objectID);
+			if (targetPtr && GetComponent<LockingComponent>())
+			{
+				GetComponent<LockingComponent>()->EraseLocked(targetPtr->objectID);
 				DEBUG_("发布取消锁定任务");
 			}
 		}},
 		{"equipments", [this](const Task& task) {
 			DEBUG_("装备按键输入");
-			m_pEquipments->handleTask(task);
+			if (auto* equipments = GetComponent<EquipmentsComponent>())
+			{
+				equipments->handleTask(task);
+			}
 		}},
 		{"refreshEquipment", [this](const Task& task) {
 			DEBUG_("刷新装备");
-			m_pEquipments->Refresh();
+			if (auto* equipments = GetComponent<EquipmentsComponent>())
+			{
+				equipments->Refresh();
+			}
 		}},
 		{"locking", [this](const Task& task) {
 			DEBUG_("切换锁定目标");
-			m_pLocking->handleTask(task);
+			if (auto* locking = GetComponent<LockingComponent>())
+			{
+				locking->handleTask(task);
+			}
 		}},
 		{"cargoStorage", [this](const Task& task) {
 			DEBUG_("");
-			m_pCargoStorage->handleTask(task);
+			if (auto* cargo = GetComponent<CargoContainerComponent>())
+			{
+				cargo->handleTask(task);
+			}
 		}},
 	};
 }
+
 void Ship::handleTask(const Task& task)
 {
 	auto publisherPtr = task.publisher.lock();
@@ -138,7 +139,7 @@ void Ship::handleTask(const Task& task)
 
 	auto it = taskHandlers.find(taskType);
 	if (it != taskHandlers.end()) {
-		it->second(task);  // 传递任务对象
+		it->second(task);
 	}
 }
 
@@ -146,30 +147,35 @@ void Ship::handleApproach(std::shared_ptr<GameObject> target)
 {
 	if (target == nullptr)
 		return;
-	auto Tran = target->GetComponent<SpaceTransformComponent>();
-	// 计算朝向向量
-	DirectX::XMFLOAT3 direction;
-	direction.x = static_cast<float>(Tran->x - m_pSpaceTran->x);
-	direction.y = static_cast<float>(Tran->y - m_pSpaceTran->y);
-	direction.z = static_cast<float>(Tran->z - m_pSpaceTran->z);
 
-	// 将XMFLOAT3转换为XMVECTOR（方便后续数学运算）
+	auto* spaceTran = GetComponent<SpaceTransformComponent>();
+	auto* physics = GetComponent<PhysicsComponent>();
+	if (!spaceTran || !physics)
+		return;
+
+	auto Tran = target->GetComponent<SpaceTransformComponent>();
+	if (!Tran)
+		return;
+
+	DirectX::XMFLOAT3 direction;
+	direction.x = static_cast<float>(Tran->x - spaceTran->x);
+	direction.y = static_cast<float>(Tran->y - spaceTran->y);
+	direction.z = static_cast<float>(Tran->z - spaceTran->z);
+
 	XMVECTOR dirVec = XMLoadFloat3(&direction);
 	float length = XMVector3Length(dirVec).m128_f32[0];
 
-	// 归一化向量（计算单位向量）
-	if (length > 0.0f)  // 避免除以0的情况
+	if (length > 0.0f)
 	{
 		dirVec = XMVector3Normalize(dirVec);
 		XMStoreFloat3(&direction, dirVec);
 	}
 
-	float maxSpeed = m_pPhysics->maxSpeed;
-	// 乘以最大速度
-	m_pPhysics->target_velocity.x = direction.x * maxSpeed;
-	m_pPhysics->target_velocity.y = direction.y * maxSpeed;
-	m_pPhysics->target_velocity.z = direction.z * maxSpeed;
-	m_pPhysics->StartManeuver();
+	float maxSpeed = physics->maxSpeed;
+	physics->target_velocity.x = direction.x * maxSpeed;
+	physics->target_velocity.y = direction.y * maxSpeed;
+	physics->target_velocity.z = direction.z * maxSpeed;
+	physics->StartManeuver();
 }
 
 void Ship::handleActive(std::shared_ptr<GameObject> target)
@@ -181,55 +187,53 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 	if (target == nullptr)
 		return;
 
+	auto* spaceTran = GetComponent<SpaceTransformComponent>();
+	auto* physics = GetComponent<PhysicsComponent>();
+	if (!spaceTran || !physics)
+		return;
+
 	switch (currentWarpState) {
 	case ShipWarpState::None:
-	{
 		currentWarpState = ShipWarpState::PreparingWarp;
 		break;
-	}
+
 	case ShipWarpState::PreparingWarp:
 	{
 		auto Tran = target->GetComponent<SpaceTransformComponent>();
-		// 计算朝向向量
+		if (!Tran)
+			break;
+
 		DirectX::XMFLOAT3 direction;
-		direction.x = static_cast<float>(Tran->x - m_pSpaceTran->x);
-		direction.y = static_cast<float>(Tran->y - m_pSpaceTran->y);
-		direction.z = static_cast<float>(Tran->z - m_pSpaceTran->z);
+		direction.x = static_cast<float>(Tran->x - spaceTran->x);
+		direction.y = static_cast<float>(Tran->y - spaceTran->y);
+		direction.z = static_cast<float>(Tran->z - spaceTran->z);
 
-		// 获取当前飞船速度向量
-		XMVECTOR currentVelocityVec = XMLoadFloat3(&m_pPhysics->velocity);
+		XMVECTOR currentVelocityVec = XMLoadFloat3(&physics->velocity);
 		float currentSpeed = XMVector3Length(currentVelocityVec).m128_f32[0];
-		// 获取最大速度
-		float maxSpeed = m_pPhysics->maxSpeed;
+		float maxSpeed = physics->maxSpeed;
 
-		// 将XMFLOAT3转换为XMVECTOR（方便后续数学运算）
 		XMVECTOR dirVec = XMLoadFloat3(&direction);
 		float length = XMVector3Length(dirVec).m128_f32[0];
 
-		// 归一化向量（计算单位向量）
-		if (length > 0.0f)  // 避免除以0的情况
+		if (length > 0.0f)
 		{
 			dirVec = XMVector3Normalize(dirVec);
 			XMStoreFloat3(&direction, dirVec);
 		}
 
-		// 先调整船头朝向目标
-		m_pPhysics->target_velocity.x = direction.x * maxSpeed;
-		m_pPhysics->target_velocity.y = direction.y * maxSpeed;
-		m_pPhysics->target_velocity.z = direction.z * maxSpeed;
-		m_pPhysics->StartManeuver();
+		physics->target_velocity.x = direction.x * maxSpeed;
+		physics->target_velocity.y = direction.y * maxSpeed;
+		physics->target_velocity.z = direction.z * maxSpeed;
+		physics->StartManeuver();
 
-		// 判断当前速度是否达到最大速度的75%
 		bool speedRequirementMet = currentSpeed >= maxSpeed * 0.75f;
 
-		// 计算当前船头朝向向量（假设飞船有个表示船头朝向的向量属性，这里简化为和速度方向一致，如果实际情况不同需要调整）
-		XMVECTOR currentForwardVec = XMLoadFloat3(&m_pPhysics->velocity);
+		XMVECTOR currentForwardVec = XMLoadFloat3(&physics->velocity);
 		if (XMVector3Length(currentForwardVec).m128_f32[0] > 0.0f)
 		{
 			currentForwardVec = XMVector3Normalize(currentForwardVec);
 		}
 
-		// 计算船头朝向与目标方向的夹角（使用点积来计算夹角的余弦值，再通过反余弦函数得到夹角弧度值，最后转换为角度值）
 		float dotProduct = XMVector3Dot(currentForwardVec, dirVec).m128_f32[0];
 		dotProduct = (dotProduct < -1.0f) ? -1.0f : ((dotProduct > 1.0f) ? 1.0f : dotProduct);
 		float angleInRadians = acosf(dotProduct);
@@ -238,35 +242,34 @@ void Ship::handleWarp(std::shared_ptr<GameObject> target)
 
 		if (speedRequirementMet && angleRequirementMet)
 		{
-			auto Tran = target->GetComponent<SpaceTransformComponent>();
-			m_pPhysics->setTargetPos(Tran->x, Tran->y, Tran->z);
-			m_pPhysics->StartWarp();
+			physics->setTargetPos(Tran->x, Tran->y, Tran->z);
+			physics->StartWarp();
 			currentWarpState = ShipWarpState::Warping;
 		}
 		break;
 	}
-	case ShipWarpState::Warping: {
-		if (!m_pPhysics->isWarping) {
+	case ShipWarpState::Warping:
+		if (!physics->isWarping) {
 			currentWarpState = ShipWarpState::None;
 			warpTarget.reset();
 		}
 		break;
 	}
-	}
 }
 
 void Ship::updateEquipments(int tick)
 {
-	std::vector<std::vector<int>> ItemsIDs = {};
-	ItemsIDs.push_back(m_pHighSlotStorage->itemIDs);
-	ItemsIDs.push_back(m_pMediumSlotStorage->itemIDs);
-	ItemsIDs.push_back(m_pLowSlotStorage->itemIDs);
-	for (auto& ids : ItemsIDs) {
-		for (auto id : ids) {
-			auto equipment = GameObjectMgr::getInstance().getObject(id);
-			if (equipment) {
+	auto updateSlotItems = [tick](StorageComponent* slot) {
+		if (!slot) return;
+		for (auto id : slot->itemIDs) {
+			if (auto equipment = GameObjectMgr::getInstance().getObject(id))
+			{
 				equipment->Update(tick);
 			}
 		}
-	}
+	};
+
+	updateSlotItems(GetComponent<HighSlotComponent>());
+	updateSlotItems(GetComponent<MediumSlotComponent>());
+	updateSlotItems(GetComponent<LowSlotComponent>());
 }

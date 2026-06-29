@@ -1,12 +1,5 @@
 ﻿#pragma once
 #include "GameObject.h"
-#include "BaseComponent.h"
-#include "AttributesComponent.h"	
-#include "EquipmentComponent.h"
-#include "MinerComponent.h"
-#include "WeaponComponent.h"
-
-
 
 class Equipment : public GameObject
 {
@@ -21,15 +14,9 @@ public:
 	virtual void handleTask(const Task& task) {};
 
 	UINT objectID;
-
-	std::shared_ptr<BaseComponent> m_pBase;
-	std::shared_ptr<AttributesComponent> m_pAttributes;
-	std::shared_ptr<EquipmentComponent> m_pEquipment;
 };
 
-
-
-class ThrustEquipments : public Equipment   //groupID 46 推进改良设备
+class ThrustEquipments : public Equipment
 {
 public:
 	ThrustEquipments() = default;
@@ -39,7 +26,7 @@ public:
 	virtual void handleTask(const Task& task);
 };
 
-class EnergyWeaponEquipments : public Equipment   //groupID 53 能量武器
+class EnergyWeaponEquipments : public Equipment
 {
 public:
 	EnergyWeaponEquipments() = default;
@@ -49,10 +36,9 @@ public:
 	virtual void Init();
 	virtual void handleTask(const Task& task);
 	virtual void Update(UINT tick) override;
-	std::shared_ptr<WeaponComponent> m_pWeapon;
 };
 
-class MinerEquipments : public Equipment   //groupID 54 采矿激光器
+class MinerEquipments : public Equipment
 {
 public:
 	MinerEquipments() = default;
@@ -62,13 +48,9 @@ public:
 	virtual void Init();
 	virtual void handleTask(const Task& task);
 	virtual void Update(UINT tick) override;
-	std::shared_ptr<MinerComponent> m_pMiner;
 };
 
-
-
-
-class MiningImprovementEquipments : public Equipment   //groupID 546 采矿改良设备
+class MiningImprovementEquipments : public Equipment
 {
 public:
 	MiningImprovementEquipments() = default;
