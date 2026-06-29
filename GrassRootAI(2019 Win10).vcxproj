@@ -258,6 +258,8 @@
     <ClCompile Include="src\Object\Sector.cpp" />
     <ClCompile Include="src\Object\Ship.cpp" />
     <ClCompile Include="src\Object\SolarSystem.cpp" />
+    <ClCompile Include="src\Object\EntityArchetype.cpp" />
+    <ClCompile Include="src\Object\EntityComponentAssembler.cpp" />
     <ClCompile Include="src\Object\ObjectFactory.cpp" />
     <ClCompile Include="src\Object\SolarSystemMgr.cpp" />
     <ClCompile Include="src\Scene\demoScene.cpp" />
@@ -404,6 +406,8 @@
     <ClInclude Include="include\Object\Astro.h" />
     <ClInclude Include="include\Object\Equipment.h" />
     <ClInclude Include="include\Object\GameObject.h" />
+    <ClInclude Include="include\Object\EntityArchetype.h" />
+    <ClInclude Include="include\Object\EntityComponentAssembler.h" />
     <ClInclude Include="include\Object\ObjectFactory.h" />
     <ClInclude Include="include\Object\GamePlayer.h" />
     <ClInclude Include="include\Object\Material.h" />

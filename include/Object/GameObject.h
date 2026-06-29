@@ -41,6 +41,16 @@ public:
 	}
 
 	template<typename T>
+	std::shared_ptr<T> GetComponentShared() {
+		for (auto& comp : components) {
+			if (auto casted = std::dynamic_pointer_cast<T>(comp)) {
+				return casted;
+			}
+		}
+		return nullptr;
+	}
+
+	template<typename T>
 	std::vector<T*> GetComponents() {
 		std::vector<T*> matchedComponents;
 		for (auto& comp : components) {

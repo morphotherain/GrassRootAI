@@ -1,4 +1,6 @@
 #include "ObjectFactory.h"
+#include "EntityArchetype.h"
+#include "EntityComponentAssembler.h"
 #include "Astro.h"
 #include "NPCStation.h"
 #include "Material.h"
@@ -40,6 +42,8 @@ std::shared_ptr<GameObject> ObjectFactory::CreateFromDynObject(const dynGameObje
 		object = refined;
 	}
 
+	const EntityArchetype archetype = ResolveEntityArchetype(*object);
+	EntityComponentAssembler::Assemble(*object, archetype, objectData.objectID);
 	object->Init();
 	return object;
 }

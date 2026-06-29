@@ -2,13 +2,13 @@
 
 void NPCStation::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	m_pSpaceTran->radius = 10000.0f;
-	AddComponent<Component>(m_pSpaceTran);
-	m_pStation = std::make_shared<StationComponent>(objectID);
-	AddComponent<Component>(m_pStation);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
+	m_pStation = GetComponentShared<StationComponent>();
+	if (m_pSpaceTran)
+	{
+		m_pSpaceTran->radius = 10000.0f;
+	}
 	initTaskHandlers();
 }
 

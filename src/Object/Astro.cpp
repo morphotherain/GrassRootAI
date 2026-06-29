@@ -28,44 +28,33 @@ std::shared_ptr<GameObject> Astro::ConvertBasedOnGroupID(UINT groupID)
 
 void Star::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
 }
 
 void Planet::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
 }
 
 void Moon::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
 }
 
 void AsteroidBelt::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
 }
 
 void StarGate::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
-	m_pWarpGate = std::make_shared<WarpGateComponent>(objectID);
-	AddComponent<Component>(m_pWarpGate);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
+	m_pWarpGate = GetComponentShared<WarpGateComponent>();
 	fillObjectName();
 	initTaskHandlers();
 }

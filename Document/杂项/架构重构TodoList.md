@@ -6,7 +6,7 @@
 >
 > **原则**：一个 PR / 一次提交只做一件事；每项有「完成标准」，做完可以停，不强行连锁大改。
 >
-> **当前主线**：Phase A/B/C ✅ → Phase 1 ✅ → **Phase 2 🟡**（2.1–2.4、2.6 ✅）。**下一步**：Phase 7.1（Archetype）或 Phase 3。
+> **当前主线**：Phase 2 ✅（2.5 可选）→ **Phase 7 🟡**（7.1 ✅）。**下一步**：7.4 依赖注入修复 或 7.2 去双轨指针。
 >
 > **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**；Phase 0–2 约 **1 周**；Phase 3–6 长期按需；**Phase 7** 与 Phase 2.4 衔接，分阶段做、不必一次换 EnTT。
 
@@ -21,12 +21,12 @@
 | **C** | **主界面存档管理窗口** | 1 周 | ✅ **已完成**（2026-06-29，UIF 导航 + 存读删 UI） |
 | 0 | 安全网 | 0.5 天 | 🟡 进行中 |
 | 1 | P0 快速清理 | 1–2 天 | ✅ **已完成**（2026-06-29） |
-| 2 | P1 边界抽取 | 3–5 天 | 🟡 **近完成**（2.1–2.4、2.6 ✅；2.5 可选） |
+| 2 | P1 边界抽取 | 3–5 天 | ✅ **已完成**（2026-06-29；2.5 可选未做） |
 | 3 | P1 Task 系统加固 | 2–3 天 | ⬜ 未开始 |
 | 4 | P2 旧 UI 解耦 | 按需，每项 1–2 天 | ⬜ 未开始 |
 | 5 | P2 数据层 | 低优先级 | ⬜ 未开始 |
 | 6 | 长期重构 | 1–2 周+ | ⬜ 未开始 |
-| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | ⬜ 未开始 |
+| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | 🟡 进行中（7.1 ✅） |
 
 > **背景**：commit `64448a8` 起的「半成品警示」已解除：存档状态机 + UIF 主菜单 + 新建/读档/删档 UI 闭环已通；A.4 临时 `UIButton` 回退已移除。
 
@@ -448,12 +448,13 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 7.1 Archetype 配方 + ObjectFactory 组装
 
-- [ ] **7.1a** 定义 `EntityArchetype` 枚举或表：`Ship`、`Astro`、`NPCStation`、`Mineral`、`Equipment`…
-- [ ] **7.1b** 每个 Archetype 对应组件清单（如 Ship = Base + Attributes + SpaceTransform + Physics + Equipments + Storages + Locking）
-- [ ] **7.1c** `ObjectFactory::CreateFromDynObject` 内按 Archetype 一次性 `AddComponent`，替代各子类 `Init()` 里 40 行复制
-- [ ] 依赖：Phase **2.4**、**2.5**
-- [ ] 完成标准：新增 category 类型只改 Factory + 配方表；`SolarSystem::addGameObject` 无 category switch
-- [ ] 预估：1–2 天
+- [x] **7.1a** 定义 `EntityArchetype` 枚举：`AstroCelestial`、`StarGate`、`Ship`、`Equipment` 等
+- [x] **7.1b** `EntityComponentAssembler` 按 Archetype 挂载组件清单
+- [x] **7.1c** `ObjectFactory` 在 `Init()` 前调用 Assembler；各子类 `Init()` 只做引用绑定与业务逻辑
+- [x] `GameObject::GetComponentShared<T>()` 供 Init 绑定成员指针
+- [ ] 依赖：Phase **2.4** ✅、**2.5**（group 细化类型仍由 `ConvertBasedOnGroupID`）
+- [x] 完成标准：组件 `AddComponent` 集中在 Assembler；新增类型改 Assembler + Archetype 解析
+- [x] 预估：1–2 天
 
 ### 7.2 去掉 Entity 双轨组件指针
 
@@ -612,4 +613,5 @@ Phase 5–6 有空再说；7.9 Pilot 拆分按需
 | 2026-06-29 | Phase C 标记完成；C.6 回归清单写入 [[存档系统流程]]；移除 A.4 `UIF_USE_LEGACY_MAIN_MENU` 回退 |
 | 2026-06-29 | Phase 1 完成：Task 去 D3D、Handler Factory 注册、Component/Database include 清理、vcxproj 去掉 .h 误编译 |
 | 2026-06-29 | Phase 2.2–2.4、2.6：`SceneTransitionService`、`switchToSolarSystem`、`ObjectFactory`、mapDenormalize SQL 迁移 |
+| 2026-06-29 | Phase 7.1：`EntityArchetype` + `EntityComponentAssembler` 集中组件组装 |
 | 2026-06-29 | 新增 **Phase 7** Entity/Component 模型优化清单（Archetype、System 层、脏标记、Task dispatch 等） |

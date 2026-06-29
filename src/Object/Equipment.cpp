@@ -33,16 +33,16 @@ std::shared_ptr<GameObject> Equipment::ConvertBasedOnGroupID(UINT groupID)
 
 void Equipment::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttributes);
-	m_pEquipment = std::make_shared<EquipmentComponent>(objectID);
-	AddComponent<Component>(m_pEquipment);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pAttributes = GetComponentShared<AttributesComponent>();
+	m_pEquipment = GetComponentShared<EquipmentComponent>();
 
 	ResolveDependencies();
 
-	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	if (m_pBase)
+	{
+		m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	}
 }
 
 void Equipment::Update(UINT tick)
@@ -58,9 +58,7 @@ void EnergyWeaponEquipments::Init()
 {
 	Equipment::Init();
 
-	m_pWeapon = std::make_shared<WeaponComponent>(objectID);
-	AddComponent<Component>(m_pWeapon);
-
+	m_pWeapon = GetComponentShared<WeaponComponent>();
 	ResolveDependencies();
 }
 
@@ -97,9 +95,7 @@ void MinerEquipments::Init()
 {
 	Equipment::Init();
 
-	m_pMiner = std::make_shared<MinerComponent>(objectID);
-	AddComponent<Component>(m_pMiner);
-
+	m_pMiner = GetComponentShared<MinerComponent>();
 	ResolveDependencies();
 }
 

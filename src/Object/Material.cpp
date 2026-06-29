@@ -13,10 +13,8 @@ std::shared_ptr<GameObject> Material::ConvertBasedOnGroupID(UINT groupID)
 
 void Mineral::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttributes);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pAttributes = GetComponentShared<AttributesComponent>();
 }
 
 void Mineral::Update(UINT tick) {

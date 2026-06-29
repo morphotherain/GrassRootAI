@@ -23,35 +23,23 @@ std::shared_ptr<GameObject> Ship::ConvertBasedOnGroupID(UINT groupID, UINT objec
 
 void Ship::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttributes);
-	m_pEquipments = std::make_shared<EquipmentsComponent>(objectID);
-	AddComponent<Component>(m_pEquipments);
-	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	AddComponent<Component>(m_pSpaceTran);
-	m_pPhysics = std::make_shared<PhysicsComponent>(objectID);
-	AddComponent<Component>(m_pPhysics);
-	m_pPhysics->SpaceTran = m_pSpaceTran;
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pAttributes = GetComponentShared<AttributesComponent>();
+	m_pEquipments = GetComponentShared<EquipmentsComponent>();
+	m_pSpaceTran = GetComponentShared<SpaceTransformComponent>();
+	m_pPhysics = GetComponentShared<PhysicsComponent>();
+	m_pPilotStorage = GetComponentShared<PilotStorageComponent>();
+	m_pCargoStorage = GetComponentShared<CargoContainerComponent>();
+	m_pHighSlotStorage = GetComponentShared<HighSlotComponent>();
+	m_pMediumSlotStorage = GetComponentShared<MediumSlotComponent>();
+	m_pLowSlotStorage = GetComponentShared<LowSlotComponent>();
+	m_pRigSlotStorage = GetComponentShared<RigSlotComponent>();
+	m_pLocking = GetComponentShared<LockingComponent>();
 
-	m_pPilotStorage = std::make_shared<PilotStorageComponent>(objectID);
-	AddComponent<Component>(m_pPilotStorage);
-	
-	m_pCargoStorage = std::make_shared<CargoContainerComponent>(objectID);
-	AddComponent<Component>(m_pCargoStorage);
-	
-	m_pHighSlotStorage = std::make_shared<HighSlotComponent>(objectID);
-	AddComponent<Component>(m_pHighSlotStorage);
-	m_pMediumSlotStorage = std::make_shared<MediumSlotComponent>(objectID);
-	AddComponent<Component>(m_pMediumSlotStorage);
-	m_pLowSlotStorage = std::make_shared<LowSlotComponent>(objectID);
-	AddComponent<Component>(m_pLowSlotStorage);
-	m_pRigSlotStorage = std::make_shared<RigSlotComponent>(objectID);
-	AddComponent<Component>(m_pRigSlotStorage);
-
-	m_pLocking = std::make_shared<LockingComponent>(objectID);
-	AddComponent<Component>(m_pLocking);
+	if (m_pPhysics && m_pSpaceTran)
+	{
+		m_pPhysics->SpaceTran = m_pSpaceTran;
+	}
 
 	ResolveDependencies();
 	fillObjectName();

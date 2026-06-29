@@ -9,18 +9,21 @@ Asteroid::~Asteroid()
 
 void Asteroid::Init()
 {
-	m_pBase = std::make_shared<BaseComponent>(objectID);
-	AddComponent<Component>(m_pBase);
-	m_pAttributes = std::make_shared<AttributesComponent>(objectID);
-	AddComponent<Component>(m_pAttributes);
+	m_pBase = GetComponentShared<BaseComponent>();
+	m_pAttributes = GetComponentShared<AttributesComponent>();
 	m_pSpaceTran = std::make_shared<SpaceTransformComponent>(objectID);
-	if (m_pSpaceTran->x == 0.0f && m_pSpaceTran->y == 0.0f && m_pSpaceTran->z == 0.0f){
+	if (m_pSpaceTran->x == 0.0f && m_pSpaceTran->y == 0.0f && m_pSpaceTran->z == 0.0f)
+	{
 		m_pSpaceTran.reset();
 	}
-	else {
+	else
+	{
 		AddComponent<Component>(m_pSpaceTran);
 	}
-	m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	if (m_pBase)
+	{
+		m_pBase->name = InvTypesManager::getInstance()->getNameByTypeId(m_pBase->typeID);
+	}
 }
 
 std::shared_ptr<GameObject> Asteroid::ConvertBasedOnGroupID(UINT groupID)
