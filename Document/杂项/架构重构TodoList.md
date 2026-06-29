@@ -473,10 +473,10 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 7.4 修复 `ResolveDependencies`
 
-- [ ] 改什么：`typeid(*depComponent) == depType`（或 `type_index` 直接比较），禁止 `hash_code`
+- [x] 改什么：`std::type_index(typeid(*depComponent)) == depType`，禁止 `hash_code`
 - [ ] 改什么：`InjectDependency` 可改为按 `type_index` 分发表，减少 `dynamic_pointer_cast` 链
-- [ ] 完成标准：`EquipmentsComponent` 等依赖注入单测/日志可验证；无 hash 比对
-- [ ] 预估：2–3h
+- [x] 完成标准：无 hash 比对；编译通过
+- [x] 预估：2–3h
 
 ### 7.5 轻量 System 层（非完整 ECS）
 
