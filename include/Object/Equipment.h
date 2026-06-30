@@ -15,7 +15,6 @@ public:
 
 	virtual void Init();
 	virtual void Update(UINT tick) override;
-	virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID);
 	virtual void handleTask(const Task& task) {};
 
 	UINT objectID;

@@ -7,6 +7,13 @@ using namespace DirectX;
 #define MIN_ACCELERATION_TIME 300
 #define MIN_DECELERATION_TIME 480
 
+PhysicsComponent::PhysicsComponent()
+{
+	dependencyBinder_.BindShared<SpaceTransformComponent>([this](const std::shared_ptr<SpaceTransformComponent>& spaceTran) {
+		SpaceTran = spaceTran;
+	});
+}
+
 // 根据当前速度向量与目标速度向量的差值计算完成机动的时间（tick数）
 UINT PhysicsComponent::CalculateManeuverEndTime() {
 	// 先计算速度向量差值
@@ -70,9 +77,7 @@ void PhysicsComponent::reset()
 
 void PhysicsComponent::InjectDependency(const std::shared_ptr<Component>& dep)
 {
-	if (auto spaceTran = std::dynamic_pointer_cast<SpaceTransformComponent>(dep)) {
-		SpaceTran = spaceTran;
-	}
+	dependencyBinder_.Inject(dep);
 }
 
 void PhysicsComponent::Update(UINT tick) {
@@ -147,6 +152,7 @@ void PhysicsComponent::Update(UINT tick) {
 		SpaceTran->x = currentPosition.x;
 		SpaceTran->y = currentPosition.y;
 		SpaceTran->z = currentPosition.z;
+		SpaceTran->needStore = true;
 
 		// 跃迁结束，重置相关状态和速度等
 		if (SpaceTran->calculateDistance(endPosition.x, endPosition.y, endPosition.z, 10.0f) < 10.0f)

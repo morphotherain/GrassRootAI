@@ -1,11 +1,12 @@
 ﻿#include "BaseComponent.h"
-#include "dynGameObjectsManager.h"
+#include "Sim/IGameObjectRepository.h"
 #include "dynContainersManager.h"
 
 BaseComponent::BaseComponent(UINT _objectID)
 {
+	auto& repository = GetGameObjectRepository();
 	objectID = _objectID;
-	auto data = dynGameObjectsManager::getInstance()->getGameObjectByObjectID(objectID);
+	auto data = repository.getByObjectID(objectID);
 	typeID = data.typeID;
 	solarSystemID = data.SolarSystemID;
 	ownerID = data.OwnerID;
@@ -20,37 +21,39 @@ BaseComponent::~BaseComponent()
 }
 void BaseComponent::Update(UINT tick)
 {
+	if (!needStore)
+	{
+		return;
+	}
+	if (tick % 60 != 0)
+	{
+		return;
+	}
 	store();
+	needStore = false;
 }
 void BaseComponent::OnDestroy()
 {
-	dynGameObjectsManager::getInstance()->removeObjectByObjectID(objectID);
+	GetGameObjectRepository().removeByObjectID(objectID);
 }
 void BaseComponent::store()
 {
-	if (objectID == 5) {
-		objectID = 5;
-	}
-	// 通过单例模式获取dynGameObjectsManager实例，调用对应的更新函数来更新位置和四元数信息
 	int tempContainerID = containerID;
 	int result_solarSystemID = solarSystemID;
 
 	int resultObjectID = objectID;
+	auto& repository = GetGameObjectRepository();
 	while (tempContainerID != 0) {
 		resultObjectID = dynContainersManager::getInstance()->getObjectIDByContainerID(tempContainerID);
 		if (resultObjectID == -1) {
 			resultObjectID = objectID;
 			break;
 		}
-		tempContainerID = dynGameObjectsManager::getInstance()->getContainerIdByObjectID(resultObjectID);
-		result_solarSystemID = dynGameObjectsManager::getInstance()->getSolarSystemIdByObjectID(resultObjectID);
+		tempContainerID = repository.getContainerIdByObjectID(resultObjectID);
+		result_solarSystemID = repository.getSolarSystemIdByObjectID(resultObjectID);
 	}
 
-	dynGameObjectsManager* manager = dynGameObjectsManager::getInstance();
-	if (manager != nullptr)
-	{
-		manager->updateRelatedIdsByObjectID(objectID, result_solarSystemID, ownerID, containerID);
-	}
+	repository.updateRelatedIds(objectID, result_solarSystemID, ownerID, containerID);
 }
 
 void BaseComponent::setSolarSystemID(UINT _solarSystemID)

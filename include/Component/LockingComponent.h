@@ -3,11 +3,12 @@
 #include "Component.h"
 #include "AttributesComponent.h"
 #include "SpaceTransformComponent.h"
+#include "ComponentDependency.h"
 #include <unordered_map>
 
 class LockingComponent : public Component {
 public:
-	LockingComponent() = default;
+	LockingComponent();
 	LockingComponent(UINT objectID);
 	~LockingComponent() = default;
 
@@ -51,4 +52,7 @@ public:
 
     // 反向切换锁定目标
 	void SwitchToPreviousLockedTarget();
+
+private:
+	ComponentDependencyBinder dependencyBinder_;
 };

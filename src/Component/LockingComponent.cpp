@@ -2,19 +2,24 @@
 #include "dynGameObjectsManager.h"
 #include "GameObject.h"
 
-LockingComponent::LockingComponent(UINT _objectID)
+LockingComponent::LockingComponent()
+{
+	dependencyBinder_.BindShared<AttributesComponent>([this](const std::shared_ptr<AttributesComponent>& component) {
+		m_pAttributes = component;
+	});
+	dependencyBinder_.BindShared<SpaceTransformComponent>([this](const std::shared_ptr<SpaceTransformComponent>& component) {
+		m_pSpaceTran = component;
+	});
+}
+
+LockingComponent::LockingComponent(UINT _objectID) : LockingComponent()
 {
 	objectID = _objectID;
 }
 
 void LockingComponent::InjectDependency(const std::shared_ptr<Component>& dep)
 {
-	if (auto pComponent = std::dynamic_pointer_cast<AttributesComponent>(dep)) {
-		m_pAttributes = pComponent;
-	}
-	else if (auto pComponent = std::dynamic_pointer_cast<SpaceTransformComponent>(dep)) {
-		m_pSpaceTran = pComponent;
-	}
+	dependencyBinder_.Inject(dep);
 }
 
 void LockingComponent::Update(UINT tick)

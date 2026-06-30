@@ -3,9 +3,10 @@
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
 #include "StationComponent.h"
+#include "EntityTaskHandlers.h"
 #include <functional>
+#include <memory>
 #include <string>
-#include <unordered_map>
 
 struct Task;
 
@@ -20,7 +21,6 @@ public:
 
 	void fillObjectName();
 
-	virtual void handleTask(const Task& task);
-	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
-	void initTaskHandlers();
+protected:
+	void registerEntityTaskHandlers(EntityTaskHandlerMap& handlers) override;
 };

@@ -435,6 +435,15 @@
     <ClCompile Include="src\System\RefiningSystem.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="src\System\SectorSpatialSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\EntityUpdateSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sim\DynGameObjectRepository.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
     <ClCompile Include="src\TaskHandler\RefiningSystem\RefiningSystemHandler.cpp">
       <Filter>TaskHandler\RefiningSystem</Filter>
     </ClCompile>
@@ -692,6 +701,9 @@
     <ClInclude Include="include\log\logger_manager.h">
       <Filter>log</Filter>
     </ClInclude>
+    <ClInclude Include="include\log\SimLog.h">
+      <Filter>log</Filter>
+    </ClInclude>
     <ClInclude Include="include\Macro\AttributeMacro.h">
       <Filter>宏定义</Filter>
     </ClInclude>
@@ -850,6 +862,18 @@
     </ClInclude>
     <ClInclude Include="include\System\RefiningSystem.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\System\SectorSpatialSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\System\EntityUpdateSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sim\IGameObjectRepository.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Component\ComponentDependency.h">
+      <Filter>组件</Filter>
     </ClInclude>
     <ClInclude Include="include\Object\Material.h">
       <Filter>输入</Filter>

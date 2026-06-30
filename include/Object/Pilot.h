@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Ship.h"
 #include "SkillComponent.h"
+#include "EntityTaskHandlers.h"
 
 class Pilot : public GameObject
 {
@@ -12,13 +13,12 @@ public:
 
 	virtual void Init();
 	virtual void Update(UINT tick);
-	virtual void handleTask(const Task& task);
 
-	void initTaskHandlers();
-	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
+protected:
+	void registerEntityTaskHandlers(EntityTaskHandlerMap& handlers) override;
 
+public:
 	UINT PilotID;
-	UINT objectID;
 	UINT currentShipID = 0;
 	UINT currentSolarSystemID = 0;
 	std::shared_ptr<Ship> currentShip;

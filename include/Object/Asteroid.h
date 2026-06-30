@@ -13,7 +13,6 @@ public:
 	~Asteroid();
 
 	virtual void Init();
-	virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID);
 	virtual void handleTask(const Task& task);
 
 	UINT objectID;

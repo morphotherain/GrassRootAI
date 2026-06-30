@@ -12,17 +12,6 @@
 #include "dynGameObjectsManager.h"
 #include "TaskMgr.h"
 
-std::shared_ptr<GameObject> Equipment::ConvertBasedOnGroupID(UINT groupID)
-{
-	switch (groupID){
-	case 46: return std::make_shared<ThrustEquipments>(objectID);
-	case 53: return std::make_shared<EnergyWeaponEquipments>(objectID);
-	case 54: return std::make_shared<MinerEquipments>(objectID);
-	case 546: return std::make_shared<MiningImprovementEquipments>(objectID);
-	}
-	return nullptr;
-}
-
 void Equipment::Init()
 {
 	ResolveDependencies();

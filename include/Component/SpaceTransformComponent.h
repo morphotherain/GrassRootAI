@@ -14,8 +14,9 @@ public:
 	}
 	void InjectDependency(const std::shared_ptr<Component>& dep) override {}
 
-	virtual void Update(UINT tick) {};
+	virtual void Update(UINT tick);
 	void store();
+	void MarkDirty() { needStore = true; }
 	bool needStore = false;
 
 	double x = 0.0f;

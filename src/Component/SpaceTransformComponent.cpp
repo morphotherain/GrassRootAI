@@ -27,6 +27,20 @@ SpaceTransformComponent::SpaceTransformComponent(UINT _objectID)
 	}
 }
 
+void SpaceTransformComponent::Update(UINT tick)
+{
+	if (!needStore)
+	{
+		return;
+	}
+	if (tick % 60 != 0)
+	{
+		return;
+	}
+	store();
+	needStore = false;
+}
+
 void SpaceTransformComponent::store()
 {
 	std::vector<double> pos = { x, y, z };  // 将当前组件的位置信息封装到vector中

@@ -24,7 +24,6 @@ public:
 	~Material() = default;
 
 	virtual void Init() {};
-	virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID);
 
 	UINT objectID;
 };

@@ -1,6 +1,15 @@
 ﻿#include "GameObject.h"
 
+void GameObject::initEntityTaskHandlers()
+{
+	entityTaskHandlers = CreateEntityTaskHandlerMap();
+	registerEntityTaskHandlers(*entityTaskHandlers);
+}
 
+void GameObject::dispatchTask(const Task& task)
+{
+	DispatchEntityTask(entityTaskHandlers.get(), task);
+}
 
 void GameObject::ResolveDependencies()
 {
@@ -9,10 +18,17 @@ void GameObject::ResolveDependencies()
         auto dependencies = component->GetDependencies();
         DEBUG_("正在解析类型为 {} 的组件的依赖关系", typeid(*component).name());
         for (const auto& depType : dependencies) {
+            const auto depIt = componentByType.find(depType);
+            if (depIt != componentByType.end()) {
+                DEBUG_("将类型为 {} 的依赖项注入到类型为 {} 的组件中", depType.name(), typeid(*component).name());
+                component->InjectDependency(depIt->second);
+                continue;
+            }
             for (const auto& depComponent : components) {
                 if (std::type_index(typeid(*depComponent)) == depType) {
                     DEBUG_("将类型为 {} 的依赖项注入到类型为 {} 的组件中", depType.name(), typeid(*component).name());
                     component->InjectDependency(depComponent);
+                    break;
                 }
             }
         }

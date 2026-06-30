@@ -1,5 +1,20 @@
 #include "SceneTransitionService.h"
 #include "SolarSystemMgr.h"
+#include "SimLog.h"
+
+namespace
+{
+	const char* SceneIdName(SceneId id)
+	{
+		switch (id) {
+		case SceneId::Main: return "Main";
+		case SceneId::Dock: return "Dock";
+		case SceneId::Space: return "Space";
+		case SceneId::StargateLoading: return "StargateLoading";
+		default: return "Unknown";
+		}
+	}
+}
 
 std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTransitionContext& ctx)
 {
@@ -13,6 +28,7 @@ std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTra
 	{
 		if (ctx.currentSceneId == SceneId::StargateLoading)
 		{
+			LOG_SCENE("切换 {} -> Space (星门加载完成)", SceneIdName(ctx.currentSceneId));
 			return SceneId::Space;
 		}
 
@@ -22,6 +38,8 @@ std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTra
 			if (ctx.currentSceneId != SceneId::StargateLoading)
 			{
 				loadingScene = SceneId::StargateLoading;
+				LOG_SCENE("切换 {} -> StargateLoading (跨星系 {} -> {})",
+					SceneIdName(ctx.currentSceneId), ctx.currentSolarSystemID, ctx.shipSolarSystemID);
 			}
 
 			SolarSystemMgr::getInstance().switchToSolarSystem(ctx.shipSolarSystemID);
@@ -32,6 +50,7 @@ std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTra
 		{
 			if (ctx.currentSceneId != SceneId::Space)
 			{
+				LOG_SCENE("切换 {} -> Space (出站 containerID=0)", SceneIdName(ctx.currentSceneId));
 				return SceneId::Space;
 			}
 			break;
@@ -41,6 +60,7 @@ std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTra
 		{
 			if (ctx.currentSceneId != SceneId::Dock)
 			{
+				LOG_SCENE("切换 {} -> Dock (进站 containerID={})", SceneIdName(ctx.currentSceneId), ctx.containerID);
 				return SceneId::Dock;
 			}
 			break;

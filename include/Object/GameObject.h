@@ -2,11 +2,13 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <typeindex>
 #include <cstdint>
 #include "Mouse.h"
 #include "Keyboard.h"
 #include "Component.h"
 #include "TaskMgr.h"
+#include "EntityTaskHandlers.h"
 
 #include "InvCategoriesMacro.h"
 #include "InvGroupsMacro.h"
@@ -17,23 +19,34 @@ public:
 
 private:
 	std::vector<std::shared_ptr<Component>> components;
+	std::unordered_map<std::type_index, std::shared_ptr<Component>> componentByType;
 	unsigned int tick = 0;
 
 	// 使用std::list来存储任务，方便在处理任务时进行插入、删除等操作（比如任务完成后移除等）
 	std::vector<std::shared_ptr<Task>> tasks;
+	std::unique_ptr<EntityTaskHandlerMap> entityTaskHandlers;
+
+	void RegisterComponent(const std::shared_ptr<Component>& component)
+	{
+		componentByType[std::type_index(typeid(*component))] = component;
+	}
 
 public:
 	template<typename T>
 	void AddComponent(std::shared_ptr<T> component) {
 		components.push_back(component);
 		component->owner = this;
+		RegisterComponent(component);
 	}
 
 	template<typename T>
 	T* GetComponent() {
+		const auto it = componentByType.find(std::type_index(typeid(T)));
+		if (it != componentByType.end()) {
+			return static_cast<T*>(it->second.get());
+		}
 		for (auto& comp : components) {
-			T* casted = dynamic_cast<T*>(comp.get());
-			if (casted) {
+			if (T* casted = dynamic_cast<T*>(comp.get())) {
 				return casted;
 			}
 		}
@@ -42,6 +55,10 @@ public:
 
 	template<typename T>
 	std::shared_ptr<T> GetComponentShared() {
+		const auto it = componentByType.find(std::type_index(typeid(T)));
+		if (it != componentByType.end()) {
+			return std::static_pointer_cast<T>(it->second);
+		}
 		for (auto& comp : components) {
 			if (auto casted = std::dynamic_pointer_cast<T>(comp)) {
 				return casted;
@@ -63,6 +80,13 @@ public:
 	}
 	void ResolveDependencies();
 
+protected:
+	virtual void registerEntityTaskHandlers(EntityTaskHandlerMap& handlers) {}
+
+public:
+	void initEntityTaskHandlers();
+	virtual void dispatchTask(const Task& task);
+
 	virtual void Update(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboard) {
 		tick++;
 		for (auto& comp : components) {
@@ -78,7 +102,6 @@ public:
 			comp->Destroy();
 		}
 	}
-	virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID) { return nullptr; }
 
 	// 添加任务的方法
 	void addTask(const std::shared_ptr<Task>& task) {
@@ -103,7 +126,7 @@ public:
 
 	// 处理单个任务的虚函数，具体的子类可重写该函数实现各自不同的任务处理逻辑
 	virtual void handleTask(const Task& task) {
-		// 默认的任务处理逻辑，可以是空实现或者打印提示信息等，具体由子类按需重写
+		dispatchTask(task);
 	}
 };
 class GameObjectMgr {

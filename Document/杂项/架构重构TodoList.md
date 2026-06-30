@@ -6,7 +6,9 @@
 >
 > **原则**：一个 PR / 一次提交只做一件事；每项有「完成标准」，做完可以停，不强行连锁大改。
 >
-> **当前主线**：Phase 2 ✅（2.5 可选）→ **Phase 7 🟡**（7.1 / 7.2 / 7.4 ✅）。**下一步**：7.3 GetComponent O(1) 或 7.5 System 层。
+> **架构说明（用意与约定）**：[[架构重构指南]] — 给未来开发 / AI 读，解释「为什么这么 refactor、新代码该怎么写」。
+>
+> **当前主线**：Phase 7 ✅（代码项完成；7.10 回归待测）。**下一步**：Phase 3 Task 参数 typed 化，或 Phase 4 UI 解耦按需。
 >
 > **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**；Phase 0–2 约 **1 周**；Phase 3–6 长期按需；**Phase 7** 与 Phase 2.4 衔接，分阶段做、不必一次换 EnTT。
 
@@ -21,12 +23,12 @@
 | **C** | **主界面存档管理窗口** | 1 周 | ✅ **已完成**（2026-06-29，UIF 导航 + 存读删 UI） |
 | 0 | 安全网 | 0.5 天 | 🟡 进行中 |
 | 1 | P0 快速清理 | 1–2 天 | ✅ **已完成**（2026-06-29） |
-| 2 | P1 边界抽取 | 3–5 天 | ✅ **已完成**（2026-06-29；2.5 可选未做） |
+| 2 | P1 边界抽取 | 3–5 天 | ✅ **已完成**（2026-06-29；含 2.5） |
 | 3 | P1 Task 系统加固 | 2–3 天 | ⬜ 未开始 |
 | 4 | P2 旧 UI 解耦 | 按需，每项 1–2 天 | ⬜ 未开始 |
 | 5 | P2 数据层 | 低优先级 | ⬜ 未开始 |
 | 6 | 长期重构 | 1–2 周+ | ⬜ 未开始 |
-| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | 🟡 进行中（7.1 / 7.2 / 7.4 ✅） |
+| **7** | **Entity/Component 模型优化** | 2–4 周（渐进） | ✅ **已完成**（7.9 留 Phase 6；7.10 待回测） |
 
 > **背景**：commit `64448a8` 起的「半成品警示」已解除：存档状态机 + UIF 主菜单 + 新建/读档/删档 UI 闭环已通；A.4 临时 `UIButton` 回退已移除。
 
@@ -226,9 +228,7 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
   - 完成标准：路径可复现，作为后续每项改动的回归基准
   - 预估：30min
 
-- [ ] **0.3**（可选）给 TaskMgr / SolarSystemMgr 加 2–3 条日志锚点
-  - 完成标准：场景切换、Task 分发时有 INFO 可追踪
-  - 预估：1h
+- [x] **0.3** 边界日志：`SimLog.h` 域前缀 + 锚点（GameApp / SolarSystemMgr / SceneTransition / Entity dispatch）→ [[日志设计]]
 
 > 没有测试框架也可以；**手动路径 + 编译通过** 就是本项目的回归标准。
 
@@ -314,10 +314,10 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 2.5 Ship::ConvertBasedOnGroupID 迁入 Factory（可选，独立 PR）
 
-- [ ] 改什么：groupID 二次转换逻辑并入 Factory 或 `ObjectFactory::RefineByGroupID`
-- [ ] 完成标准：`SolarSystem` / `Ship` 不再含 category/group switch
-- [ ] 预估：2–3h
-- [ ] **衔接 Phase 7.1b**
+- [x] 改什么：groupID 二次转换逻辑并入 `ObjectFactory::CreatePrototype`（category + group 一次创建具体类型）
+- [x] 完成标准：`Ship` / `Astro` / `Equipment` / `Material` / `Asteroid` 不再含 `ConvertBasedOnGroupID`
+- [x] 预估：2–3h
+- [x] **衔接 Phase 7.1b**
 
 ### 2.6 SolarSystem 内联 SQL 迁到 Manager
 
@@ -432,19 +432,19 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 | 问题 | 现状 | 风险 |
 |------|------|------|
 | 双轨组件引用 | ~~`Ship` 等既 `AddComponent` 又持 `m_pBase` 等成员~~ → 7.2 已统一 `GetComponent` | 改一处漏一处（已缓解） |
-| `GetComponent` | `vector` + `dynamic_cast` 线性扫描 | 对象/调用增多后性能与类型安全差 |
-| `ResolveDependencies` | 用 `typeid(...).hash_code()` 比对 | 理论上不安全；`InjectDependency` cast 链脆弱 |
-| Update 编排 | 基类遍历 Component vs `Ship::Update` 手工顺序 | 行为分散，新类型复制粘贴 |
-| 持久化 | `BaseComponent::Update` 每 tick `store()` | SQLite 写放大 |
-| Task 路由 | TaskMgr Handler + Entity `taskHandlers` + Component `handleTask` 三套 | 调试难、重复 lambda |
-| DB 耦合 | Component 构造/Update 直连 `dynGameObjectsManager` 等 | 难单测、难纯内存模拟 |
+| `GetComponent` | ~~`vector` + `dynamic_cast` 线性扫描~~ → 7.3 `type_index` O(1) + 基类查询 fallback | 对象/调用增多后性能与类型安全差（已缓解） |
+| `ResolveDependencies` | ~~hash_code~~ → `type_index`；`ComponentDependencyBinder` 试点 | 已缓解 |
+| Update 编排 | `EntityUpdateSystem` + `SectorSpatialSystem` 编排 | 已缓解 |
+| 持久化 | ~~每 tick store~~ → 脏标记 + Shutdown flush | 已缓解 |
+| Task 路由 | `GameObject::dispatchTask` + `registerEntityTaskHandlers` | 已缓解 |
+| DB 耦合 | `BaseComponent` → `IGameObjectRepository` 试点 | 已缓解（待扩展） |
 | Pilot 建模 | `Pilot` 继承 `GameObject` | 控制器与场景实体混淆 |
 
 ### 7.0（可选）现状与目标架构一页文档
 
-- [ ] 改什么：`Document/` 下「Entity/Component 模型」：现状图、Archetype 表、System 列表、与 Phase 2.4 Factory 关系
-- [ ] 完成标准：新人能对照 `Ship::Init` / `SolarSystem::addGameObject` 理解改法
-- [ ] 预估：2h
+- [x] 改什么：`Document/` 下「Entity/Component 模型」→ [[EntityComponent模型]]
+- [x] 完成标准：新人能对照 `Ship::Init` / `SolarSystem::addGameObject` 理解改法
+- [x] 预估：2h
 
 ### 7.1 Archetype 配方 + ObjectFactory 组装
 
@@ -452,7 +452,7 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 - [x] **7.1b** `EntityComponentAssembler` 按 Archetype 挂载组件清单
 - [x] **7.1c** `ObjectFactory` 在 `Init()` 前调用 Assembler；各子类 `Init()` 只做引用绑定与业务逻辑
 - [x] `GameObject::GetComponentShared<T>()` 供 Init 绑定成员指针
-- [ ] 依赖：Phase **2.4** ✅、**2.5**（group 细化类型仍由 `ConvertBasedOnGroupID`）
+- [ ] 依赖：Phase **2.4** ✅、**2.5** ✅
 - [x] 完成标准：组件 `AddComponent` 集中在 Assembler；新增类型改 Assembler + Archetype 解析
 - [x] 预估：1–2 天
 
@@ -466,55 +466,56 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 7.3 组件袋：`GetComponent` O(1) 或 Init 缓存
 
-- [ ] 改什么：`GameObject` 增加 `unordered_map<type_index, shared_ptr<Component>>` 或 Archetype 已知时的 `ComponentBundle` 成员
-- [ ] 不改什么：现有 `GetComponent<T>()` 对外签名（内部换实现）
-- [ ] 完成标准：热路径不再每帧 `dynamic_cast` 扫描；编译通过
-- [ ] 预估：半天–1 天
+- [x] 改什么：`GameObject` 增加 `unordered_map<type_index, shared_ptr<Component>>`；`AddComponent` 按动态类型注册
+- [x] 不改什么：现有 `GetComponent<T>()` 对外签名（基类查询保留 `dynamic_cast` fallback）
+- [x] 完成标准：热路径不再每帧 `dynamic_cast` 扫描；编译通过
+- [x] 预估：半天–1 天
 
 ### 7.4 修复 `ResolveDependencies`
 
 - [x] 改什么：`std::type_index(typeid(*depComponent)) == depType`，禁止 `hash_code`
-- [ ] 改什么：`InjectDependency` 可改为按 `type_index` 分发表，减少 `dynamic_pointer_cast` 链
-- [x] 完成标准：无 hash 比对；编译通过
+- [x] 改什么：`InjectDependency` 用 `ComponentDependencyBinder` 按 `type_index` 分发表（Physics / Locking 试点）
+- [x] 完成标准：无 hash 比对；试点组件无手写 cast 链
 - [x] 预估：2–3h
 
 ### 7.5 轻量 System 层（非完整 ECS）
 
-- [ ] 改什么：从 `Ship::Update` / `SolarSystem::Update` 抽出按职责的 System，例如：
-  - `MovementSystem`（Physics + SpaceTransform）
-  - `AttributeDirtyFlushSystem`（见 7.6）
-  - `SectorSpatialSystem`（已有 sector 逻辑收拢）
-- [ ] 不改什么：单帧内调用顺序与改前一致
-- [ ] 完成标准：`SolarSystem::Update` 编排 System 列表；`Ship::Update` 只保留跃迁等实体特有状态机
-- [ ] 预估：2–3 天
+- [x] **7.5a** 空间坐标持久化：`SpaceTransformComponent::Update` 统一 60 tick 节流；`PhysicsComponent` 改位才 `needStore`
+- [x] **7.5b** `Ship::Update` 先 Physics 后 SpaceTransform（去掉每 tick 无脑 MarkDirty）
+- [x] **7.5c** 从 `SolarSystem::Update` 抽出 `SectorSpatialSystem`（sector 网格、`checkObjectsInSector`、`setCurrentSector`）
+- [x] **7.5d** `EntityUpdateSystem`：space_objects 过期清理 + 实体 Update 遍历
+- [x] 完成标准：`SolarSystem::Update` 编排 System 列表；`Ship::Update` 保留跃迁/接近状态机
+- [x] 预估：2–3 天
 
 ### 7.6 持久化：脏标记 + 批量 flush
 
-- [ ] 改什么：`BaseComponent` / `AttributesComponent` 改内存 + `MarkDirty(objectID, fieldMask)`，去掉每 tick `store()`
-- [ ] 改什么：`AttributeSyncSystem` 或 `SaveGameManager` 侧在 F10 回菜单 / 每 N tick / `OnDestroy` 批量写 dyn
-- [ ] 完成标准：`BaseComponent::Update` 不再每帧 hit SQLite；回主菜单后 dyn 数据仍正确
-- [ ] 预估：1–2 天
+- [x] **7.6a** `BaseComponent::Update` 去掉无条件每 tick `store()`；`needStore` + 60 tick 节流；`setContainerID` / `setSolarSystemID` 仍即时落库
+- [x] **7.6b** `Ship::Update` 不再每 tick 调 `base->Update`（舰船 Base 字段变更走 setter）
+- [x] **7.6c** 进站/出站改 `setContainerID`；`Shutdown` 前全量 flush Base + SpaceTransform
+- [x] **7.6d** `AttributesComponent` 已有 `shouldUpdate`；`Shutdown` 前补 flush 待写属性
+- [x] 完成标准：`BaseComponent::Update` 不再每帧 hit SQLite；回主菜单后 dyn 数据仍正确（2026-06-29 已回测）
+- [x] 预估：1–2 天
 
 ### 7.7 Task 统一 dispatch（与 Phase 3.4 联动）
 
-- [ ] 改什么：`GameObject::dispatchTask` → `ComponentTaskRouter` / 各 Component `TaskHandlerRegistry`
-- [ ] 改什么：删掉 `Ship::initTaskHandlers`、`Pilot::initTaskHandlers` 重复 map（按 Entity 类型分批）
-- [ ] 不改什么：TaskMgr 全局 Handler（create/transfer/destroy）与 Refining 路径
-- [ ] 完成标准：Entity 内 Task 只有一条入口；新 taskType 只注册一处
-- [ ] 预估：1–2 天
+- [x] **7.7a** `DispatchEntityTask` 统一 Entity `taskHandlers` 路由（Ship / Pilot / NPCStation / StarGate）
+- [x] **7.7b** `GameObject::dispatchTask` + `registerEntityTaskHandlers`；handler map 上移到基类
+- [x] 完成标准：Entity 内 Task 入口统一为 `handleTask` → `dispatchTask`；新 Entity 只 override `registerEntityTaskHandlers`
+- [x] 预估：1–2 天
 
 ### 7.8 Component 与 DataSheet 边界
 
-- [ ] 改什么：抽 `IGameObjectRepository` / `IAttributeRepository` 接口；Component 只调接口，Manager 在 Sim 层注入
-- [ ] 策略：先做 `BaseComponent` + `AttributesComponent` 试点，再按需扩
-- [ ] 完成标准：Component `.h` 不再 include 具体 `dyn*Manager.h`（试点范围内）
-- [ ] 预估：2–3 天
+- [x] 改什么：`IGameObjectRepository` + `DynGameObjectRepository`；`BaseComponent` 读写 dyn 走接口
+- [ ] 策略：按需扩至 `AttributesComponent` 等（碰到了再迁）
+- [x] 完成标准：`BaseComponent.cpp` 不再直接 include `dynGameObjectsManager.h`（试点）
+- [x] 预估：2–3 天
 
-### 7.9（可选）Pilot 从 GameObject 拆为 PlayerController
+### 7.9（可选，留 Phase 6）Pilot 从 GameObject 拆为 PlayerController
 
-- [ ] 改什么：`Pilot` 不再继承 `GameObject`；作为「控制 currentShip 的会话对象」由 `SolarSystemMgr` 持有
+- [ ] 改什么：`Pilot` 不再继承 `GameObject`；作为会话对象由 `SolarSystemMgr` 持有
 - [ ] 完成标准：`Pilot` 无 `AddComponent`；技能/任务仍可用
-- [ ] 预估：2–3 天（独立 PR，优先级低）
+- [ ] 预估：2–3 天（独立 PR，与 Phase 6.2 构造注入衔接）
+- [ ] 说明：见 [[EntityComponent模型#与 ECS 的距离]]
 
 ### 7.10 回归清单
 
@@ -614,4 +615,6 @@ Phase 5–6 有空再说；7.9 Pilot 拆分按需
 | 2026-06-29 | Phase 1 完成：Task 去 D3D、Handler Factory 注册、Component/Database include 清理、vcxproj 去掉 .h 误编译 |
 | 2026-06-29 | Phase 2.2–2.4、2.6：`SceneTransitionService`、`switchToSolarSystem`、`ObjectFactory`、mapDenormalize SQL 迁移 |
 | 2026-06-29 | Phase 7.1：`EntityArchetype` + `EntityComponentAssembler` 集中组件组装 |
-| 2026-06-29 | Phase 7.2 / 7.4 完成；修复 7.2 后 include 传递链与 NPCStation 进游戏崩溃 |
+| 2026-06-29 | Phase 7 收尾：EntityUpdateSystem、GameObject::dispatchTask、ComponentDependencyBinder、IGameObjectRepository、[[EntityComponent模型]] |
+| 2026-06-29 | Phase 7.5c：`SectorSpatialSystem` 从 `SolarSystem` 抽出 sector 空间逻辑 |
+| 2026-06-29 | Phase 7.6 完成：脏标记 + Shutdown flush（含 Attributes）；setCurrentPilots 改 setSolarSystemID |

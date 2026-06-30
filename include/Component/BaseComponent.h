@@ -17,6 +17,7 @@ public:
 	virtual void Update(UINT tick);
 	virtual void OnDestroy();
 	void store();
+	void MarkDirty() { needStore = true; }
 	void setSolarSystemID(UINT solarSystemID);
 	void setContainerID(UINT containerID);
 	bool needStore = false;

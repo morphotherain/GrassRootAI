@@ -11,7 +11,7 @@ void NPCStation::Init()
 	{
 		spaceTran->radius = 10000.0f;
 	}
-	initTaskHandlers();
+	initEntityTaskHandlers();
 }
 
 void NPCStation::Update(UINT tick)
@@ -27,11 +27,10 @@ void NPCStation::fillObjectName()
 	}
 }
 
-void NPCStation::initTaskHandlers()
+void NPCStation::registerEntityTaskHandlers(EntityTaskHandlerMap& handlers)
 {
-	taskHandlers.clear();
-	taskHandlers.emplace("", [this](const Task& task) {});
-	taskHandlers.emplace("dock", [this](const Task& task) {
+	handlers.emplace("", [this](const Task& task) {});
+	handlers.emplace("dock", [this](const Task& task) {
 		auto publisherPtr = task.publisher.lock();
 		if (!publisherPtr)
 			return;
@@ -44,10 +43,10 @@ void NPCStation::initTaskHandlers()
 
 		auto distance = stationTran->calculateDistance(*tran);
 		if (distance < (2500)) {
-			base->containerID = stationBase->objectID;
+			base->setContainerID(stationBase->objectID);
 		}
 	});
-	taskHandlers.emplace("undock", [this](const Task& task) {
+	handlers.emplace("undock", [this](const Task& task) {
 		auto publisherPtr = task.publisher.lock();
 		if (!publisherPtr)
 			return;
@@ -58,28 +57,14 @@ void NPCStation::initTaskHandlers()
 		if (!base || !tran || !physics || !stationTran)
 			return;
 
-		base->containerID = 0;
+		base->setContainerID(0);
 		tran->x = stationTran->x + 10000.0f;
 		tran->y = stationTran->y;
 		tran->z = stationTran->z;
+		tran->MarkDirty();
+		tran->store();
 		physics->reset();
 		physics->velocity = { 100.0f, 0.0f, 0.0f };
 		physics->target_velocity = { 100.0f, 0.0f, 0.0f };
 	});
-}
-
-void NPCStation::handleTask(const Task& task)
-{
-	auto publisherPtr = task.publisher.lock();
-	auto targetPtr = task.target.lock();
-	auto taskType = task.getParamOrDefault<std::string>("taskType", "");
-
-	if (!publisherPtr || !targetPtr) {
-		return;
-	}
-
-	auto it = taskHandlers.find(taskType);
-	if (it != taskHandlers.end()) {
-		it->second(task);
-	}
 }

@@ -7,11 +7,8 @@
 #include "PhysicsComponent.h"
 #include "StorageComponent.h"
 #include "LockingComponent.h"
+#include "EntityTaskHandlers.h"
 #include <DirectXMath.h>
-#include <functional>
-#include <memory>
-#include <string>
-#include <unordered_map>
 
 struct Task;
 
@@ -25,15 +22,11 @@ enum class ShipWarpState
 class Ship : public GameObject {
 public:
 	Ship() = default;
-	Ship(UINT _objectID) { objectID = (_objectID); }
-	~Ship() {
-		objectID = 1;
-	};
+	explicit Ship(UINT _objectID) { objectID = _objectID; }
+	~Ship() = default;
 
 	virtual void Init();
 	virtual void Update(UINT tick);
-
-	UINT objectID;
 
 	void fillObjectName();
 
@@ -43,17 +36,14 @@ public:
 
 	ShipWarpState currentWarpState = ShipWarpState::None;
 
-	virtual void handleTask(const Task& task);
 	void handleApproach(std::shared_ptr<GameObject> target);
 	void handleActive(std::shared_ptr<GameObject> target);
 	void handleWarp(std::shared_ptr<GameObject> target);
 
 	void updateEquipments(int tick);
 
-	static std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID, UINT objectID);
-
-	void initTaskHandlers();
-	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
+protected:
+	void registerEntityTaskHandlers(EntityTaskHandlerMap& handlers) override;
 };
 
 class Frigate : public Ship {

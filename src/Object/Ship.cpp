@@ -7,23 +7,14 @@
 #include "PhysicsComponent.h"
 #include "StorageComponent.h"
 #include "LockingComponent.h"
+#include "Task.h"
 using namespace DirectX;
-
-std::shared_ptr<GameObject> Ship::ConvertBasedOnGroupID(UINT groupID, UINT objectID) {
-	switch (groupID) {
-	case 25: return std::make_shared<Frigate>(objectID);
-	case 26: return std::make_shared<Cruiser>(objectID);
-	case 27: return std::make_shared<Battleship>(objectID);
-	case 29: return std::make_shared<Capsule>(objectID);
-	}
-	return nullptr;
-}
 
 void Ship::Init()
 {
+	initEntityTaskHandlers();
 	ResolveDependencies();
 	fillObjectName();
-	initTaskHandlers();
 }
 
 void Ship::Update(UINT tick)
@@ -36,21 +27,18 @@ void Ship::Update(UINT tick)
 
 	auto* spaceTran = GetComponent<SpaceTransformComponent>();
 	auto* physics = GetComponent<PhysicsComponent>();
-	auto* base = GetComponent<BaseComponent>();
 	auto* locking = GetComponent<LockingComponent>();
 	auto* equipments = GetComponent<EquipmentsComponent>();
 	auto* attributes = GetComponent<AttributesComponent>();
 
+	if (physics)
+	{
+		physics->Update(tick);
+	}
 	if (spaceTran)
 	{
-		spaceTran->needStore = true;
-		if (tick % 60 == 0 && spaceTran->needStore)
-		{
-			spaceTran->store();
-		}
+		spaceTran->Update(tick);
 	}
-	if (physics) physics->Update(tick);
-	if (base) base->Update(tick);
 	if (locking) locking->Update(tick);
 	if (equipments) equipments->Update(tick);
 	if (attributes) attributes->Update(tick);
@@ -65,82 +53,65 @@ void Ship::fillObjectName()
 	}
 }
 
-void Ship::initTaskHandlers() {
-	taskHandlers = {
-		{"", [this](const Task& task) {}},
-		{"setApproachTarget", [this](const Task& task) {
-			approachTarget = task.target;
-			activeTarget.reset();
-		}},
-		{"setWarpTarget", [this](const Task& task) {
-			warpTarget = task.target;
-			approachTarget.reset();
-			activeTarget.reset();
-		}},
-		{"setActiveTarget", [this](const Task& task) {
-			activeTarget = task.target;
-		}},
-		{"addLocked", [this](const Task& task) {
-			auto targetPtr = task.target.lock();
-			if (targetPtr && GetComponent<LockingComponent>())
-			{
-				GetComponent<LockingComponent>()->AddLocked(targetPtr->objectID);
-				DEBUG_("发布锁定任务");
-			}
-		}},
-		{"eraseLocked", [this](const Task& task) {
-			auto targetPtr = task.target.lock();
-			if (targetPtr && GetComponent<LockingComponent>())
-			{
-				GetComponent<LockingComponent>()->EraseLocked(targetPtr->objectID);
-				DEBUG_("发布取消锁定任务");
-			}
-		}},
-		{"equipments", [this](const Task& task) {
-			DEBUG_("装备按键输入");
-			if (auto* equipments = GetComponent<EquipmentsComponent>())
-			{
-				equipments->handleTask(task);
-			}
-		}},
-		{"refreshEquipment", [this](const Task& task) {
-			DEBUG_("刷新装备");
-			if (auto* equipments = GetComponent<EquipmentsComponent>())
-			{
-				equipments->Refresh();
-			}
-		}},
-		{"locking", [this](const Task& task) {
-			DEBUG_("切换锁定目标");
-			if (auto* locking = GetComponent<LockingComponent>())
-			{
-				locking->handleTask(task);
-			}
-		}},
-		{"cargoStorage", [this](const Task& task) {
-			DEBUG_("");
-			if (auto* cargo = GetComponent<CargoContainerComponent>())
-			{
-				cargo->handleTask(task);
-			}
-		}},
-	};
-}
-
-void Ship::handleTask(const Task& task)
+void Ship::registerEntityTaskHandlers(EntityTaskHandlerMap& handlers)
 {
-	auto publisherPtr = task.publisher.lock();
-	auto targetPtr = task.target.lock();
-	auto taskType = task.getParamOrDefault<std::string>("taskType", "");
-
-	if (!publisherPtr || !targetPtr) {
-		return;
-	}
-
-	auto it = taskHandlers.find(taskType);
-	if (it != taskHandlers.end()) {
-		it->second(task);
-	}
+	handlers.emplace("", [this](const Task& task) {});
+	handlers.emplace("setApproachTarget", [this](const Task& task) {
+		approachTarget = task.target;
+		activeTarget.reset();
+	});
+	handlers.emplace("setWarpTarget", [this](const Task& task) {
+		warpTarget = task.target;
+		approachTarget.reset();
+		activeTarget.reset();
+	});
+	handlers.emplace("setActiveTarget", [this](const Task& task) {
+		activeTarget = task.target;
+	});
+	handlers.emplace("addLocked", [this](const Task& task) {
+		auto targetPtr = task.target.lock();
+		if (targetPtr && GetComponent<LockingComponent>())
+		{
+			GetComponent<LockingComponent>()->AddLocked(targetPtr->objectID);
+			DEBUG_("发布锁定任务");
+		}
+	});
+	handlers.emplace("eraseLocked", [this](const Task& task) {
+		auto targetPtr = task.target.lock();
+		if (targetPtr && GetComponent<LockingComponent>())
+		{
+			GetComponent<LockingComponent>()->EraseLocked(targetPtr->objectID);
+			DEBUG_("发布取消锁定任务");
+		}
+	});
+	handlers.emplace("equipments", [this](const Task& task) {
+		DEBUG_("装备按键输入");
+		if (auto* equipments = GetComponent<EquipmentsComponent>())
+		{
+			equipments->handleTask(task);
+		}
+	});
+	handlers.emplace("refreshEquipment", [this](const Task& task) {
+		DEBUG_("刷新装备");
+		if (auto* equipments = GetComponent<EquipmentsComponent>())
+		{
+			equipments->Refresh();
+		}
+	});
+	handlers.emplace("locking", [this](const Task& task) {
+		DEBUG_("切换锁定目标");
+		if (auto* locking = GetComponent<LockingComponent>())
+		{
+			locking->handleTask(task);
+		}
+	});
+	handlers.emplace("cargoStorage", [this](const Task& task) {
+		DEBUG_("");
+		if (auto* cargo = GetComponent<CargoContainerComponent>())
+		{
+			cargo->handleTask(task);
+		}
+	});
 }
 
 void Ship::handleApproach(std::shared_ptr<GameObject> target)

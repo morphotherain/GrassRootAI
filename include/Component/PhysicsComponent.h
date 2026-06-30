@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "Transform.h"
-#include <DirectXMath.h>
 #include "Component.h"
 #include "SpaceTransformComponent.h"
+#include "ComponentDependency.h"
+#include <DirectXMath.h>
 
 const double AU_TO_METERS = 149597870700.0;
 
@@ -15,8 +15,8 @@ struct Pos {
 
 class PhysicsComponent : public Component {
 public:
-	PhysicsComponent() = default;
-	PhysicsComponent(UINT _object_id) { object_id = _object_id; };
+	PhysicsComponent();
+	PhysicsComponent(UINT _object_id) : PhysicsComponent() { object_id = _object_id; };
 	~PhysicsComponent() = default;
 
 	std::vector<std::type_index> GetDependencies() const override {
@@ -107,9 +107,14 @@ public:
 	void StartWarp();
 
 	void UpdateTran() {
+		if (!SpaceTran)
+		{
+			return;
+		}
 		SpaceTran->x += velocity.x / 60.0f;
 		SpaceTran->y += velocity.y / 60.0f;
 		SpaceTran->z += velocity.z / 60.0f;
+		SpaceTran->needStore = true;
 	}
 
 	// 判断机动是否正在进行
@@ -132,4 +137,7 @@ public:
 		endPosition.y = y;
 		endPosition.z = z;
 	}
+
+private:
+	ComponentDependencyBinder dependencyBinder_;
 };

@@ -15,6 +15,7 @@
 #include "SaveGameManager.h"
 #include "TaskMgr.h"
 #include "logger_manager.h"
+#include "SimLog.h"
 
 using namespace DirectX;
 
@@ -293,6 +294,7 @@ bool GameApp::EnterGameFromSlot(int slotID)
 	}
 
 	m_gameState = GameState::Loading;
+	LOG_SAVE("开始加载 slotID={}", slotID);
 
 	if (!SaveGameManager::getInstance()->loadSaveBySlotID(slotID))
 	{
@@ -306,7 +308,7 @@ bool GameApp::EnterGameFromSlot(int slotID)
 	m_gameState = GameState::InGame;
 	SwitchToScene(std::make_unique<SpaceScene>(AppInst()));
 	m_currentSceneId = SceneId::Space;
-	INFO_("已进入游戏，slotID = {}", slotID);
+	LOG_SAVE("进入 InGame slotID={}", slotID);
 	return true;
 }
 
@@ -317,7 +319,7 @@ void GameApp::ReturnToMainMenu()
 		return;
 	}
 
-	INFO_("返回主菜单");
+	LOG_SAVE("返回主菜单，开始 teardown");
 
 	WindowManager::GetInstance().Reset();
 	SolarSystemMgr::getInstance().Shutdown();
@@ -332,14 +334,14 @@ void GameApp::ReturnToMainMenu()
 	tick = 0;
 	SwitchToScene(std::make_unique<MainScene>(AppInst()));
 	m_currentSceneId = SceneId::Main;
+	LOG_SAVE("已回到 MainMenu");
 }
 
 void GameApp::InitializeGameSystems()
 {
-	INFO_("初始化 AttributeMgr");
+	LOG_SIM("InitializeGameSystems 开始");
 	AttributeMgr::getInstance().Init();
 
-	INFO_("初始化 SolarSystemMgr");
 	SolarSystemMgr::getInstance().Init();
 	SolarSystemMgr::getInstance().getCurrentPilot();
 	SolarSystemMgr::getInstance().setCurrentPilot();
@@ -376,6 +378,7 @@ void GameApp::InitializeGameSystems()
 	);
 
 	HandlerFactory::initializeHandlers();
+	LOG_SIM("InitializeGameSystems 完成");
 }
 
 void GameApp::RequestStartNewGame()

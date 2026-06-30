@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -16,9 +17,16 @@
 #include "NPCStation.h"
 #include "Sector.h"
 
+class EntityUpdateSystem;
+class SectorSpatialSystem;
+
 struct SolarSystem {
 	SolarSystem() = default;
-	SolarSystem(int id) :m_solarSystem(id) { };
+	SolarSystem(int id);
+	~SolarSystem();
+
+	SolarSystem(const SolarSystem&) = delete;
+	SolarSystem& operator=(const SolarSystem&) = delete;
 
 	SolarSystemData m_solarSystem;
 
@@ -32,7 +40,8 @@ struct SolarSystem {
 	std::shared_ptr<Pilot> currentPilot;
 	std::shared_ptr<Sector> currentSector;
 
-	std::unordered_map<long long int, std::unordered_map<long long int, std::unordered_map<long long int, std::shared_ptr<Sector>>>> m_Sectors;
+	std::unique_ptr<EntityUpdateSystem> m_entityUpdate;
+	std::unique_ptr<SectorSpatialSystem> m_sectorSpatial;
 
 	void Init();
 	void Update(UINT tick);
@@ -45,9 +54,6 @@ struct SolarSystem {
 	long long int CalculateHashIndex(long long int x, long long int  y, long long int  z) const { return x + y * 10000000 + z * 100000000000000; }
 	long long int CalculateHashIndex(double x, double y, double z);
 	void addObjectToSector(std::shared_ptr<GameObject> object);
-	std::shared_ptr<Sector> addSector(double x, double y, double z);
-	std::shared_ptr<Sector> getSector(double x, double y, double z);
-	void checkObjectsInSector();
 	void setCurrentSector();
 	void clearCurrentSector();
 

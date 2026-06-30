@@ -26,14 +26,6 @@ void Asteroid::Init()
 	}
 }
 
-std::shared_ptr<GameObject> Asteroid::ConvertBasedOnGroupID(UINT groupID)
-{
-	switch (groupID) {
-	case 462: return std::make_shared<Veldspar>(objectID);
-	}
-	return nullptr;
-}
-
 void Asteroid::handleTask(const Task& task)
 {
 	auto* attributes = GetComponent<AttributesComponent>();

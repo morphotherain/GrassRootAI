@@ -3,9 +3,10 @@
 #include "BaseComponent.h"
 #include "SpaceTransformComponent.h"
 #include "WarpGateComponent.h"
+#include "EntityTaskHandlers.h"
 #include <functional>
+#include <memory>
 #include <string>
-#include <unordered_map>
 
 struct Task;
 
@@ -62,9 +63,8 @@ public:
 	UINT objectID;
 	void fillObjectName();
 
-	virtual void handleTask(const Task& task);
-	void initTaskHandlers();
-	std::unordered_map<std::string, std::function<void(const Task&)>> taskHandlers;
+protected:
+	void registerEntityTaskHandlers(EntityTaskHandlerMap& handlers) override;
 };
 
 class Astro : public GameObject
@@ -74,8 +74,7 @@ public:
 	Astro(UINT _objectID) :objectID(_objectID) {};
 	~Astro() = default;
 
-	virtual void Init() {};
-	virtual std::shared_ptr<GameObject> ConvertBasedOnGroupID(UINT groupID);
+	virtual void Init() {}
 
 	UINT objectID;
 };

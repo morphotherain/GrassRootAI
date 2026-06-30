@@ -49,7 +49,7 @@ bool UIWindowStorage::Init()
 	shipCargo->Init();
 
 
-	return false;
+	return true;
 }
 
 void UIWindowStorage::OnResize()
@@ -57,11 +57,13 @@ void UIWindowStorage::OnResize()
 }
 
 int UIWindowStorage::getItemByPos(int _x, int _y) {
-	int index;
 	int offset_x = (_x - 220 - x) / colWidth;
 	int offset_y = (_y - 100 - y) / rowHeight;
-	index = offset_y * 7 + offset_x;
-	if (index >= m_itemsPair.size())index = -1;
+	if (offset_x < 0 || offset_y < 0 || offset_x >= 7)
+		return -1;
+	int index = offset_y * 7 + offset_x;
+	if (index >= static_cast<int>(m_itemsPair.size()))
+		return -1;
 	return index;
 }
 
@@ -117,16 +119,23 @@ void UIWindowStorage::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboar
 	if (m_RButtonMenu != nullptr)
 		m_RButtonMenu->UpdateUI(dt, mouse, keyboard, tick);
 
-	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+	bool rightButtonPressed = mouseState.rightButton && !lastMouseState.rightButton;
+	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && rightButtonPressed)
 	{
 		m_RButtonMenu = nullptr;
-		int index  = getItemByPos(mouseState.x, mouseState.y);
-		UINT targetID = m_itemsPair[index].first;
-		UINT currentID = SolarSystemMgr::getInstance().currentPilot->GetComponent<BaseComponent>()->objectID;
-		m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
-		m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
-		m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
-		m_RButtonMenu->Init();
+		if ((x + 220) < mouseState.x && (x + 800) > mouseState.x && (y + 600) > mouseState.y && (y + 100) < mouseState.y)
+		{
+			int index = getItemByPos(mouseState.x, mouseState.y);
+			if (index >= 0 && index < static_cast<int>(m_itemsPair.size()))
+			{
+				UINT targetID = m_itemsPair[index].first;
+				UINT currentID = SolarSystemMgr::getInstance().currentPilot->GetComponent<BaseComponent>()->objectID;
+				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
+				m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+				m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);
+				m_RButtonMenu->Init();
+			}
+		}
 	}
 
 	if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.leftButton == true)

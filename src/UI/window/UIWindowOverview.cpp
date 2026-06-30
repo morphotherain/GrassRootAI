@@ -30,7 +30,7 @@ bool UIWindowOverview::Init()
 		component->Init();
 	}
 
-	return false;
+	return true;
 }
 
 void UIWindowOverview::OnResize()
@@ -61,7 +61,6 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 		// 新增代码，处理鼠标滚轮滚动事件来改变index值
 		m_RowMgr->next_index = m_RowMgr->index;
 		int wheelDelta = mouseState.scrollWheelValue - lastMouseState.scrollWheelValue;
-		DEBUG_("wheelDelta  : {},mouseState.scrollWheelValue  : {},lastMouseState.scrollWheelValue  : {}", wheelDelta, mouseState.scrollWheelValue, lastMouseState.scrollWheelValue);
 		if (wheelDelta != 0) {
 			if (wheelDelta > 0) {
 				m_RowMgr->next_index--;  // 鼠标滚轮向上滚动，index减小，可根据实际需求调整增减幅度
@@ -80,14 +79,15 @@ void UIWindowOverview::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboa
 			m_RButtonMenu = nullptr;
 		}
 
-		// 在鼠标没进入窗口前仍为ABSOLUTE模式
-		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && mouseState.rightButton == true)
+		bool rightButtonPressed = mouseState.rightButton && !lastMouseState.rightButton;
+		if (mouseState.positionMode == Mouse::MODE_ABSOLUTE && rightButtonPressed)
 		{
 			UINT currentID = SolarSystemMgr::getInstance().currentPilot->currentShip->GetComponent<BaseComponent>()->objectID;
 			int index = static_cast<int>((mouseState.y - y - 35) / TitleHeight - 2);
-			if (m_RowMgr->Rows.size() > index)
+			int rowIndex = index + m_RowMgr->next_index;
+			if (index >= 0 && rowIndex >= 0 && rowIndex < static_cast<int>(m_RowMgr->Rows.size()))
 			{
-				UINT targetID = m_RowMgr->Rows[index + m_RowMgr->next_index]->objectID;
+				UINT targetID = m_RowMgr->Rows[rowIndex]->objectID;
 				m_RButtonMenu = std::make_shared<UIRButtonMenu>(currentID, targetID);
 				m_RButtonMenu->setSize(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 				m_RButtonMenu->setcameraResource(m_ClientWidth, m_ClientHeight, m_pCamera);

@@ -2,6 +2,37 @@
 #include "dynContainersManager.h"
 #include "GameObject.h"
 #include "BaseComponent.h"
+#include "SpaceTransformComponent.h"
+#include "AttributesComponent.h"
+#include "SimLog.h"
+
+namespace
+{
+	void PersistObjectState(const std::shared_ptr<GameObject>& object)
+	{
+		if (!object)
+		{
+			return;
+		}
+		if (auto* base = object->GetComponent<BaseComponent>())
+		{
+			base->store();
+			base->needStore = false;
+		}
+		if (auto* tran = object->GetComponent<SpaceTransformComponent>())
+		{
+			tran->store();
+			tran->needStore = false;
+		}
+		if (auto* attrs = object->GetComponent<AttributesComponent>())
+		{
+			if (attrs->shouldUpdate)
+			{
+				attrs->storeAttributes();
+			}
+		}
+	}
+}
 
 void SolarSystemMgr::Init()
 {
@@ -79,24 +110,18 @@ void SolarSystemMgr::handleTask(Task& task)
 		auto handleType = task.getParamOrDefault<std::string>("handlerType", "");
 		auto it = taskHandlers.find(handleType);
 		if (it != taskHandlers.end()) {
+			LOG_TASK("SolarSystem handler 命中 handlerType=\"{}\" {}", handleType, task.to_string_abstract());
 			it->second->handleTask(task);
 			return;
 		}
-
-		//if (task.paramsPtr->find("destoryObject") != task.paramsPtr->end()) {
-		//	try {
-		//		auto id = targetPtr->GetComponent<BaseComponent>()->objectID;
-		//		targetPtr->Destroy();
-		//		p_mapObject->erase(id);
-		//	}
-		//	catch (const std::bad_any_cast& e) {
-		//		DEBUG_("类型转换错误: {}", e.what());
-		//	}
-		//}
+		if (!handleType.empty()) {
+			WARN_TASK("SolarSystem handler 未命中 handlerType=\"{}\" {}", handleType, task.to_string_abstract());
+		}
 	}
 	else
 	{
-		DEBUG_("Processing task: ", task.to_string_abstract());
+		const auto taskType = task.getParamOrDefault<std::string>("taskType", "");
+		LOG_TASK("Entity 分发 taskType=\"{}\" {}", taskType, task.to_string_abstract());
 		targetPtr->handleTask(task);
 	}
 
@@ -251,6 +276,36 @@ void SolarSystemMgr::setCurrentPilot()
 
 void SolarSystemMgr::Shutdown()
 {
+	const size_t objectCount = p_mapObject ? p_mapObject->size() : 0;
+	LOG_SIM("Shutdown 开始 solarSystems={} pilots={} objects={}",
+		SolarSystems.size(), Pilots.size(), objectCount);
+
+	for (auto& pilot : Pilots)
+	{
+		PersistObjectState(pilot);
+	}
+	PersistObjectState(currentPilot);
+
+	for (auto& pair : SolarSystems)
+	{
+		if (!pair.second || !pair.second->p_mapObject)
+		{
+			continue;
+		}
+		for (auto& entry : *pair.second->p_mapObject)
+		{
+			PersistObjectState(entry.second);
+		}
+	}
+
+	if (p_mapObject)
+	{
+		for (auto& entry : *p_mapObject)
+		{
+			PersistObjectState(entry.second);
+		}
+	}
+
 	taskHandlers.clear();
 	SolarSystems.clear();
 	Pilots.clear();
@@ -271,4 +326,5 @@ void SolarSystemMgr::Shutdown()
 	p_starGateTransferObjects.reset();
 
 	GameObjectMgr::getInstance().setObjectMap(std::make_shared<std::unordered_map<UINT, std::shared_ptr<GameObject>>>());
+	LOG_SIM("Shutdown 完成");
 }
