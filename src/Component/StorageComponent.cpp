@@ -3,18 +3,16 @@
 #include "dynGameObjectsManager.h"
 #include "GameObject.h"
 #include "BaseComponent.h"
-
+#include "Task/TaskParams.h"
+#include "Sim/IAssetLocationService.h"
 
 StorageComponent::StorageComponent(UINT _objectID, UINT _containerTypeID)
 {
 	initBaseTaskHandlers();
 	initTaskHandlers();
 	objectID = _objectID;
-	containerID = dynContainersManager::getInstance()->getContainerID(_objectID, _containerTypeID);
-	if (containerID == -1) {
-		containerID = dynContainersManager::getInstance()->createContainerRecord(_objectID, _containerTypeID);
-	}
-	itemIDs = dynGameObjectsManager::getInstance()->getItemsByContainerID(containerID);
+	bagId = GetAssetLocationService().GetOrCreateBag(_objectID, _containerTypeID);
+	itemIDs = dynGameObjectsManager::getInstance()->getItemsByBagId(bagId);
 }
 
 void StorageComponent::handleTask(const Task& task)
@@ -24,12 +22,12 @@ void StorageComponent::handleTask(const Task& task)
 
 void StorageComponent::OnDestroy()
 {
-	dynContainersManager::getInstance()->removeContainerByID(containerID);
+	dynContainersManager::getInstance()->removeContainerByID(bagId);
 }
 
 void StorageComponent::Refresh()
 {
-	itemIDs = dynGameObjectsManager::getInstance()->getItemsByContainerID(containerID);
+	itemIDs = dynGameObjectsManager::getInstance()->getItemsByBagId(bagId);
 }
 
 void StorageComponent::initBaseTaskHandlers()
@@ -40,13 +38,16 @@ void StorageComponent::initBaseTaskHandlers()
 	).Register("WithDrawObject", TASK_HANDLER{
 	}
 	).Register("Refresh", TASK_HANDLER{
-		itemIDs = dynGameObjectsManager::getInstance()->getItemsByContainerID(containerID);
+		itemIDs = dynGameObjectsManager::getInstance()->getItemsByBagId(bagId);
 		}
 	).Register("RequestObject", TASK_HANDLER{
-		auto batch = TaskMgr::getInstance().createBatch();
-		auto RequesTargetId = std::any_cast<int>((*task.paramsPtr)["RequestTarget"]);
-		auto volume = std::any_cast<double>((*task.paramsPtr)["volume"]);
+		const auto requestParams = TryReadCargoStorageRequestParams(task);
+		if (!requestParams.has_value())
+			return;
+		const auto RequesTargetId = requestParams->requestTarget;
+		const auto volume = requestParams->volume;
 
+		auto batch = TaskMgr::getInstance().createBatch();
 		auto target = GameObjectMgr::getInstance().getObject(RequesTargetId);
 		if (target) {
 			auto base = target->GetComponent<BaseComponent>();
@@ -56,37 +57,20 @@ void StorageComponent::initBaseTaskHandlers()
 				auto itemBase = item->GetComponent<BaseComponent>();
 				if (itemBase->typeID == base->typeID)
 				{
-					std::shared_ptr<Task> pTask = std::make_shared<Task>();
-					pTask->publisherId = objectID;
-					pTask->targetId = RequesTargetId;
-					(*pTask->paramsPtr)["volume"] = volume;
-					(*pTask->paramsPtr)["taskType"] = std::string("addObject");
-					(*pTask->paramsPtr)["addType"] = std::string("add");
-					(*pTask->paramsPtr)["addTargetId"] = static_cast<int>(id);
-					(*pTask->paramsPtr)["containerID"] = static_cast<int>(containerID);
-
-					batch.add(pTask);
+					batch.add(TaskFactory::MakeAddObjectTask(
+						objectID,
+						RequesTargetId,
+						AddObjectParams{ "add", static_cast<int>(id), static_cast<int>(bagId), volume }));
 					return;
 				}
 			}
 		}
 
-		std::shared_ptr<Task> pTask = std::make_shared<Task>();
-		pTask->publisherId = objectID;
-		pTask->targetId = RequesTargetId;
-		(*pTask->paramsPtr)["volume"] = volume;
-		(*pTask->paramsPtr)["taskType"] = std::string("addObject");
-		(*pTask->paramsPtr)["addType"] = std::string("create");
-		(*pTask->paramsPtr)["addTargetId"] = static_cast<int>(objectID);
-		(*pTask->paramsPtr)["containerID"] = static_cast<int>(containerID);
-		batch.add(pTask);
-
-		std::shared_ptr<Task> refreshTask = std::make_shared<Task>();
-		refreshTask->publisherId = objectID;
-		refreshTask->targetId = objectID;
-		(*refreshTask->paramsPtr)["taskType"] = std::string("cargoStorage");
-		(*refreshTask->paramsPtr)["storageTaskType"] = std::string("Refresh");
-		batch.add(refreshTask);
+		batch.add(TaskFactory::MakeAddObjectTask(
+			objectID,
+			RequesTargetId,
+			AddObjectParams{ "create", static_cast<int>(objectID), static_cast<int>(bagId), volume }));
+		batch.add(TaskFactory::MakeCargoStorageRefreshTask(objectID));
 	}
 	);
 

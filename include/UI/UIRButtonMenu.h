@@ -2,6 +2,7 @@
 #include "UIBase.h"
 #include "UIButton.h"
 #include "StorageComponent.h"
+#include "Task/TaskParams.h"
 
 class UIRButtonMenu : public UIBase
 {
@@ -50,14 +51,8 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = -1;
-			task->publisher = sourceObject;
-			task->target = targetObject;
-			//task->taskTypeId = 0;
-			(*task->paramsPtr)["taskType"] = std::string("setApproachTarget");
-			sourceObject->addTask(task);
+			sourceObject->addTask(TaskFactory::MakeInnerEntityTask(
+				sourceObject, targetObject, EntityTaskType::SetApproachTarget));
 			return;
 		}
 	};
@@ -107,13 +102,8 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = -1;
-			task->publisher = sourceObject;
-			task->target = targetObject;
-			(*task->paramsPtr)["taskType"] = std::string("jump");
-			targetObject->addTask(task);
+			targetObject->addTask(TaskFactory::MakeInnerEntityTask(
+				sourceObject, targetObject, EntityTaskType::Jump));
 			return;
 		}
 	};
@@ -125,13 +115,8 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = -1;
-			task->publisher = sourceObject;
-			task->target = targetObject;
-			(*task->paramsPtr)["taskType"] = std::string("setWarpTarget");
-			sourceObject->addTask(task);
+			sourceObject->addTask(TaskFactory::MakeInnerEntityTask(
+				sourceObject, targetObject, EntityTaskType::SetWarpTarget));
 			return;
 		}
 	};
@@ -143,13 +128,8 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = -1;
-			task->publisher = sourceObject;
-			task->target = targetObject;
-			(*task->paramsPtr)["taskType"] = std::string("addLocked");
-			sourceObject->addTask(task);
+			sourceObject->addTask(TaskFactory::MakeInnerEntityTask(
+				sourceObject, targetObject, EntityTaskType::AddLocked));
 			return;
 		}
 	};
@@ -161,13 +141,8 @@ public:
 		}
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = -1;
-			task->publisher = sourceObject;
-			task->target = targetObject;
-			(*task->paramsPtr)["taskType"] = std::string("eraseLocked");
-			sourceObject->addTask(task);
+			sourceObject->addTask(TaskFactory::MakeInnerEntityTask(
+				sourceObject, targetObject, EntityTaskType::EraseLocked));
 			return;
 		}
 	};
@@ -181,23 +156,13 @@ public:
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
 			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
-			UINT ContainerID = currentPilot->currentShip->GetComponent<CargoContainerComponent>()->containerID;
+			UINT bagId = currentPilot->currentShip->GetComponent<CargoContainerComponent>()->bagId;
 
-			std::shared_ptr<Task> pTask = std::make_shared<Task>();
-			pTask->isInnerTask = true;
-			pTask->target = currentPilot->currentShip;
-			pTask->publisher = sourceObject;
-			(*pTask->paramsPtr)["taskType"] = std::string("refreshEquipment");
-			TaskMgr::getInstance().addTask(pTask);
+			TaskMgr::getInstance().addTask(TaskFactory::MakeRefreshEquipmentTask(
+				sourceObject, currentPilot->currentShip));
 
-			pTask = std::make_shared<Task>();
-			pTask->isInnerTask = true;
-			pTask->target = targetObject;
-			pTask->publisher = sourceObject;
-			pTask->targetSystem = SOLAR_SYSTEM;
-			(*pTask->paramsPtr)["handlerType"] = std::string("transferObject");
-			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(ContainerID);
-			TaskMgr::getInstance().addTask(pTask);
+			TaskMgr::getInstance().addTask(TaskFactory::MakeTransferObjectTask(
+				sourceObject, targetObject, static_cast<int>(bagId)));
 
 			return;
 		}
@@ -211,13 +176,7 @@ public:
 
 		void handleClick(std::shared_ptr<GameObject> sourceObject, std::shared_ptr<GameObject> targetObject) override {
 			auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
-			std::shared_ptr<Task> pTask = std::make_shared<Task>();
-			pTask->target = targetObject;
-			pTask->publisher = currentPilot;
-			pTask->targetSystem = REFINING;
-			(*pTask->paramsPtr)["handlerType"] = std::string("refiningObject");
-			TaskMgr::getInstance().addTask(pTask);
-			
+			TaskMgr::getInstance().addTask(TaskFactory::MakeRefiningObjectTask(currentPilot, targetObject));
 			return;
 		}
 	};

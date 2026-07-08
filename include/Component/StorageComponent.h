@@ -22,7 +22,7 @@ public:
 	virtual void Refresh();
 
 	UINT objectID;
-	UINT containerID;
+	UINT bagId = 0;
 	std::vector<int> itemIDs;
 	TaskHandlerRegistry taskRegistry;
 	void initBaseTaskHandlers();

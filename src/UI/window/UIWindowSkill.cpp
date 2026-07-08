@@ -5,6 +5,7 @@
 #include "InvTypesManager.h"
 #include "dynContainersManager.h"
 #include "dynGameObjectsManager.h"
+#include "Task/TaskParams.h"
 
 using namespace DirectX;
 
@@ -318,14 +319,9 @@ void UIWindowSkill::UpdateUIInfo(float dt, DirectX::Mouse& mouse, DirectX::Keybo
 		skillAddButton->UpdateUI(dt, mouse, keyboard, tick);
 		if (*(skillAddButton->getClickFlag())) {
 			*(skillAddButton->getClickFlag()) = false;
-			auto task = std::make_shared<Task>();
 			auto pilot = SolarSystemMgr::getInstance().currentPilot;
-			task->publisher = pilot;
-			task->target = pilot;
-			(*task->paramsPtr)["taskType"] = std::string("skillComponent");
-			(*task->paramsPtr)["skillTaskType"] = std::string("AddToActiveQueue");
-			(*task->paramsPtr)["skillTypeId"] = static_cast<int>(selectTypeId);
-			TaskMgr::getInstance().addTask(task);
+			TaskMgr::getInstance().addTask(TaskFactory::MakeSkillAddToQueueTask(
+				pilot, pilot, static_cast<int>(selectTypeId)));
 			//
 		}
 	}
@@ -708,15 +704,11 @@ void UIWindowSkill::UpdateSkillQueue(float dt, DirectX::Mouse& mouse, DirectX::K
 			effect.skillRemoveButton->setDelta(x, y);
 			effect.skillRemoveButton->UpdateUI(dt, mouse, keyboard, tick);
 			if (*(effect.skillRemoveButton->getClickFlag())) {
-				auto task = std::make_shared<Task>();
 				auto pilot = SolarSystemMgr::getInstance().currentPilot;
-				task->publisher = pilot;
-				task->target = pilot;
-				(*task->paramsPtr)["taskType"] = std::string("skillComponent");
-				(*task->paramsPtr)["skillTaskType"] = std::string("RemoveFromActiveQueue");
-				(*task->paramsPtr)["skillTypeId"] = static_cast<int>(effect.skill.skillTypeId);
-				(*task->paramsPtr)["skillLevel"] = static_cast<int>(effect.skill.level);
-				TaskMgr::getInstance().addTask(task);
+				TaskMgr::getInstance().addTask(TaskFactory::MakeSkillRemoveFromQueueTask(
+					pilot, pilot,
+					static_cast<int>(effect.skill.skillTypeId),
+					static_cast<int>(effect.skill.level)));
 				*(effect.skillRemoveButton->getClickFlag()) = false;
 			}
 		}

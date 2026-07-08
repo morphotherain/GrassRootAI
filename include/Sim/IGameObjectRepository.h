@@ -1,18 +1,23 @@
 #pragma once
 
 #include "dynGameObjectsManager.h"
-
-struct dynGameObject;
+#include "Sim/AssetLocation.h"
 
 class IGameObjectRepository {
 public:
 	virtual ~IGameObjectRepository() = default;
 
 	virtual dynGameObject getByObjectID(UINT objectID) = 0;
-	virtual void updateRelatedIds(UINT objectID, UINT solarSystemID, UINT ownerID, UINT containerID) = 0;
+	virtual void updatePlacement(
+		UINT objectID,
+		UINT solarSystemID,
+		AssetOwnerKind ownerKind,
+		UINT ownerID,
+		AssetLocationKind locationKind,
+		UINT locationRef) = 0;
 	virtual void removeByObjectID(UINT objectID) = 0;
 	virtual UINT getSolarSystemIdByObjectID(UINT objectID) = 0;
-	virtual UINT getContainerIdByObjectID(UINT objectID) = 0;
+	virtual dynGameObject getByObjectIDOrEmpty(UINT objectID) = 0;
 };
 
 IGameObjectRepository& GetGameObjectRepository();

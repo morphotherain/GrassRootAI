@@ -5,6 +5,7 @@
 #include "RenderComponent.h"
 #include "DatabaseManager.h"
 #include "SolarSystemMgr.h"
+#include "Task/TaskParams.h"
 
 using namespace DirectX;
 
@@ -68,7 +69,8 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 	if (*m_button->getClickFlag()) {
 		DEBUG_("click");
 		auto currentShip = SolarSystemMgr::getInstance().currentPilot->currentShip;
-		auto currentStationID = currentShip->GetComponent<BaseComponent>()->containerID;
+		auto* shipBase = currentShip->GetComponent<BaseComponent>();
+		const UINT currentStationID = shipBase->locationRef;
 		auto it = SolarSystemMgr::getInstance().p_mapObject->find(currentStationID);
 		std::shared_ptr<GameObject> currentStation;
 		if (it != SolarSystemMgr::getInstance().p_mapObject->end()) {
@@ -77,12 +79,7 @@ void DockScene::UpdateScene(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& 
 		else {
 			DEBUG_("Object with ID 30000083 not found in p_mapObject");
 		}
-		std::shared_ptr<Task> task = std::make_shared<Task>();
-		task->isInnerTask = true;
-		task->taskID = -1;
-		task->publisher = currentShip;
-		task->target = currentStation;
-		(*task->paramsPtr)["taskType"] = std::string("undock");
+		auto task = TaskFactory::MakeUndockTask(currentShip, currentStation);
 		DEBUG_("currentStationID :{}", currentStationID);
 		DEBUG_("currentStation :{}", currentStation == nullptr);
 		//输出所有p_mapObject

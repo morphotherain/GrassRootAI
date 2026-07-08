@@ -1,4 +1,5 @@
 ﻿#include "mapDenormalizeManager.h"
+#include "Sim/AssetLocation.h"
 
 unsigned int mapDenormalizeManager::getTypeIDByContainerId(int container_id)
 {
@@ -86,7 +87,8 @@ std::vector<MapStaticObjectRow> mapDenormalizeManager::queryStaticObjectsBySolar
 		row.gameObject.y = row.denormalize.y;
 		row.gameObject.z = row.denormalize.z;
 		row.gameObject.SolarSystemID = row.denormalize.solarSystemID;
-		row.gameObject.ContainerID = row.denormalize.solarSystemID;
+		row.gameObject.LocationKind = static_cast<UINT>(AssetLocationKind::SolarSystem);
+		row.gameObject.LocationRef = 0;
 		row.gameObject.objectID = row.denormalize.itemID;
 		row.gameObject.typeID = row.denormalize.typeID;
 		row.gameObject.groupID = sqlite3_column_int(queryStmt, 12);

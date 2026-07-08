@@ -1,5 +1,7 @@
 ﻿#include "EquipmentsComponent.h"
 #include "invEquipmentGroupSlotsManager.h"
+#include "Task/TaskParams.h"
+#include "Sim/IAssetLocationService.h"
 
 EquipmentsComponent::EquipmentsComponent(UINT _objectID)
 {
@@ -35,11 +37,10 @@ void EquipmentsComponent::Update(UINT tick)
 void EquipmentsComponent::handleTask(const Task& task)
 {
 	try {
-		auto taskType = std::any_cast<std::string>((*task.paramsPtr)["taskType"]);
-		auto equipmentTaskType = task.getParamOrDefault<std::string>("equipmentTaskType", "");
-		if (equipmentTaskType == "switch") {
-			auto slotType = std::any_cast<std::string>((*task.paramsPtr)["slotType"]);
-			auto slotIndex = std::any_cast<int>((*task.paramsPtr)["slotIndex"]);
+		const auto taskType = ReadEntityTaskType(task);
+		if (auto switchParams = TryReadEquipSwitchParams(task)) {
+			const auto& slotType = switchParams->slotType;
+			const auto slotIndex = switchParams->slotIndex;
 
 			DEBUG_("slotType, taskType, slotIndex : {}{}{}", slotType, taskType, slotIndex);
 			int targetObjectID = -1;
@@ -59,21 +60,17 @@ void EquipmentsComponent::handleTask(const Task& task)
 				}
 			}
 			auto target = GameObjectMgr::getInstance().getObject(targetObjectID);
-			std::shared_ptr<Task> task = std::make_shared<Task>();
-			task->isInnerTask = true;
-			task->taskID = 0;
-			task->publisherId = objectID;
-			task->target = target;
-			(*task->paramsPtr)["TargetObjectId"] = m_pLocking->currentLockedTargetId;
-			TaskMgr::getInstance().addTask(task);
+			TaskMgr::getInstance().addTask(
+				TaskFactory::MakeTargetObjectIdTask(objectID, target, m_pLocking->currentLockedTargetId));
 		}
 
-		if (equipmentTaskType == "installEquipment") {
-			auto equipObjectID = task.getParamOrDefault<int>("objectID", -1);
-			auto groupID = task.getParamOrDefault<int>("groupID", -1) ;
+		if (task.getParamOrDefault<std::string>("equipmentTaskType", "") == "installEquipment") {
+			const auto installParams = ReadEquipInstallParams(task);
+			const auto equipObjectID = installParams.objectID;
+			const auto groupID = installParams.groupID;
 			int slot = invEquipmentGroupSlotsManager::getInstance()->getSlotByGroupID(groupID);
             if (slot == 0) return;
-            int containerID = 0;
+            int bagId = 0;
 			int numEquip = 0;
 			int maxNum = 0;
             switch (slot)
@@ -82,25 +79,25 @@ void EquipmentsComponent::handleTask(const Task& task)
                 return;
                 break;
             case 1: {
-                containerID = m_pHighSlot->containerID;
+                bagId = m_pHighSlot->bagId;
 				numEquip = m_pHighSlot->itemIDs.size();
 				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_HI_SLOTS, 0);
                 break;
             }
             case 2: {
-                containerID = m_pMediumSlot->containerID;
+                bagId = m_pMediumSlot->bagId;
 				numEquip = m_pMediumSlot->itemIDs.size();
 				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_MED_SLOTS, 0);
                 break;
             }
             case 3: {
-                containerID = m_pLowSlot->containerID;
+                bagId = m_pLowSlot->bagId;
 				numEquip = m_pLowSlot->itemIDs.size();
 				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_LOW_SLOTS, 0);
                 break;
             }
             case 4: {
-                containerID = m_pRigSlot->containerID;
+                bagId = m_pRigSlot->bagId;
 				numEquip = m_pRigSlot->itemIDs.size();
 				maxNum = m_pAttributes->getAttrValueById(ATTR_ID_RIG_SLOTS, 0);
                 break;
@@ -110,9 +107,11 @@ void EquipmentsComponent::handleTask(const Task& task)
                 return;
                 break;
             }
-			if (containerID != 0) {
-				if(maxNum > numEquip)	
-		            dynGameObjectsManager::getInstance()->updateContainerIDByObjectID(equipObjectID, containerID);
+			if (bagId != 0) {
+				if(maxNum > numEquip)
+					GetAssetLocationService().MoveToBag(
+						static_cast<std::uint32_t>(equipObjectID),
+						static_cast<std::uint32_t>(bagId));
 			}
 			Refresh();
 		}

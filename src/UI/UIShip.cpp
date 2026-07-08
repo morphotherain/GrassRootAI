@@ -1,4 +1,5 @@
 ﻿#include "UIShip.h"
+#include "Task/TaskParams.h"
 
 using namespace DirectX;
 
@@ -44,91 +45,80 @@ void UIShip::UpdateUI(float dt, DirectX::Mouse& mouse, DirectX::Keyboard& keyboa
 		currentSelectLockingObjectId = lockingComponent->m_mapLockedTarget.begin()->second->m_TargetObjectID;
 	}
 
-	std::shared_ptr<Task> task = std::make_shared<Task>();
-	task->isInnerTask = true;
-	task->taskID = -1;
-	task->publisher = m_currentShip;
-	task->target = m_currentShip;
-	task->taskTypeId = 5;
-	(*task->paramsPtr)["taskType"] = std::string("equipments");
-	(*task->paramsPtr)["targetObjectID"] = currentSelectLockingObjectId;
-	(*task->paramsPtr)["equipmentTaskType"] = std::string("switch");
+	EquipSwitchParams switchParams;
+	switchParams.targetObjectID = currentSelectLockingObjectId;
+	bool slotSelected = false;
 	while (true) {
-		(*task->paramsPtr)["slotType"] = std::string("low");
+		switchParams.slotType = "low";
 		if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)){
-			(*task->paramsPtr)["slotIndex"] = 0; break;
+			switchParams.slotIndex = 0; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
-			(*task->paramsPtr)["slotIndex"] = 1; break;
+			switchParams.slotIndex = 1; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
-			(*task->paramsPtr)["slotIndex"] = 2; break;
+			switchParams.slotIndex = 2; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
-			(*task->paramsPtr)["slotIndex"] = 3; break;
+			switchParams.slotIndex = 3; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
-			(*task->paramsPtr)["slotIndex"] = 4; break;
+			switchParams.slotIndex = 4; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
-			(*task->paramsPtr)["slotIndex"] = 5; break;
+			switchParams.slotIndex = 5; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
-			(*task->paramsPtr)["slotIndex"] = 6; break;
+			switchParams.slotIndex = 6; slotSelected = true; break;
 		}if (keyState.LeftControl && keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
-			(*task->paramsPtr)["slotIndex"] = 7; break;
+			switchParams.slotIndex = 7; slotSelected = true; break;
 		}
 
-		(*task->paramsPtr)["slotType"] = std::string("medium");
+		switchParams.slotType = "medium";
 		if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)) {
-			(*task->paramsPtr)["slotIndex"] = 0; break;
+			switchParams.slotIndex = 0; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
-			(*task->paramsPtr)["slotIndex"] = 1; break;
+			switchParams.slotIndex = 1; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
-			(*task->paramsPtr)["slotIndex"] = 2; break;
+			switchParams.slotIndex = 2; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
-			(*task->paramsPtr)["slotIndex"] = 3; break;
+			switchParams.slotIndex = 3; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
-			(*task->paramsPtr)["slotIndex"] = 4; break;
+			switchParams.slotIndex = 4; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
-			(*task->paramsPtr)["slotIndex"] = 5; break;
+			switchParams.slotIndex = 5; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
-			(*task->paramsPtr)["slotIndex"] = 6; break;
+			switchParams.slotIndex = 6; slotSelected = true; break;
 		}if (keyState.LeftShift && m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
-			(*task->paramsPtr)["slotIndex"] = 7; break;
+			switchParams.slotIndex = 7; slotSelected = true; break;
 		}
-		(*task->paramsPtr)["slotType"] = std::string("high");
+		switchParams.slotType = "high";
 		if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F1)) {
-			(*task->paramsPtr)["slotIndex"] = 0; break;
+			switchParams.slotIndex = 0; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F2)) {
-			(*task->paramsPtr)["slotIndex"] = 1; break;
+			switchParams.slotIndex = 1; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F3)) {
-			(*task->paramsPtr)["slotIndex"] = 2; break;
+			switchParams.slotIndex = 2; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F4)) {
-			(*task->paramsPtr)["slotIndex"] = 3; break;
+			switchParams.slotIndex = 3; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F5)) {
-			(*task->paramsPtr)["slotIndex"] = 4; break;
+			switchParams.slotIndex = 4; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F6)) {
-			(*task->paramsPtr)["slotIndex"] = 5; break;
+			switchParams.slotIndex = 5; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F7)) {
-			(*task->paramsPtr)["slotIndex"] = 6; break;
+			switchParams.slotIndex = 6; slotSelected = true; break;
 		}if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::F8)) {
-			(*task->paramsPtr)["slotIndex"] = 7; break;
+			switchParams.slotIndex = 7; slotSelected = true; break;
 		}
 		
 		break;
 	}
-	if(task->paramsPtr->find("slotIndex") != task->paramsPtr->end())
-		TaskMgr::getInstance().addTask(task);
+	if (slotSelected) {
+		TaskMgr::getInstance().addTask(TaskFactory::MakeEquipSwitchTask(
+			m_currentShip, m_currentShip, switchParams));
+	}
 
-	std::shared_ptr<Task> taskSwitchLockingTarget = std::make_shared<Task>();
-	taskSwitchLockingTarget->isInnerTask = true;
-	taskSwitchLockingTarget->taskID = -1;
-	taskSwitchLockingTarget->publisher = m_currentShip;
-	taskSwitchLockingTarget->target = m_currentShip;
-	taskSwitchLockingTarget->taskTypeId = 6;
-	(*taskSwitchLockingTarget->paramsPtr)["taskType"] = std::string("cargoStorage");
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::OemComma)) {
-		(*taskSwitchLockingTarget->paramsPtr)["direction"] = 0;
-		TaskMgr::getInstance().addTask(taskSwitchLockingTarget);
+		TaskMgr::getInstance().addTask(TaskFactory::MakeLockDirectionTask(
+			m_currentShip, m_currentShip, 0));
 	}
 	if (m_KeyboardTracker.IsKeyPressed(Keyboard::Keys::OemPeriod)) {
-		(*taskSwitchLockingTarget->paramsPtr)["direction"] = 1;
-		TaskMgr::getInstance().addTask(taskSwitchLockingTarget);
+		TaskMgr::getInstance().addTask(TaskFactory::MakeLockDirectionTask(
+			m_currentShip, m_currentShip, 1));
 	}
 
 	m_tick = tick;

@@ -11,10 +11,26 @@ namespace
 			return dynGameObjectsManager::getInstance()->getGameObjectByObjectID(objectID);
 		}
 
-		void updateRelatedIds(UINT objectID, UINT solarSystemID, UINT ownerID, UINT containerID) override
+		dynGameObject getByObjectIDOrEmpty(UINT objectID) override
 		{
-			dynGameObjectsManager::getInstance()->updateRelatedIdsByObjectID(
-				objectID, solarSystemID, ownerID, containerID);
+			return getByObjectID(objectID);
+		}
+
+		void updatePlacement(
+			UINT objectID,
+			UINT solarSystemID,
+			AssetOwnerKind ownerKind,
+			UINT ownerID,
+			AssetLocationKind locationKind,
+			UINT locationRef) override
+		{
+			dynGameObjectsManager::getInstance()->updatePlacementByObjectID(
+				static_cast<int>(objectID),
+				solarSystemID,
+				static_cast<unsigned int>(ownerKind),
+				ownerID,
+				static_cast<unsigned int>(locationKind),
+				locationRef);
 		}
 
 		void removeByObjectID(UINT objectID) override
@@ -25,11 +41,6 @@ namespace
 		UINT getSolarSystemIdByObjectID(UINT objectID) override
 		{
 			return dynGameObjectsManager::getInstance()->getSolarSystemIdByObjectID(objectID);
-		}
-
-		UINT getContainerIdByObjectID(UINT objectID) override
-		{
-			return dynGameObjectsManager::getInstance()->getContainerIdByObjectID(objectID);
 		}
 	};
 }

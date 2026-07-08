@@ -46,21 +46,21 @@ std::optional<SceneId> SceneTransitionService::EvaluateTransition(const SceneTra
 			return loadingScene;
 		}
 
-		if (ctx.containerID == 0)
+		if (ctx.shipLocationKind == AssetLocationKind::SolarSystem)
 		{
 			if (ctx.currentSceneId != SceneId::Space)
 			{
-				LOG_SCENE("切换 {} -> Space (出站 containerID=0)", SceneIdName(ctx.currentSceneId));
+				LOG_SCENE("切换 {} -> Space (出站)", SceneIdName(ctx.currentSceneId));
 				return SceneId::Space;
 			}
 			break;
 		}
 
-		if (ctx.containerID != 0)
+		if (ctx.shipLocationKind == AssetLocationKind::DockedAtStructure)
 		{
 			if (ctx.currentSceneId != SceneId::Dock)
 			{
-				LOG_SCENE("切换 {} -> Dock (进站 containerID={})", SceneIdName(ctx.currentSceneId), ctx.containerID);
+				LOG_SCENE("切换 {} -> Dock (进站 anchor={})", SceneIdName(ctx.currentSceneId), ctx.locationRef);
 				return SceneId::Dock;
 			}
 			break;

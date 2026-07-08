@@ -1,6 +1,6 @@
 ﻿#include "BaseComponent.h"
 #include "Sim/IGameObjectRepository.h"
-#include "dynContainersManager.h"
+#include "Sim/IAssetLocationService.h"
 
 BaseComponent::BaseComponent(UINT _objectID)
 {
@@ -9,9 +9,11 @@ BaseComponent::BaseComponent(UINT _objectID)
 	auto data = repository.getByObjectID(objectID);
 	typeID = data.typeID;
 	solarSystemID = data.SolarSystemID;
+	ownerKind = data.OwnerKind;
 	ownerID = data.OwnerID;
+	locationKind = data.LocationKind;
+	locationRef = data.LocationRef;
 	groupID = data.groupID;
-	containerID = data.ContainerID;
 	categoryID = data.categoryID;
 	name = data.name;
 }
@@ -38,32 +40,35 @@ void BaseComponent::OnDestroy()
 }
 void BaseComponent::store()
 {
-	int tempContainerID = containerID;
-	int result_solarSystemID = solarSystemID;
-
-	int resultObjectID = objectID;
-	auto& repository = GetGameObjectRepository();
-	while (tempContainerID != 0) {
-		resultObjectID = dynContainersManager::getInstance()->getObjectIDByContainerID(tempContainerID);
-		if (resultObjectID == -1) {
-			resultObjectID = objectID;
-			break;
-		}
-		tempContainerID = repository.getContainerIdByObjectID(resultObjectID);
-		result_solarSystemID = repository.getSolarSystemIdByObjectID(resultObjectID);
-	}
-
-	repository.updateRelatedIds(objectID, result_solarSystemID, ownerID, containerID);
+	GetAssetLocationService().PersistFromBaseComponent(*this);
 }
 
 void BaseComponent::setSolarSystemID(UINT _solarSystemID)
 {
 	solarSystemID = _solarSystemID;
+	locationKind = static_cast<UINT>(AssetLocationKind::SolarSystem);
+	locationRef = 0;
 	store();
 }
 
-void BaseComponent::setContainerID(UINT _containerID)
+AssetOwner BaseComponent::GetAssetOwner() const
 {
-	containerID = _containerID;
+	return AssetOwner::FromDyn(ownerKind, ownerID);
+}
+
+AssetLocation BaseComponent::GetAssetLocation() const
+{
+	return AssetLocation::FromDyn(locationKind, locationRef, solarSystemID);
+}
+
+void BaseComponent::SetAssetOwner(const AssetOwner& owner)
+{
+	GetAssetLocationService().ApplyOwnerToBase(*this, owner);
+	store();
+}
+
+void BaseComponent::SetAssetLocation(const AssetLocation& location)
+{
+	GetAssetLocationService().ApplyLocationToBase(*this, location);
 	store();
 }

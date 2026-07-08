@@ -1,6 +1,7 @@
 ﻿#include "MinerComponent.h"
 #include "BaseComponent.h"
 #include "GameObject.h"
+#include "Task/TaskParams.h"
 
 MinerComponent::MinerComponent(UINT _objectID)
 {
@@ -25,32 +26,25 @@ void MinerComponent::Update(UINT tick)
 
 void MinerComponent::handleTask(const Task& task)
 {
-	try {
-		auto TargetObjectId = std::any_cast<int>((*task.paramsPtr)["TargetObjectId"]);
+	const auto params = ReadTargetObjectIdParams(task);
+	const auto TargetObjectId = params.targetObjectId;
 
-		auto target = GameObjectMgr::getInstance().getObject(TargetObjectId);
-		if (target) {
-			auto base = target->GetComponent<BaseComponent>();
-			if (base->categoryID == 25) {
-				m_pEquipment->Switch(TargetObjectId);
-			}
-			else {
-				DEBUG_("当前装备不能作用于该对象: base->groupID:{}", base->groupID);
-			}
+	auto target = GameObjectMgr::getInstance().getObject(TargetObjectId);
+	if (target) {
+		auto base = target->GetComponent<BaseComponent>();
+		if (base->categoryID == 25) {
+			m_pEquipment->Switch(TargetObjectId);
 		}
 		else {
+			DEBUG_("当前装备不能作用于该对象: base->groupID:{}", base->groupID);
 		}
-		std::shared_ptr<Task> task = std::make_shared<Task>();
-		task->isInnerTask = true;
-		task->taskID = 0;
-		task->publisherId = objectID;
-		task->target = target;
-		TaskMgr::getInstance().addTask(task);
+	}
+	std::shared_ptr<Task> followUpTask = std::make_shared<Task>();
+	followUpTask->isInnerTask = true;
+	followUpTask->taskID = 0;
+	followUpTask->publisherId = objectID;
+	followUpTask->target = target;
+	TaskMgr::getInstance().addTask(followUpTask);
 
-	}
-	catch (const std::bad_any_cast& e) {
-		// 记录日志或进行错误处理
-		DEBUG_("类型转换错误: {}", e.what());
-	}
 	DEBUG_(task.to_string());
 }

@@ -228,10 +228,12 @@ void GameApp::UpdateScene(float dt)
 			auto* base = currentPilot->currentShip->GetComponent<BaseComponent>();
 			if (base && SolarSystemMgr::getInstance().currentSolarSystem)
 			{
+				const auto shipLocation = base->GetAssetLocation();
 				SceneTransitionContext ctx{
 					m_currentSceneId,
 					tick,
-					base->containerID,
+					shipLocation.kind,
+					shipLocation.locationRef,
 					base->solarSystemID,
 					SolarSystemMgr::getInstance().currentSolarSystem->getSolarSystemID()
 				};

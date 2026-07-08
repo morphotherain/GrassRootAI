@@ -1,5 +1,6 @@
 ﻿#include "Equipment.h"
 #include "BaseComponent.h"
+#include "Sim/AssetLocation.h"
 #include "AttributesComponent.h"
 #include "EquipmentComponent.h"
 #include "WeaponComponent.h"
@@ -11,6 +12,7 @@
 #include "dynContainersManager.h"
 #include "dynGameObjectsManager.h"
 #include "TaskMgr.h"
+#include "Task/TaskParams.h"
 
 void Equipment::Init()
 {
@@ -41,16 +43,11 @@ void EnergyWeaponEquipments::Init()
 
 void EnergyWeaponEquipments::handleTask(const Task& task)
 {
-	try {
-		auto TargetObjectId = std::any_cast<int>((*task.paramsPtr)["TargetObjectId"]);
-		auto target = GameObjectMgr::getInstance().getObject(TargetObjectId);
-		if (target && GetComponent<EquipmentComponent>())
-		{
-			GetComponent<EquipmentComponent>()->Switch(TargetObjectId);
-		}
-	}
-	catch (const std::bad_any_cast& e) {
-		DEBUG_("类型转换错误: {}", e.what());
+	const auto params = ReadTargetObjectIdParams(task);
+	auto target = GameObjectMgr::getInstance().getObject(params.targetObjectId);
+	if (target && GetComponent<EquipmentComponent>())
+	{
+		GetComponent<EquipmentComponent>()->Switch(params.targetObjectId);
 	}
 	DEBUG_(task.to_string());
 }
@@ -97,16 +94,18 @@ void MinerEquipments::Update(UINT tick)
 
 	equipment->Update(tick);
 	if (equipment->m_endActive && attributes) {
-		auto containerId = dynGameObjectsManager::getInstance()->getContainerIdByObjectID(objectID);
-		auto ownerId = dynContainersManager::getInstance()->getObjectIDByContainerID(containerId);
+		const auto* base = GetComponent<BaseComponent>();
+		int shipObjectId = objectID;
+		if (base && base->locationKind == static_cast<UINT>(AssetLocationKind::ContainerBag)) {
+			shipObjectId = dynContainersManager::getInstance()->getObjectIDByContainerID(base->locationRef);
+		}
 
-		std::shared_ptr<Task> task = std::make_shared<Task>();
-		task->publisherId = objectID;
-		task->targetId = ownerId;
-		(*task->paramsPtr)["taskType"] = std::string("cargoStorage");
-		(*task->paramsPtr)["storageTaskType"] = std::string("RequestObject");
-		(*task->paramsPtr)["volume"] = (*attributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value;
-		(*task->paramsPtr)["RequestTarget"] = equipment->m_targetObjectId;
+		std::shared_ptr<Task> task = TaskFactory::MakeCargoStorageRequestTask(
+			objectID,
+			shipObjectId,
+			CargoStorageRequestParams{
+				equipment->m_targetObjectId,
+				(*attributes->typeAttributes)[ATTR_ID_MINING_AMOUNT].value });
 
 		TaskMgr::getInstance().addTask(task);
 

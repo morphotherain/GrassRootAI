@@ -1,30 +1,35 @@
 ﻿#pragma once
 #include "DatabaseManager.h"
+#include "Sim/AssetLocation.h"
 #include <vector>
 
 #include "InvCategoriesMacro.h"
 #include "InvGroupsMacro.h"
 
-
 class dynGameObject {
 public:
 	dynGameObject() = default;
 	~dynGameObject() = default;
-	UINT objectID;
-	UINT typeID;
-	double x;
-	double y;
-	double z;
-	UINT SolarSystemID;
-	UINT OwnerID;
-	UINT ContainerID;
-	double qw;
-	double qx;
-	double qy;
-	double qz;
-	UINT groupID;
-	UINT categoryID;
+	UINT objectID = 0;
+	UINT typeID = 0;
+	double x = 0.0;
+	double y = 0.0;
+	double z = 0.0;
+	UINT SolarSystemID = 0;
+	UINT OwnerKind = 0;
+	UINT OwnerID = 0;
+	UINT LocationKind = 0;
+	UINT LocationRef = 0;
+	double qw = 0.0;
+	double qx = 0.0;
+	double qy = 0.0;
+	double qz = 0.0;
+	UINT groupID = 0;
+	UINT categoryID = 0;
 	std::wstring name = L"";
+
+	AssetOwner GetOwner() const { return AssetOwner::FromDyn(OwnerKind, OwnerID); }
+	AssetLocation GetLocation() const { return AssetLocation::FromDyn(LocationKind, LocationRef, SolarSystemID); }
 };
 
 class dynGameObjectsManager : public SingletonBase<dynGameObjectsManager> {
@@ -37,20 +42,21 @@ public:
 		db = DatabaseManager::getInstance()->getDatabase();
 	};
 
-	// 在 invtypes 表中根据 type_id 查找 name 列
 	unsigned int getTypeIdByObjectID(int object_id);
 	unsigned int getSolarSystemIdByObjectID(int object_id);
-	unsigned int getOwnerIdByObjectID(int object_id);
-	unsigned int getContainerIdByObjectID(int object_id);
 	std::vector<double> getPosByObjectID(int object_id);
-	int updateRelatedIdsByObjectID(int object_id, unsigned int solarSystemId, unsigned int ownerId, unsigned int containerId);
+	int updatePlacementByObjectID(
+		int object_id,
+		unsigned int solarSystemId,
+		unsigned int ownerKind,
+		unsigned int ownerId,
+		unsigned int locationKind,
+		unsigned int locationRef);
 	int updatePosByObjectID(int object_id, const std::vector<double>& pos);
-	int updateContainerIdByObjectID(int object_id, unsigned int containerId);
 	std::vector<double> getQuaternionByObjectID(int object_id);
 	unsigned int getPilotObjectIDByPilotID(int pilot_id);
 
-	bool queryObjectsByContainerID(int containerID,
-		std::vector<std::pair<int, int>>& result);
+	bool queryObjectsByBagId(int bagId, std::vector<std::pair<int, int>>& result);
 
 	std::shared_ptr<std::vector<dynGameObject>> getGameObjectBySolarSystemID(UINT solarSystemID);
 
@@ -60,9 +66,7 @@ public:
 
 	std::shared_ptr<std::vector<dynGameObject>> getPilots();
 
-	std::vector<int> getItemsByContainerID(UINT containerID);
-
-	int updateContainerIDByObjectID(int object_id, int newValue);
+	std::vector<int> getItemsByBagId(UINT bagId);
 
 	std::vector<int> getSolarSystemIDHasPilot();
 

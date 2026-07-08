@@ -351,6 +351,9 @@
     <ClCompile Include="src\Task\TaskMgr.cpp">
       <Filter>Task</Filter>
     </ClCompile>
+    <ClCompile Include="src\Task\TaskParams.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
     <ClCompile Include="src\UI\UIRButtonMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -442,6 +445,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="src\Sim\DynGameObjectRepository.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sim\AssetLocationService.cpp">
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="src\TaskHandler\RefiningSystem\RefiningSystemHandler.cpp">
@@ -767,6 +773,9 @@
     <ClInclude Include="include\Task\TaskMgr.h">
       <Filter>Task</Filter>
     </ClInclude>
+    <ClInclude Include="include\Task\TaskParams.h">
+      <Filter>Task</Filter>
+    </ClInclude>
     <ClInclude Include="include\UI\UIButton.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -870,6 +879,12 @@
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="include\Sim\IGameObjectRepository.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sim\AssetLocation.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sim\IAssetLocationService.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="include\Component\ComponentDependency.h">

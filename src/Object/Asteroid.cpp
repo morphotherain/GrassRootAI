@@ -3,6 +3,7 @@
 #include "SpaceTransformComponent.h"
 #include "InvTypesManager.h"
 #include "TaskMgr.h"
+#include "Task/TaskParams.h"
 
 Asteroid::~Asteroid()
 {
@@ -33,12 +34,15 @@ void Asteroid::handleTask(const Task& task)
 	if (!attributes || !base)
 		return;
 
-	auto type = task.getParamOrDefault<std::string>("taskType", "");
-	if (type == "addObject") {
-		auto addType = task.getParamOrDefault<std::string>("addType", "");
-		auto addTargetId = task.getParamOrDefault<int>("addTargetId", -1);
-		auto containerID = task.getParamOrDefault<int>("containerID", -1);
-		auto volume = task.getParamOrDefault<double>("volume", 0);
+	auto type = ReadEntityTaskType(task);
+	if (type == EntityTaskType::AddObject) {
+		const auto addParams = TryReadAddObjectParams(task);
+		if (!addParams.has_value())
+			return;
+		const auto& addType = addParams->addType;
+		const auto addTargetId = addParams->addTargetId;
+		const auto bagId = addParams->bagId;
+		const auto volume = addParams->volume;
 		auto volumePerUnit = (*attributes->objectAttributes)[ATTR_ID_VOLUME].value;
 
 		if(addType == "add") {
@@ -52,20 +56,17 @@ void Asteroid::handleTask(const Task& task)
 			}
 		}
 		if (addType == "create") {
-			std::shared_ptr<Task> pTask = std::make_shared<Task>();
+			CreateObjectParams createParams;
+			createParams.typeID = static_cast<int>(base->typeID);
+			createParams.ownerID = 0;
+			createParams.bagId = bagId;
+			createParams.attributes = std::vector<Attribute>{
+				{ ATTR_ID_QUANTITY, std::floor(volume / volumePerUnit) },
+			};
+
+			auto pTask = TaskFactory::MakeCreateObjectTask(nullptr, createParams);
 			pTask->isInnerTask = true;
 			pTask->publisherId = objectID;
-			pTask->targetSystem = SOLAR_SYSTEM;
-			(*pTask->paramsPtr)["createObject"] = 0;
-			(*pTask->paramsPtr)["handlerType"] = std::string("createObject");
-			(*pTask->paramsPtr)["typeID"] = static_cast<int>(base->typeID);
-			(*pTask->paramsPtr)["OwnerID"] = 0;
-			(*pTask->paramsPtr)["ContainerID"] = static_cast<int>(containerID);
-			std::vector<Attribute> attributesVec = {
-				{ATTR_ID_QUANTITY, std::floor(volume / volumePerUnit) },
-			};
-			(*pTask->paramsPtr)["attributes"] = attributesVec;
-
 			TaskMgr::getInstance().addTask(pTask);
 		}
 	}

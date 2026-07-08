@@ -1,6 +1,7 @@
 ﻿#include "LockingComponent.h"
 #include "dynGameObjectsManager.h"
 #include "GameObject.h"
+#include "Task/TaskParams.h"
 
 LockingComponent::LockingComponent()
 {
@@ -57,17 +58,13 @@ void LockingComponent::Update(UINT tick)
 
 void LockingComponent::handleTask(const Task& task)
 {
-	try {
-		auto direction = std::any_cast<int>((*task.paramsPtr)["direction"]);
-		if (direction == 0)
-			SwitchToPreviousLockedTarget();
-		else
-			SwitchToNextLockedTarget();
-	}
-	catch (const std::bad_any_cast& e) {
-		// 记录日志或进行错误处理
-		DEBUG_("类型转换错误: {}", e.what());
-	}
+	const auto params = TryReadLockDirectionParams(task);
+	if (!params.has_value())
+		return;
+	if (params->direction == 0)
+		SwitchToPreviousLockedTarget();
+	else
+		SwitchToNextLockedTarget();
 }
 
 bool LockingComponent::IsLocked(int objectID)

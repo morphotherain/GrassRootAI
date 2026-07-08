@@ -5,6 +5,7 @@
 #include "SpaceTransformComponent.h"
 #include "AttributesComponent.h"
 #include "SimLog.h"
+#include "Sim/IAssetLocationService.h"
 
 namespace
 {
@@ -203,8 +204,10 @@ void SolarSystemMgr::InitPilots()
 			auto base = object->GetComponent<BaseComponent>();
 			base->objectID = p.objectID;
 			base->typeID = p.typeID;
+			base->ownerKind = p.OwnerKind;
 			base->ownerID = p.OwnerID;
-			base->containerID = p.ContainerID;
+			base->locationKind = p.LocationKind;
+			base->locationRef = p.LocationRef;
 			base->solarSystemID = p.SolarSystemID;
 			base->groupID = p.groupID;
 			base->categoryID = p.categoryID;
@@ -239,18 +242,8 @@ std::shared_ptr<GameObject> SolarSystemMgr::getObjectById(int id)
 //todo
 UINT SolarSystemMgr::getOwnerIdById(int id)
 {
-	while (getObjectById(id)) {
-		auto base = getObjectById(id)->GetComponent<BaseComponent>();
-		if (base)
-		{
-			if (base->owner != 0)
-				return base->ownerID;
-			
-		}
-		else
-			break;
-	}
-	return 0;
+	const auto owner = GetAssetLocationService().ReadOwner(static_cast<std::uint32_t>(id));
+	return owner.DynOwnerId();
 }
 
 void SolarSystemMgr::getCurrentPilot()
@@ -261,9 +254,11 @@ void SolarSystemMgr::getCurrentPilot()
 			currentPilot = p;
 			auto Base = currentPilot->GetComponent<BaseComponent>();
 			currentSolarSystem = SolarSystems[currentPilot->currentSolarSystemID];
-			UINT PilotContainerID = currentPilot->GetComponent<BaseComponent>()->containerID;
-			UINT shipID = dynContainersManager::getInstance()->getObjectIDByContainerID(PilotContainerID);
-			currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>((*p_mapObject)[shipID]);
+			const auto pilotBase = currentPilot->GetComponent<BaseComponent>();
+			if (pilotBase->locationKind == static_cast<UINT>(AssetLocationKind::ContainerBag)) {
+				UINT shipID = dynContainersManager::getInstance()->getObjectIDByContainerID(pilotBase->locationRef);
+				currentPilot->currentShip = std::reinterpret_pointer_cast<Ship>((*p_mapObject)[shipID]);
+			}
 		}
 	}
 }

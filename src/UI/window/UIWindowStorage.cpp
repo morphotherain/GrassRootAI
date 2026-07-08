@@ -5,6 +5,7 @@
 #include "InvTypesManager.h"
 #include "dynContainersManager.h"
 #include "dynGameObjectsManager.h"
+#include "Task/TaskParams.h"
 
 using namespace DirectX;
 
@@ -298,7 +299,7 @@ bool UIWindowStorage::InitItemImgEffect()
 	m_itemImgEffects.clear();
 	m_itemsPair.clear();
 
-	if (dynGameObjectsManager::getInstance()->queryObjectsByContainerID(currentContainerID, m_itemsPair)) {
+	if (dynGameObjectsManager::getInstance()->queryObjectsByBagId(currentContainerID, m_itemsPair)) {
 		DEBUG_("查询到的结果数量: {}", m_itemsPair.size());
 		for (const auto& pair : m_itemsPair) {
 			DEBUG_("ObjectID: {}, TypeID: {}", pair.first, pair.second);
@@ -503,15 +504,10 @@ void UIWindowStorage::ParseParameters(std::unordered_map<std::string, std::any> 
 
 void UIWindowStorage::OnDragEnd(int x, int y)
 {
-	std::shared_ptr<Task> task = std::make_shared<Task>();
+	auto task = std::make_shared<Task>();
 	task->targetSystem = UIWINDOW;
-	(*task->paramsPtr)["x"] = x;
-	(*task->paramsPtr)["y"] = y;
-	(*task->paramsPtr)["ItemDrag"] = 1;
-	(*task->paramsPtr)["objectID"] = m_itemsPair[dragItemIndex].first;
-
+	ApplyUiWindowDragParams(*task, UiWindowDragParams{ x, y, m_itemsPair[dragItemIndex].first });
 	TaskMgr::getInstance().addTask(task);
-
 }
 
 void UIWindowStorage::InitWindowComponent()

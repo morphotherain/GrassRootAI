@@ -8,7 +8,7 @@
 >
 > **架构说明（用意与约定）**：[[架构重构指南]] — 给未来开发 / AI 读，解释「为什么这么 refactor、新代码该怎么写」。
 >
-> **当前主线**：Phase 7 ✅（代码项完成；7.10 回归待测）。**下一步**：Phase 3 Task 参数 typed 化，或 Phase 4 UI 解耦按需。
+> **当前主线**：Phase 3 Task 参数 typed 化 ✅（首批 taskType 已覆盖）。**下一步**：Phase 4 UI 解耦按需，或继续补未覆盖 taskType。
 >
 > **预估工期**：Phase A 约 **3–5 天**；Phase B 约 **2–3 周**；Phase C 约 **1 周**；Phase 0–2 约 **1 周**；Phase 3–6 长期按需；**Phase 7** 与 Phase 2.4 衔接，分阶段做、不必一次换 EnTT。
 
@@ -24,7 +24,7 @@
 | 0 | 安全网 | 0.5 天 | 🟡 进行中 |
 | 1 | P0 快速清理 | 1–2 天 | ✅ **已完成**（2026-06-29） |
 | 2 | P1 边界抽取 | 3–5 天 | ✅ **已完成**（2026-06-29；含 2.5） |
-| 3 | P1 Task 系统加固 | 2–3 天 | ⬜ 未开始 |
+| 3 | P1 Task 系统加固 | 2–3 天 | ✅ **首批完成**（2026-06-29；3.4 见 Phase 7.7） |
 | 4 | P2 旧 UI 解耦 | 按需，每项 1–2 天 | ⬜ 未开始 |
 | 5 | P2 数据层 | 低优先级 | ⬜ 未开始 |
 | 6 | 长期重构 | 1–2 周+ | ⬜ 未开始 |
@@ -334,29 +334,29 @@ MainScene → 存档列表 / 新建 / 删除 → 加载选定档 → 进 SpaceSc
 
 ### 3.1 为常用 Task 定义参数 struct（一次一种 taskType）
 
-- [ ] 改什么：如 `EquipTaskParams`、`TransferObjectParams`，加 helper 构造/读取
-- [ ] 策略：**只覆盖正在改的功能用到的 taskType**，不一次改全
-- [ ] 完成标准：该 taskType 不再裸用 `(*paramsPtr)["xxx"]`
-- [ ] 预估：每种 1–2h
+- [x] 改什么：如 `EquipSwitchParams`、`TransferObjectParams`、`CreateObjectParams`，加 helper 构造/读取 → `include/Task/TaskParams.h`
+- [x] 策略：**只覆盖正在改的功能用到的 taskType**，不一次改全
+- [x] 完成标准：已迁移 taskType 不再裸用 `(*paramsPtr)["xxx"]`（集中写在 `TaskParams.cpp`）
+- [x] 预估：每种 1–2h
 
 ### 3.2 Task 创建 helper（单 SystemType 一个 PR）
 
-- [ ] 改什么：如 `TaskBuilder::ForSolarSystem("createObject").withTarget(id)...`
-- [ ] 完成标准：新代码用 helper；旧代码可暂留
-- [ ] 预估：每种 1h
+- [x] 改什么：`TaskFactory::MakeInnerEntityTask` / `MakeCreateObjectTask` / …
+- [x] 完成标准：UI、Component、Handler 创建点已切到 helper
+- [x] 预估：每种 1h
 
 ### 3.3 文档对齐：补 Task 参数字段表
 
-- [ ] 改什么：`Document/任务/` 下为已有 handler 补 params 表
-- [ ] 完成标准：与代码一致；新功能先更文档再写代码
-- [ ] 预估：持续，每项 30min
+- [x] 改什么：`Document/任务/TaskParams.md` 总表；各 handler 文档可逐步补
+- [x] 完成标准：与代码一致；新功能先更文档再写代码
+- [ ] 预估：持续，每项 30min（未覆盖 handler 待补）
 
 ### 3.4 Entity Task 统一 dispatch（与 Phase 7.7 联动）
 
-- [ ] 改什么：`GameObject::dispatchTask(task)` 统一入口 → 按 `taskType` 路由到 Component / `TaskHandlerRegistry`
-- [ ] 不改什么：各 Component 的 `handleTask` 实现
-- [ ] 完成标准：逐步删掉 `Ship::initTaskHandlers` / `Pilot::initTaskHandlers` 里重复 lambda
-- [ ] 预估：1–2 天（与 7.7 可合并 PR，按 Entity 类型分批）
+- [x] 改什么：`GameObject::dispatchTask(task)` 统一入口 → 按 `taskType` 路由到 Component / `TaskHandlerRegistry`（Phase 7.7 已完成）
+- [x] 不改什么：各 Component 的 `handleTask` 实现
+- [x] 完成标准：Ship/Pilot/NPCStation/StarGate 已迁到 `entityTaskHandlers`
+- [x] 预估：1–2 天（与 7.7 可合并 PR，按 Entity 类型分批）
 
 ## Phase 4 — P2 UI 解耦（按窗口拆，每个 1–2 天）
 

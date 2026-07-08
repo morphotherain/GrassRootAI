@@ -94,8 +94,10 @@ void SolarSystem::addGameObject(dynGameObject& objectData)
 		auto base = object->GetComponent<BaseComponent>();
 		base->objectID = objectData.objectID;
 		base->typeID = objectData.typeID;
+		base->ownerKind = objectData.OwnerKind;
 		base->ownerID = objectData.OwnerID;
-		base->containerID = objectData.ContainerID;
+		base->locationKind = objectData.LocationKind;
+		base->locationRef = objectData.LocationRef;
 		base->solarSystemID = objectData.SolarSystemID;
 		base->groupID = objectData.groupID;
 		base->categoryID = objectData.categoryID;

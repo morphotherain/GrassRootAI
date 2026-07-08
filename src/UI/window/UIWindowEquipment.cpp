@@ -1,6 +1,7 @@
 ﻿// UIWindowEquipment.cpp
 #include "UIWindowEquipment.h"
 #include "dynContainersManager.h"
+#include "Task/TaskParams.h"
 using namespace DirectX;
 #define COLUMN_WIDTH 200
 
@@ -117,10 +118,10 @@ void UIWindowEquipment::InitSlots()
     std::vector<std::pair<int, int>> midEquipments = {};
     std::vector<std::pair<int, int>> lowEquipments = {};
     std::vector<std::pair<int, int>> rigEquipments = {};
-    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(highContainerID, highEquipments);
-    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(mediumContainerID, midEquipments);
-    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(lowContainerID, lowEquipments);
-    dynGameObjectsManager::getInstance()->queryObjectsByContainerID(rigContainerID, rigEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByBagId(highContainerID, highEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByBagId(mediumContainerID, midEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByBagId(lowContainerID, lowEquipments);
+    dynGameObjectsManager::getInstance()->queryObjectsByBagId(rigContainerID, rigEquipments);
 
     auto currentPilot = SolarSystemMgr::getInstance().currentPilot;
     auto currentShip = currentPilot->currentShip;
@@ -547,14 +548,10 @@ void UIWindowEquipment::handleTask(Task& task)
         auto object = SolarSystemMgr::getInstance().getObjectById(objectID);
         if (object) {
             auto base = object->GetComponent<BaseComponent>();
-            auto task = std::make_shared<Task>();
-            task->publisher = SolarSystemMgr::getInstance().currentPilot;
-            task->target = SolarSystemMgr::getInstance().currentPilot->currentShip;
-            (*task->paramsPtr)["taskType"] = std::string("equipments");
-            (*task->paramsPtr)["equipmentTaskType"] = std::string("installEquipment");
-            (*task->paramsPtr)["objectID"] = static_cast<int>(objectID);
-            (*task->paramsPtr)["groupID"] = static_cast<int>(base->groupID);
-            TaskMgr::getInstance().addTask(task);
+            TaskMgr::getInstance().addTask(TaskFactory::MakeEquipInstallTask(
+                SolarSystemMgr::getInstance().currentPilot,
+                SolarSystemMgr::getInstance().currentPilot->currentShip,
+                EquipInstallParams{ static_cast<int>(objectID), static_cast<int>(base->groupID) }));
 
             Init();
             auto currentPilot = SolarSystemMgr::getInstance().currentPilot;

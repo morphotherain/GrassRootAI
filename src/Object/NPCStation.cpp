@@ -4,6 +4,7 @@
 #include "SpaceTransformComponent.h"
 #include "InvTypesManager.h"
 #include "Task.h"
+#include "Sim/IAssetLocationService.h"
 
 void NPCStation::Init()
 {
@@ -43,7 +44,10 @@ void NPCStation::registerEntityTaskHandlers(EntityTaskHandlerMap& handlers)
 
 		auto distance = stationTran->calculateDistance(*tran);
 		if (distance < (2500)) {
-			base->setContainerID(stationBase->objectID);
+			auto& locationService = GetAssetLocationService();
+			if (locationService.DockAtStructure(base->objectID, stationBase->objectID)) {
+				locationService.ApplyLocationToBase(*base, locationService.ReadLocation(base->objectID));
+			}
 		}
 	});
 	handlers.emplace("undock", [this](const Task& task) {
@@ -57,7 +61,10 @@ void NPCStation::registerEntityTaskHandlers(EntityTaskHandlerMap& handlers)
 		if (!base || !tran || !physics || !stationTran)
 			return;
 
-		base->setContainerID(0);
+		auto& locationService = GetAssetLocationService();
+		locationService.UndockToSpace(base->objectID);
+		locationService.ApplyLocationToBase(*base, locationService.ReadLocation(base->objectID));
+
 		tran->x = stationTran->x + 10000.0f;
 		tran->y = stationTran->y;
 		tran->z = stationTran->z;

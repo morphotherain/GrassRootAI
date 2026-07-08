@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "TaskMgr.h"
 #include "dynPilotsSkillManager.h"
+#include "Task/TaskParams.h"
 
 SkillComponent::SkillComponent(UINT _objectID, UINT _ownerId)
     : objectID(_objectID),ownerID(_ownerId) {
@@ -63,7 +64,8 @@ void SkillComponent::initBaseTaskHandlers() {
     // 处理添加技能到活跃队列的任务
     taskRegistry.Register("AddToActiveQueue", TASK_HANDLER{
         try {
-            int skillTypeId = std::any_cast<int>((*task.paramsPtr)["skillTypeId"]);
+            const auto params = ReadSkillAddToQueueParams(task);
+            const int skillTypeId = params.skillTypeId;
             if (!isSkillPrerequisiteMet(skillTypeId))
                 return;
 
@@ -132,13 +134,7 @@ void SkillComponent::initBaseTaskHandlers() {
             allSkills.insert(allSkills.end(), inactiveSkills.begin(), inactiveSkills.end());
             dynSkillQueueManager::getInstance()->updateSkills(ownerID, allSkills);
 
-            // 发送刷新任务
-            auto refreshTask = std::make_shared<Task>();
-            refreshTask->publisherId = objectID;
-            refreshTask->targetId = objectID;
-            (*refreshTask->paramsPtr)["taskType"] = std::string("skillComponent");
-            (*refreshTask->paramsPtr)["skillTaskType"] = std::string("Refresh");
-            TaskMgr::getInstance().addTask(refreshTask);
+            TaskMgr::getInstance().addTask(TaskFactory::MakeSkillRefreshTask(objectID));
 
         }
     catch (const std::bad_any_cast& e) {
@@ -148,8 +144,9 @@ void SkillComponent::initBaseTaskHandlers() {
     }).Register("RemoveFromActiveQueue", TASK_HANDLER{
 
         try {
-            int skillTypeId = std::any_cast<int>((*task.paramsPtr)["skillTypeId"]);
-            int skillLevel = std::any_cast<int>((*task.paramsPtr)["skillLevel"]);
+            const auto params = ReadSkillRemoveFromQueueParams(task);
+            const int skillTypeId = params.skillTypeId;
+            const int skillLevel = params.skillLevel;
 
             // 查找技能在活跃队列中的位置
             auto it = std::find_if(activeSkills.begin(), activeSkills.end(),
@@ -185,13 +182,7 @@ void SkillComponent::initBaseTaskHandlers() {
             allSkills.insert(allSkills.end(), inactiveSkills.begin(), inactiveSkills.end());
             dynSkillQueueManager::getInstance()->updateSkills(ownerID, allSkills);
 
-            // 发送刷新任务
-            auto refreshTask = std::make_shared<Task>();
-            refreshTask->publisherId = objectID;
-            refreshTask->targetId = objectID;
-            (*refreshTask->paramsPtr)["taskType"] = std::string("skillComponent");
-            (*refreshTask->paramsPtr)["skillTaskType"] = std::string("Refresh");
-            TaskMgr::getInstance().addTask(refreshTask);
+            TaskMgr::getInstance().addTask(TaskFactory::MakeSkillRefreshTask(objectID));
 
                 }
         catch (const std::bad_any_cast& e) {
