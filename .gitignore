@@ -399,8 +399,9 @@ FodyWeavers.xsd
 *.png
 *.dds
 *.bat
-*.db
-*.sqlite
+# Project databases such as EVEdata.sqlite are runtime data.
+# Do not blanket-ignore *.db or *.sqlite here.
+!EVEdata.sqlite
 *.cso
 *.cso
 *.cso
